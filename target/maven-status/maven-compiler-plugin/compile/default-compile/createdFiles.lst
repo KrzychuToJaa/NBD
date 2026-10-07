@@ -1,0 +1,17 @@
+pobi/managers/DeviceManager.class
+pobi/model/Client.class
+pobi/model/Computer.class
+pobi/repositories/ClientRepository.class
+pobi/model/Service.class
+pobi/managers/ServiceManager.class
+pobi/model/Console$ConsoleType.class
+pobi/model/Laptop.class
+pobi/repositories/LogicContainer.class
+pobi/repositories/DeviceRepository.class
+pobi/model/PC.class
+pobi/Main.class
+pobi/managers/ClientManager.class
+pobi/model/Device.class
+pobi/repositories/ServiceRepository.class
+pobi/model/Console.class
+pobi/model/UserInterface.class

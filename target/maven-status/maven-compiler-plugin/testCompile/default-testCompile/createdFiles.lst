@@ -1,0 +1,6 @@
+pobi/model/ServiceTest.class
+pobi/model/DeviceTest.class
+pobi/managers/DeviceManagerTest.class
+pobi/managers/ServiceManagerTest.class
+pobi/managers/ClientManagerTest.class
+pobi/model/ClientTest.class
