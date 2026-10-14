@@ -1,6 +1,0 @@
-pobi\managers\ServiceManagerTest.class
-pobi\managers\DeviceManagerTest.class
-pobi\managers\ClientManagerTest.class
-pobi\model\ClientTest.class
-pobi\model\DeviceTest.class
-pobi\model\ServiceTest.class

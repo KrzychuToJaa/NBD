@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: pobi.managers.BusinessRulesTest
--------------------------------------------------------------------------------
-Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.114 s -- in pobi.managers.BusinessRulesTest
