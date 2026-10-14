@@ -7,7 +7,10 @@ import pobi.model.ServiceOffering;
 import pobi.model.Service;
 import pobi.repositories.ClientRepository;
 import pobi.repositories.DeviceRepository;
+import pobi.repositories.EmployeeRepository;
+import pobi.repositories.ServiceOfferingRepository;
 import pobi.repositories.ServiceRepository;
+import java.util.List;
 
 public class ServiceManager {
     private final ServiceRepository serviceRepository;

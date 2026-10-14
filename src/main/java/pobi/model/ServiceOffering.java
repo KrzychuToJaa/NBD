@@ -1,9 +1,9 @@
 package pobi.model;
 
 public class ServiceOffering {
-    private String id;
-    private double basePrice;
-    private String name;
+    private final String id;
+    private final double basePrice;
+    private final String name;
 
     public ServiceOffering(String id, double basePrice, String name) {
         if (id == null || id.isBlank() || name == null || name.isBlank()) {

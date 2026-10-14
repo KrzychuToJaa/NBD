@@ -2,11 +2,11 @@ package pobi.model;
 
 public class Service {
     private final String id;
-    private Client client;
-    private Employee employee;
-    private ServiceOffering offering;
-    private Device device;
-    private double basePrice;
+    private final Client client;
+    private final Employee employee;
+    private final ServiceOffering offering;
+    private final Device device;
+    private final double basePrice;
     private String description;
     private boolean archive = false;
 

@@ -1,495 +1,529 @@
 package pobi.model;
 
-import java.util.List;
-import java.util.Scanner;
-
 import pobi.managers.ClientManager;
 import pobi.managers.DeviceManager;
+import pobi.managers.EmployeeManager;
 import pobi.managers.ServiceManager;
+import pobi.managers.ServiceOfferingManager;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class UserInterface {
-    private ClientManager clientManager;
-    private ServiceManager serviceManager;
-    private DeviceManager deviceManager;
-    private Scanner scanner;
+    private final ClientManager clientManager;
+    private final DeviceManager deviceManager;
+    private final EmployeeManager employeeManager;
+    private final ServiceOfferingManager offeringManager;
+    private final ServiceManager serviceManager;
 
-    /**
-     * Konstruktor obiektu klasy UserInterface
-     * @param clientManager menedżer klasy client
-     * @param serviceManager menedżer klasy service
-     * @param deviceManager menedżer klasy device
-     */
-    public UserInterface(ClientManager clientManager, ServiceManager serviceManager, DeviceManager deviceManager) {
-        this.clientManager = clientManager;
-        this.serviceManager = serviceManager;
-        this.deviceManager = deviceManager;
-        this.scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
+
+    public UserInterface(
+            ClientManager clientManager,
+            DeviceManager deviceManager,
+            EmployeeManager employeeManager,
+            ServiceOfferingManager offeringManager,
+            ServiceManager serviceManager) {
+
+        this.clientManager =
+            Objects.requireNonNull(clientManager);
+        this.deviceManager =
+            Objects.requireNonNull(deviceManager);
+        this.employeeManager =
+            Objects.requireNonNull(employeeManager);
+        this.offeringManager =
+            Objects.requireNonNull(offeringManager);
+        this.serviceManager =
+            Objects.requireNonNull(serviceManager);
     }
 
-    /**
-     * metoda czyszcząca konsolę
-     */
-    private void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+    public void start() {
+        try {
+            while (true) {
+                System.out.println("\n=== SERWIS KOMPUTEROWY ===");
+                System.out.println("1. Klienci");
+                System.out.println("2. Urządzenia");
+                System.out.println("3. Pracownicy");
+                System.out.println("4. Katalog usług");
+                System.out.println("5. Zlecenia");
+                System.out.println("0. Zakończ program");
+
+                int choice = readInt("Wybierz opcję: ");
+
+                switch (choice) {
+                    case 1 -> clientMenu();
+                    case 2 -> deviceMenu();
+                    case 3 -> employeeMenu();
+                    case 4 -> offeringMenu();
+                    case 5 -> serviceMenu();
+                    case 0 -> {
+                        System.out.println("Zakończono program.");
+                        return;
+                    }
+                    default ->
+                        System.out.println("Nie ma takiej opcji.");
+                }
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println("\nZakończono odczyt danych.");
+        }
     }
 
-    /**
-     * metoda pokazująca menu klientów
-     */
     private void clientMenu() {
-        clearScreen();
         while (true) {
-            System.out.println("Zarządzanie klientami");
-            System.out.println("1. Zarejestruj klienta");
+            System.out.println("\nKLIENCI");
+            System.out.println("1. Dodaj klienta");
             System.out.println("2. Wyświetl klienta");
             System.out.println("3. Wyświetl wszystkich klientów");
-            System.out.println("4. Usuń klienta");
-            System.out.println("5. Zmień archiwizację klienta");
-            System.out.println("0. Powrót do menu głównego");
-            
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Konsumuje znak nowej linii po int
-            
-            switch (choice) {
-                case 1: {
-                    clearScreen();
-                    System.out.println("Rejestracja klienta");
-                    System.out.print("Podaj imię: ");
-                    String firstName = scanner.next();
-                    System.out.print("Podaj nazwisko: ");
-                    String lastName = scanner.next();
-                    System.out.print("Podaj numer telefonu: ");
-                    String phoneNumber = scanner.next();
-                    scanner.nextLine();
-                    
-                    System.out.print("Podaj miasto: ");
-                    String city = scanner.nextLine();
-                    System.out.print("Podaj ulicę: ");
-                    String street = scanner.nextLine();
-                    System.out.print("Podaj numer domu: ");
-                    String number = scanner.next();
-                    
-                    try {
-                        clientManager.registerClient(firstName, lastName, phoneNumber, city, street, number);
-                        clearScreen();
-                        System.out.println("Klient zarejestrowany");
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+            System.out.println("0. Powrót");
+
+            int choice = readInt("Wybierz opcję: ");
+
+            try {
+                switch (choice) {
+                    case 1 -> registerClient();
+                    case 2 -> showClient();
+                    case 3 -> showAllClients();
+                    case 0 -> {
+                        return;
                     }
-                    break;
+                    default ->
+                        System.out.println("Nie ma takiej opcji");
                 }
-                case 2: {
-                    clearScreen();
-                    System.out.println("Wyświetlanie klienta");
-                    System.out.print("Podaj numer telefonu klienta: ");
-                    String phoneNumber = scanner.next();
-                    try {
-                        Client client = clientManager.getClient(phoneNumber);
-                        if (client != null) {
-                            System.out.println(client.getInfo());
-                        } else {
-                            System.out.println("Nie znaleziono klienta.");
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 3: {
-                    clearScreen();
-                    System.out.println("Wyświetlanie wszystkich klientów");
-                    try {
-                        List<Client> clients = clientManager.findAllClients();
-                        for (Client client : clients) {
-                            System.out.println(client.getInfo());
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 4: {
-                    clearScreen();
-                    System.out.println("Usuwanie klienta");
-                    System.out.print("Podaj numer telefonu klienta: ");
-                    String phoneNumber = scanner.next();
-                    try {
-                        clientManager.unregisterClient(phoneNumber);
-                        System.out.println("Klient usunięty");
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 5: {
-                    clearScreen();
-                    System.out.print("Czy klient ma być archiwalny? (tak/nie): ");
-                    String archiveChoice = scanner.next();
-                    boolean archive;
-                    if (archiveChoice.equalsIgnoreCase("tak")) {
-                        archive = true;
-                    } else if (archiveChoice.equalsIgnoreCase("nie")) {
-                        archive = false;
-                    } else {
-                        System.out.println("Zły wybór. Spróbuj ponownie");
-                        break;
-                    }
-                    System.out.print("Podaj numer telefonu klienta: ");
-                    String phoneNumber = scanner.next();
-                    clearScreen();
-                    Client client = clientManager.getClient(phoneNumber);
-                    if (client != null) {
-                        client.setArchive(archive);
-                        System.out.println("Archiwizacja klienta zaktualizowana");
-                    } else {
-                        System.out.println("Klient nie został znaleziony");
-                    }
-                    break;
-                }
-                case 0:
-                    clearScreen();
-                    return;
-                default:
-                    clearScreen();
-                    System.out.println("Zły wybór. Spróbuj ponownie");
+            } catch (IllegalArgumentException
+                     | IllegalStateException e) {
+                System.out.println("Błąd: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * metoda pokazująca menu urządzeń
-     */
+    private void registerClient() {
+        String firstName = readText("Imię: ");
+        String lastName = readText("Nazwisko: ");
+        String phone = readText("Telefon — 9 cyfr: ");
+        String city = readText("Miasto: ");
+        String street = readText("Ulica: ");
+        String number = readText("Numer domu: ");
+
+        clientManager.registerClient(firstName, lastName, phone, city, street, number);
+
+        System.out.println("Klient został dodany");
+    }
+
+    private void showClient() {
+        String phone = readText("Telefon klienta: ");
+        Client client = clientManager.getClient(phone);
+
+        if (client == null) {
+            System.out.println("Klient jest niedostępny");
+            return;
+        }
+
+        System.out.println(client.getInfo());
+    }
+
+    private void showAllClients() {
+        List<Client> clients = clientManager.findAllClients();
+
+        if (clients.isEmpty()) {
+            System.out.println("Brak klientów");
+            return;
+        }
+
+        for (Client client : clients) {
+            System.out.println(client.getInfo());
+        }
+    }
+
     private void deviceMenu() {
-        clearScreen();
         while (true) {
-            System.out.println("Zarządzanie urządzeniami");
-            System.out.println("1. Zarejestruj urządzenie");
+            System.out.println("\nURZĄDZENIA");
+            System.out.println("1. Dodaj urządzenie");
             System.out.println("2. Wyświetl urządzenie");
             System.out.println("3. Wyświetl wszystkie urządzenia");
-            System.out.println("4. Zmień cenę urządzenia");
-            System.out.println("5. Usuń urządzenie");
-            System.out.println("0. Powrót do menu głównego");
-            
-            int mainChoice = scanner.nextInt();
-            scanner.nextLine();
-            
-            switch (mainChoice) {
-                case 1: {
-                    clearScreen();
-                    String type = "";
-                    System.out.println("Rejestracja urządzenia");
-                    System.out.println("Jakie urządzenie chcesz zarejestrować?");
-                    System.out.println("1. PC");
-                    System.out.println("2. Laptop");
-                    System.out.println("3. Konsola");
-                    
-                    int typeChoice = scanner.nextInt();
-                    scanner.nextLine();
-                    
-                    switch (typeChoice) {
-                        case 1: type = "PC"; break;
-                        case 2: type = "Laptop"; break;
-                        case 3: type = "Console"; break;
-                        default:
-                            System.out.println("Zły wybór. Spróbuj ponownie");
-                            continue;
-                    }
-                    System.out.print("Podaj ID: ");
-                    String id = scanner.next();
-                    System.out.print("Podaj markę: ");
-                    String brand = scanner.next();
-                    scanner.nextLine();
-                    
-                    System.out.print("Podaj model: ");
-                    String model = scanner.nextLine();
-                    System.out.print("Podaj akcesoria: ");
-                    String accessories = scanner.nextLine();
-                    System.out.print("Podaj cenę bazową: ");
-                    double basePrice = scanner.nextDouble();
-                    scanner.nextLine();
-                    
-                    try {
-                        if (type.equals("PC")) {
-                            System.out.print("Podaj producenta procesora (Intel, AMD): ");
-                            String cpuManufacturer = scanner.next();
-                            System.out.print("Czy jest chłodzenie wodne? (tak/nie): ");
-                            String czyWaterCooling = scanner.next();
-                            boolean waterCooling = czyWaterCooling.equalsIgnoreCase("tak");
-                            clearScreen();
-                            deviceManager.registerPC(id, type, model, brand, accessories, basePrice, cpuManufacturer, waterCooling);
-                            System.out.println("Urządzenie zarejestrowane");
-                        } else if (type.equals("Laptop")) {
-                            System.out.print("Podaj producenta procesora (Intel, AMD): ");
-                            String cpuManufacturer = scanner.next();
-                            clearScreen();
-                            deviceManager.registerLaptop(id, type, model, brand, accessories, basePrice, cpuManufacturer);
-                            System.out.println("Urządzenie zarejestrowane");
-                        } else if (type.equals("Console")) {
-                            System.out.println("Wybierz typ konsoli:");
-                            System.out.println("1. Nintendo");
-                            System.out.println("2. PlayStation");
-                            System.out.println("3. Xbox");
-                            System.out.println("4. Nieznany");
-                            int consoleChoice = scanner.nextInt();
-                            Console.ConsoleType consoleType;
-                            switch (consoleChoice) {
-                                case 1: consoleType = Console.ConsoleType.Nintendo; break;
-                                case 2: consoleType = Console.ConsoleType.PlayStation; break;
-                                case 3: consoleType = Console.ConsoleType.Xbox; break;
-                                case 4: consoleType = Console.ConsoleType.Unknown; break;
-                                default:
-                                    System.out.println("Zły wybór. Spróbuj ponownie");
-                                    continue;
-                            }
-                            clearScreen();
-                            deviceManager.registerConsole(id, type, model, brand, accessories, basePrice, consoleType);
-                            System.out.println("Urządzenie zarejestrowane");
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 2: {
-                    clearScreen();
-                    System.out.println("Wyświetlanie urządzenia");
-                    System.out.print("Podaj numer seryjny urządzenia: ");
-                    String id = scanner.next();
-                    try {
+            System.out.println("0. Powrót");
+
+            int choice = readInt("Wybierz opcję: ");
+
+            try {
+                switch (choice) {
+                    case 1 -> registerDevice();
+                    case 2 -> {
+                        String id = readText("ID urządzenia: ");
                         Device device = deviceManager.getDevice(id);
-                        clearScreen();
-                        if(device != null) {
-                            System.out.println(device.getInfo());
-                        } else {
-                            System.out.println("Nie odnaleziono sprzętu.");
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                        System.out.println(device.getInfo());
                     }
-                    break;
-                }
-                case 3: {
-                    clearScreen();
-                    System.out.println("Wyświetlanie wszystkich urządzeń");
-                    try{
-                        List<Device> devices = deviceManager.findAllDevices();
-                        for (Device device : devices) {
-                            System.out.println(device.getInfo());
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                    case 3 -> showAllDevices();
+                    case 0 -> {
+                        return;
                     }
-                    break;
+                    default ->
+                        System.out.println("Nie ma takiej opcji");
                 }
-                case 4: {
-                    clearScreen();
-                    System.out.println("Zmiana ceny urządzenia");
-                    System.out.print("Podaj numer seryjny urządzenia: ");
-                    String id = scanner.next();
-                    System.out.print("Podaj nową cenę: ");
-                    double newPrice = scanner.nextDouble();
-                    try {
-                        Device device = deviceManager.getDevice(id);
-                        if(device != null){
-                            device.setBasePrice(newPrice);
-                            clearScreen();
-                            System.out.println("Cena urządzenia zaktualizowana");
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 5: {
-                    clearScreen();
-                    System.out.println("Usuwanie urządzenia");
-                    System.out.print("Podaj numer seryjny urządzenia: ");
-                    String id = scanner.next();
-                    try {
-                        deviceManager.unregisterDevice(id);
-                        clearScreen();
-                        System.out.println("Urządzenie usunięte");
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 0:
-                    clearScreen();
-                    return;
-                default:
-                    clearScreen();
-                    System.out.println("Zły wybór. Spróbuj ponownie");
+            } catch (IllegalArgumentException
+                     | IllegalStateException e) {
+                System.out.println("Błąd: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * metoda pokazująca menu usług
-     */
+    private void registerDevice() {
+        System.out.println("1. PC");
+        System.out.println("2. Laptop");
+        System.out.println("3. Konsola");
+
+        int type = readInt("Typ urządzenia: ");
+
+        if (type < 1 || type > 3) {
+            throw new IllegalArgumentException(
+                "Nieprawidłowy typ urządzenia"
+            );
+        }
+
+        String id = readText("ID urządzenia: ");
+        String brand = readText("Marka: ");
+        String model = readText("Model: ");
+        String accessories = readText("Akcesoria: ");
+
+        double basePrice = readDouble(
+            "Cena bazowa w obecnym modelu urządzenia: "
+        );
+
+        switch (type) {
+            case 1 -> {
+                String cpu = readText("Producent procesora: ");
+                boolean cooling = readBoolean(
+                    "Chłodzenie wodne? (tak/nie): "
+                );
+
+                deviceManager.registerPC(id, "PC", model, brand, accessories, basePrice, cpu, cooling);
+            }
+            case 2 -> {
+                String cpu = readText("Producent procesora: ");
+
+                deviceManager.registerLaptop(id, "Laptop",model, brand, accessories, basePrice, cpu);
+            }
+            case 3 -> {
+                Console.ConsoleType consoleType =
+                    readConsoleType();
+
+                deviceManager.registerConsole(id,"Console", model, brand, accessories, basePrice, consoleType);
+            }
+        }
+
+        System.out.println("Urządzenie zostało dodane");
+    }
+
+    private Console.ConsoleType readConsoleType() {
+        System.out.println("1. Nintendo");
+        System.out.println("2. PlayStation");
+        System.out.println("3. Xbox");
+        System.out.println("4. Nieznany");
+
+        int choice = readInt("Rodzaj konsoli: ");
+
+        return switch (choice) {
+            case 1 -> Console.ConsoleType.Nintendo;
+            case 2 -> Console.ConsoleType.PlayStation;
+            case 3 -> Console.ConsoleType.Xbox;
+            case 4 -> Console.ConsoleType.Unknown;
+            default -> throw new IllegalArgumentException(
+                "Nieprawidłowy rodzaj konsoli"
+            );
+        };
+    }
+
+    private void showAllDevices() {
+        List<Device> devices = deviceManager.findAllDevices();
+
+        if (devices.isEmpty()) {
+            System.out.println("Brak urządzeń");
+            return;
+        }
+
+        for (Device device : devices) {
+            System.out.println(device.getInfo());
+        }
+    }
+
+    private void employeeMenu() {
+        while (true) {
+            System.out.println("\nPRACOWNICY");
+            System.out.println("1. Dodaj pracownika");
+            System.out.println("2. Wyświetl pracownika");
+            System.out.println("3. Wyświetl wszystkich pracowników");
+            System.out.println("4. Wyświetl zlecenia pracownika");
+            System.out.println("0. Powrót");
+
+            int choice = readInt("Wybierz opcję: ");
+
+            try {
+                switch (choice) {
+                    case 1 -> {
+                        String id = readText("ID pracownika: ");
+                        String firstName = readText("Imię: ");
+                        String lastName = readText("Nazwisko: ");
+
+                        employeeManager.registerEmployee(id, firstName, lastName);
+
+                        System.out.println("Pracownik został dodany");
+                    }
+                    case 2 -> {
+                        String id = readText("ID pracownika: ");
+                        Employee employee =
+                            employeeManager.getEmployee(id);
+
+                        System.out.println(employee.getInfo());
+                    }
+                    case 3 -> showAllEmployees();
+                    case 4 -> showEmployeeServices();
+                    case 0 -> {
+                        return;
+                    }
+                    default ->
+                        System.out.println("Nie ma takiej opcji");
+                }
+            } catch (IllegalArgumentException
+                     | IllegalStateException e) {
+                System.out.println("Błąd: " + e.getMessage());
+            }
+        }
+    }
+
+    private void showAllEmployees() {
+        List<Employee> employees = employeeManager.findAllEmployees();
+
+        if (employees.isEmpty()) {
+            System.out.println("Brak pracowników.");
+            return;
+        }
+
+        for (Employee employee : employees) {
+            System.out.println(employee.getInfo());
+        }
+    }
+
+    private void showEmployeeServices() {
+        String id = readText("ID pracownika: ");
+        Employee employee = employeeManager.getEmployee(id);
+
+        List<Service> services = employee.getServices();
+
+        if (services.isEmpty()) {
+            System.out.println("Pracownik nie ma zleceń.");
+            return;
+        }
+
+        for (Service service : services) {
+            System.out.println(service.getInfo());
+            System.out.println(
+                "Status: "
+                + (service.isActive() ? "aktywna" : "zakończona")
+            );
+        }
+    }
+
+    private void offeringMenu() {
+        while (true) {
+            System.out.println("\n=== KATALOG USŁUG ===");
+            System.out.println("1. Dodaj rodzaj usługi");
+            System.out.println("2. Wyświetl pozycję katalogu");
+            System.out.println("3. Wyświetl cały katalog");
+            System.out.println("0. Powrót");
+
+            int choice = readInt("Wybierz opcję: ");
+
+            try {
+                switch (choice) {
+                    case 1 -> {
+                        String id = readText("ID pozycji katalogu: ");
+                        String name = readText("Nazwa usługi: ");
+                        double price = readDouble("Cena bazowa: ");
+
+                        offeringManager.registerOffering( id, price, name);
+
+                        System.out.println(
+                            "Rodzaj usługi został dodany do katalogu"
+                        );
+                    }
+                    case 2 -> {
+                        String id = readText("ID pozycji katalogu: ");
+                        ServiceOffering offering = offeringManager.getOffering(id);
+                        System.out.println(offering.getInfo());
+                    }
+                    case 3 -> showAllOfferings();
+                    case 0 -> {
+                        return;
+                    }
+                    default ->
+                        System.out.println("Nie ma takiej opcji");
+                }
+            } catch (IllegalArgumentException
+                     | IllegalStateException e) {
+                System.out.println("Błąd: " + e.getMessage());
+            }
+        }
+    }
+
+    private void showAllOfferings() {
+        List<ServiceOffering> offerings =
+            offeringManager.findAllOfferings();
+
+        if (offerings.isEmpty()) {
+            System.out.println("Katalog jest pusty.");
+            return;
+        }
+
+        for (ServiceOffering offering : offerings) {
+            System.out.println(offering.getInfo());
+        }
+    }
+
     private void serviceMenu() {
-        clearScreen();
         while (true) {
-            System.out.println("Zarządzanie usługami");
-            System.out.println("1. Zarejestruj usługę");
-            System.out.println("2. Wyświetl usługę");
-            System.out.println("3. Wyświetl wszystkie usługi");
-            System.out.println("4. Zmień opis usterki");
-            System.out.println("5. Usuń usługę");
-            System.out.println("0. Powrót do menu głównego");
-            
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            
-            switch (choice) {
-                case 1: {
-                    clearScreen();
-                    System.out.println("Rejestracja usługi");
-                    System.out.print("Podaj ID: ");
-                    String id = scanner.next();
-                    System.out.print("Podaj numer telefonu klienta: ");
-                    String clientPhone = scanner.next();
-                    System.out.print("Podaj ID urządzenia: ");
-                    String deviceId = scanner.next();
-                    scanner.nextLine();
-                    
-                    System.out.print("Podaj opis usterki: ");
-                    String faultDescription = scanner.nextLine();
-                    
-                    try {
-                        Device device = deviceManager.getDevice(deviceId);
-                        Client client = clientManager.getClient(clientPhone);
-                        if (device != null && client != null) {
-                            double basePrice = device.getBasePrice();
-                            serviceManager.registerService(id, basePrice, client, device, faultDescription);
-                            clearScreen();
-                            System.out.println("Usługa zarejestrowana");
-                        } else {
-                            System.out.println("Nie odnaleziono klienta lub urządzenia.");
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 2: {
-                    clearScreen();
-                    System.out.println("Wyświetlanie usługi");
-                    System.out.print("Podaj ID usługi: ");
-                    String id = scanner.next();
-                    try {
+            System.out.println("\n=== ZLECENIA ===");
+            System.out.println("1. Przyjmij zlecenie");
+            System.out.println("2. Wyświetl zlecenie");
+            System.out.println("3. Wyświetl wszystkie zlecenia");
+            System.out.println("4. Zmień opis zlecenia");
+            System.out.println("5. Zakończ zlecenie");
+            System.out.println("0. Powrót");
+
+            int choice = readInt("Wybierz opcję: ");
+
+            try {
+                switch (choice) {
+                    case 1 -> registerService();
+                    case 2 -> {
+                        String id = readText("ID zlecenia: ");
                         Service service = serviceManager.getService(id);
-                        clearScreen();
-                        if (service != null) {
-                            System.out.println(service.getInfo());
-                        } else {
-                            System.out.println("Usługa nie została znaleziona.");
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+
+                        System.out.println(service.getInfo());
+                        System.out.println("Status: "+ (service.isActive() ? "aktywna" : "zakończona") );
                     }
-                    break;
-                }
-                case 3: {
-                    clearScreen();
-                    System.out.println("Wyświetlanie wszystkich usług");
-                    try {
-                        List<Service> services = serviceManager.findAllServices();
-                        for (Service service : services) {
-                            System.out.println(service.getInfo());
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                    case 3 -> showAllServices();
+                    case 4 -> {
+                        String id = readText("ID zlecenia: ");
+                        String description = readText("Nowy opis: ");
+
+                        Service service =
+                            serviceManager.getService(id);
+
+                        service.setFaultDescription(description);
+
+                        System.out.println("Opis został zmieniony.");
                     }
-                    break;
-                }
-                case 4: {
-                    clearScreen();
-                    System.out.println("Zmiana opisu usterki");
-                    System.out.print("Podaj ID usługi: ");
-                    String id = scanner.next();
-                    scanner.nextLine();
-                    System.out.print("Podaj nowy opis usterki: ");
-                    String newDescription = scanner.nextLine();
-                    try {
-                        Service service = serviceManager.getService(id);
-                        if (service != null) {
-                            service.setFaultDescription(newDescription);
-                            clearScreen();
-                            System.out.println("Opis usterki zaktualizowany");
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                    case 5 -> {
+                        String id = readText("ID zlecenia: ");
+                        serviceManager.closeService(id);
+
+                        System.out.println( "Zlecenie zakończone " + "Historia została zachowana" );
                     }
-                    break;
-                }
-                case 5: {
-                    clearScreen();
-                    System.out.println("Usuwanie usługi");
-                    System.out.print("Podaj ID usługi: ");
-                    String id = scanner.next();
-                    try {
-                        serviceManager.unregisterService(id);
-                        clearScreen();
-                        System.out.println("Usługa usunięta");
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                    case 0 -> {
+                        return;
                     }
-                    break;
+                    default ->
+                        System.out.println("Nie ma takiej opcji");
                 }
-                case 0:
-                    clearScreen();
-                    return;
-                default:
-                    clearScreen();
-                    System.out.println("Zły wybór. Spróbuj ponownie");
+            } catch (IllegalArgumentException
+                     | IllegalStateException e) {
+                System.out.println("Błąd: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * metoda pokazująca menu startowe
-     */
-    private void showMenu() {
-        clearScreen();
+    private void registerService() {
+        System.out.println("\nPracownicy:");
+        showAllEmployees();
+
+        System.out.println("\nKatalog usług:");
+        showAllOfferings();
+
+        String id = readText("\nID nowego zlecenia: ");
+        String phone = readText("Telefon klienta: ");
+        String employeeId = readText("ID pracownika: ");
+        String offeringId = readText("ID pozycji katalogu: ");
+        String deviceId = readText("ID urządzenia: ");
+        String description = readText("Opis zlecenia: ");
+
+        serviceManager.registerService(id, phone, employeeId, offeringId, deviceId, description );
+
+        System.out.println("Zlecenie zostało przyjęte");
+    }
+
+    private void showAllServices() {
+        List<Service> services =
+            serviceManager.getAllServices();
+
+        if (services.isEmpty()) {
+            System.out.println("Brak zleceń");
+            return;
+        }
+
+        for (Service service : services) {
+            System.out.println(service.getInfo());
+            System.out.println(
+                "Status: "
+                + (service.isActive() ? "aktywna" : "zakończona")
+            );
+        }
+    }
+
+    private String readText(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine().trim();
+    }
+
+    private int readInt(String prompt) {
         while (true) {
-            System.out.println("\nMenu główne");
-            System.out.println("1. Zarządzanie klientami");
-            System.out.println("2. Zarządzanie urządzeniami");
-            System.out.println("3. Zarządzanie usługami");
-            System.out.println("0. Wyjście");
-            
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            
-            switch (choice) {
-                case 1:
-                    clearScreen();
-                    clientMenu();
-                    break;
-                case 2:
-                    clearScreen();
-                    deviceMenu();
-                    break;
-                case 3:
-                    clearScreen();
-                    serviceMenu();
-                    break;
-                case 0:
-                    System.out.println("Zamknięto program");
-                    return;
-                default:
-                    clearScreen();
-                    System.out.println("Zły wybór. Spróbuj ponownie");
+            String value = readText(prompt);
+
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                System.out.println("Podaj liczbę całkowitą");
             }
         }
     }
 
-    /**
-     * metoda uruchamiająca program
-     */
-    public void start() {
-        showMenu();
+    private double readDouble(String prompt) {
+        while (true) {
+            String value = readText(prompt).replace(',', '.');
+
+            try {
+                double number = Double.parseDouble(value);
+
+                if (!Double.isFinite(number) || number < 0) {
+                    System.out.println(
+                        "Podaj skończoną, nieujemną cenę."
+                    );
+                    continue;
+                }
+
+                return number;
+            } catch (NumberFormatException e) {
+                System.out.println(
+                    "Podaj liczbę"
+                );
+            }
+        }
+    }
+
+    private boolean readBoolean(String prompt) {
+        while (true) {
+            String value = readText(prompt);
+
+            if (value.equalsIgnoreCase("tak")) {
+                return true;
+            }
+
+            if (value.equalsIgnoreCase("nie")) {
+                return false;
+            }
+
+            System.out.println("Wpisz tak albo nie");
+        }
     }
 }

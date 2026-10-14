@@ -1,4 +1,4 @@
-package pobi.managers;
+package pobi.repositories;
 
 import java.util.ArrayList;
 import java.util.List;

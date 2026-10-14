@@ -5,9 +5,9 @@ import java.util.List;
 
 
 public class Employee {
-    public String id;
-    public String firstName;
-    public String lastName;
+    private final String id;
+    private final String firstName;
+    private final String lastName;
 
     public static final int maxServices = 5;
 
@@ -58,14 +58,31 @@ public Employee(String id, String firstName, String lastName) {
 
     public void addService(Service service) {
         if (service == null) {
-            throw new IllegalArgumentException("Nie można dodać pustej usługi");
+            throw new IllegalArgumentException(
+                "Nie można dodać pustej usługi"
+            );
         }
-        if (!canTakeMoreServices()) {
-            throw new IllegalStateException("Pracownik nie może przyjąć więcej usług");
-        }
+
         if (service.getEmployee() != this) {
-            throw new IllegalArgumentException("Usługa nie jest do tego pracownika");
+            throw new IllegalArgumentException(
+                "Usługa wskazuje innego pracownika"
+            );
         }
+
+        for (Service existing : services) {
+            if (existing.getID().equals(service.getID())) {
+                throw new IllegalArgumentException(
+                    "Usługa jest już przypisana do pracownika"
+                );
+            }
+        }
+
+        if (service.isActive() && !canTakeMoreServices()) {
+            throw new IllegalStateException(
+                "Pracownik osiągnął limit aktywnych usług"
+            );
+        }
+
         services.add(service);
     }
 
