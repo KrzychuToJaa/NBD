@@ -3,14 +3,15 @@ package pobi.managers;
 import pobi.model.Client;
 
 import java.util.List;
+import java.util.Objects;
 
 import pobi.repositories.ClientRepository;
 
 public class ClientManager {
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-    public ClientManager() {
-        this.clientRepository = new ClientRepository();
+    public ClientManager(ClientRepository clientRepository) {
+        this.clientRepository = Objects.requireNonNull(clientRepository);
     }
 
     /**
@@ -62,7 +63,7 @@ public class ClientManager {
      * Zwraca referencję do repozytorium klientów
      * @return Referencja do repozytorium klientów
      */
-    public MemoryClientRepository getClientRepository() {
+    public ClientRepository getClientRepository() {
         return clientRepository;
     }
 }

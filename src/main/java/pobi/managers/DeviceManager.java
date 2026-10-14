@@ -6,14 +6,15 @@ import pobi.model.PC;
 import pobi.model.Laptop;
 
 import java.util.List;
+import java.util.Objects;
 
-import memory.MemoryDeviceRepository;
+import pobi.repositories.DeviceRepository;
 
 public class DeviceManager {
-    private MemoryDeviceRepository deviceRepository;
+    private final DeviceRepository deviceRepository;
 
-    public DeviceManager() {
-        this.deviceRepository = new MemoryDeviceRepository();
+    public DeviceManager(DeviceRepository deviceRepository) {
+        this.deviceRepository = Objects.requireNonNull(deviceRepository);
     }
 
     /**
@@ -91,7 +92,7 @@ public class DeviceManager {
      * Zwraca referencję do repozytorium urządzeń
      * @return Repozytorium urządzeń
      */
-    public MemoryDeviceRepository getDeviceRepository() {
+    public DeviceRepository getDeviceRepository() {
         return deviceRepository;
     }
 }

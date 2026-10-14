@@ -1,11 +1,13 @@
 package memory;
 
+import pobi.repositories.DeviceRepository;
+
 import pobi.model.Device;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemoryDeviceRepository {
+public class MemoryDeviceRepository implements DeviceRepository {
     private List<Device> devices;
 
     public MemoryDeviceRepository() {
@@ -17,6 +19,7 @@ public class MemoryDeviceRepository {
      * @param id ID urządzenia
      * @return referencja na urządzenie
      */
+    @Override
     public Device findByID(String id) {
         for (Device device : devices) {
             if (device.getID().equals(id)) {
@@ -30,8 +33,11 @@ public class MemoryDeviceRepository {
      * Dodanie urządzenia do repozytorium
      * @param device urządzenie do dodania
      */
+    @Override
     public void add(Device device) {
-        if (device == null) return;
+        if (device == null) {
+            throw new IllegalArgumentException("Urządzenie nie może być null.");
+        }
         for (Device d : devices) {
             if (d.getID().equals(device.getID())) {
                 throw new IllegalArgumentException("Urządzenie o podanym ID już istnieje");
@@ -44,6 +50,7 @@ public class MemoryDeviceRepository {
      * Usunięcie urządzenia z repozytorium
      * @param device urządzenie do usunięcia
      */
+    @Override
     public void remove(Device device) {
         if (device != null) {
             devices.removeIf(d -> d.getID().equals(device.getID()));
@@ -54,6 +61,7 @@ public class MemoryDeviceRepository {
      * Zwraca liczbę urządzeń w repozytorium
      * @return liczba urządzeń
      */
+    @Override
     public int size() {
         return devices.size();
     }
@@ -62,6 +70,7 @@ public class MemoryDeviceRepository {
      * Zwraca listę wszystkich urządzeń
      * @return lista urządzeń
      */
+    @Override
     public List<Device> findAll() {
         return List.copyOf(devices);  
     }

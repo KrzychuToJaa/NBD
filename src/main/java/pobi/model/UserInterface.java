@@ -408,10 +408,7 @@ public class UserInterface {
                         String id = readText("ID zlecenia: ");
                         String description = readText("Nowy opis: ");
 
-                        Service service =
-                            serviceManager.getService(id);
-
-                        service.setFaultDescription(description);
+                        serviceManager.changeServiceDescription(id, description);
 
                         System.out.println("Opis został zmieniony.");
                     }

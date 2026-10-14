@@ -7,33 +7,34 @@ import pobi.model.ServiceOffering;
 import pobi.model.Service;
 
 import java.util.List;
+import java.util.Objects;
 
-import memory.MemoryClientRepository;
-import memory.MemoryDeviceRepository;
-import memory.MemoryEmployeeRepository;
-import memory.MemoryServiceOfferingRepository;
-import memory.MemoryServiceRepository;
+import pobi.repositories.ClientRepository;
+import pobi.repositories.DeviceRepository;
+import pobi.repositories.EmployeeRepository;
+import pobi.repositories.ServiceOfferingRepository;
+import pobi.repositories.ServiceRepository;
 
 public class ServiceManager {
-    private final MemoryServiceRepository serviceRepository;
-    private final MemoryClientRepository clientRepository;
-    private final MemoryDeviceRepository deviceRepository;
-    private final MemoryEmployeeRepository employeeRepository;
-    private final MemoryServiceOfferingRepository offeringRepository;
+    private final ServiceRepository serviceRepository;
+    private final ClientRepository clientRepository;
+    private final DeviceRepository deviceRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ServiceOfferingRepository offeringRepository;
 
     public ServiceManager(
-        MemoryServiceRepository serviceRepository,
-        MemoryClientRepository clientRepository,
-        MemoryDeviceRepository deviceRepository,
-        MemoryEmployeeRepository employeeRepository,
-        MemoryServiceOfferingRepository offeringRepository
+        ServiceRepository serviceRepository,
+        ClientRepository clientRepository,
+        DeviceRepository deviceRepository,
+        EmployeeRepository employeeRepository,
+        ServiceOfferingRepository offeringRepository
     ) 
     {
-        this.serviceRepository = serviceRepository;
-        this.clientRepository = clientRepository;
-        this.deviceRepository = deviceRepository;
-        this.employeeRepository = employeeRepository;
-        this.offeringRepository = offeringRepository;
+        this.serviceRepository = Objects.requireNonNull(serviceRepository);
+        this.clientRepository = Objects.requireNonNull(clientRepository);
+        this.deviceRepository = Objects.requireNonNull(deviceRepository);
+        this.employeeRepository = Objects.requireNonNull(employeeRepository);
+        this.offeringRepository = Objects.requireNonNull(offeringRepository);
     }
 
     public void registerService (String id, String clientPhone, String employeeId, String offeringId, String deviceId, String description) {
@@ -43,11 +44,11 @@ public class ServiceManager {
         Device device = deviceRepository.findByID(deviceId);
 
         if  (client.isArchive()) {
-            throw new IllegalArgumentException("Nie można zarejestrować usługi dla klienta zarchiwizowanego");
+            throw new IllegalStateException("Nie można zarejestrować usługi dla klienta zarchiwizowanego");
         }
 
-        if (!employee.canTakeMoreServices()) {
-            throw new IllegalArgumentException("Nie można zarejestrować usługi dla pracownika ponad limit aktywnych usług");
+        if (serviceRepository.countActiveByEmployeeId(employeeId) >= employee.getMaxServices()) {
+            throw new IllegalStateException("Nie można zarejestrować usługi dla pracownika ponad limit aktywnych usług");
         }
 
         Service service = new Service(id, client, employee, offering, device, description);
@@ -59,8 +60,11 @@ public class ServiceManager {
     }
 
     public void closeService(String id) {
-        Service service = serviceRepository.findByID(id);
-        service.finishService();
+        serviceRepository.closeService(id);
+    }
+
+    public void changeServiceDescription(String id, String description) {
+        serviceRepository.changeDescription(id, description);
     }
 
     public List<Service> getAllServices() {
@@ -75,7 +79,7 @@ public class ServiceManager {
         return offeringRepository.findAll();
     }
 
-    public MemoryServiceRepository getServiceRepository() {
+    public ServiceRepository getServiceRepository() {
         return serviceRepository;
     }
 }

@@ -3,15 +3,16 @@ package pobi.managers;
 import pobi.model.ServiceOffering;
 
 import java.util.List;
+import java.util.Objects;
 
-import memory.MemoryServiceOfferingRepository;
+import pobi.repositories.ServiceOfferingRepository;
 
 public class ServiceOfferingManager {
-    private final MemoryServiceOfferingRepository offeringRepository;
+    private final ServiceOfferingRepository offeringRepository;
 
-    public ServiceOfferingManager(MemoryServiceOfferingRepository offeringRepository) {
+    public ServiceOfferingManager(ServiceOfferingRepository offeringRepository) {
 
-        this.offeringRepository =offeringRepository;
+        this.offeringRepository =Objects.requireNonNull(offeringRepository);
     }
 
     public void registerOffering(String id, double basePrice, String name) {

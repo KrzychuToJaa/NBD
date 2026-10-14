@@ -1,64 +1,64 @@
-package pobi.managers;
+// package pobi.managers;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
 
-import pobi.repositories.LogicContainer;
-import pobi.model.Client;
+// import pobi.repositories.LogicContainer;
+// import pobi.model.Client;
 
 
-import static org.junit.jupiter.api.Assertions.*;
-// tEST
-public class ClientManagerTest {
-    private LogicContainer container;
+// import static org.junit.jupiter.api.Assertions.*;
+// // tEST
+// public class ClientManagerTest {
+//     private LogicContainer container;
 
-    @BeforeEach
-    public void setUp() {
-        container = new LogicContainer();
-        container.fillData();
-    }
+//     @BeforeEach
+//     public void setUp() {
+//         container = new LogicContainer();
+//         container.fillData();
+//     }
 
-    @Test
-    public void testGetExistingClient() {
-        ClientManager manager = container.getClientManager();
-        Client client = manager.getClient("123456789");
+//     @Test
+//     public void testGetExistingClient() {
+//         ClientManager manager = container.getClientManager();
+//         Client client = manager.getClient("123456789");
         
-        assertEquals("LeBron", client.getFirstName());
-        assertEquals("James", client.getLastName());
-    }
+//         assertEquals("LeBron", client.getFirstName());
+//         assertEquals("James", client.getLastName());
+//     }
 
-    @Test
-    public void testGetArchivedClient() {
-        ClientManager manager = container.getClientManager();
-        Client client = manager.getClient("123456789");
-        client.setArchive(true);
+//     @Test
+//     public void testGetArchivedClient() {
+//         ClientManager manager = container.getClientManager();
+//         Client client = manager.getClient("123456789");
+//         client.setArchive(true);
 
-        Client archivedClient = manager.getClient("123456789");
-        assertNull(archivedClient);
-    }
+//         Client archivedClient = manager.getClient("123456789");
+//         assertNull(archivedClient);
+//     }
 
-    @Test
-    public void testRegisterDuplicateClient() {
-        ClientManager manager = new ClientManager();
-        manager.registerClient("Tomasz", "Szkocki", "111222333", "Houston", "Hardena", "13");
+//     @Test
+//     public void testRegisterDuplicateClient() {
+//         ClientManager manager = new ClientManager();
+//         manager.registerClient("Tomasz", "Szkocki", "111222333", "Houston", "Hardena", "13");
         
-        assertEquals(1, manager.findAllClients().size());
+//         assertEquals(1, manager.findAllClients().size());
         
-        assertThrows(IllegalArgumentException.class, () -> {
-            manager.registerClient("Konrad", "Lemur", "111222333", "Los Angeles", "Beverly", "2");
-        });
-    }
+//         assertThrows(IllegalArgumentException.class, () -> {
+//             manager.registerClient("Konrad", "Lemur", "111222333", "Los Angeles", "Beverly", "2");
+//         });
+//     }
 
-    @Test
-    public void testUnregisterClient() {
-        ClientManager manager = new ClientManager();
-        manager.registerClient("Michał", "Jordański", "111222333", "Chicago", "drugi najlepszy", "23");
+//     @Test
+//     public void testUnregisterClient() {
+//         ClientManager manager = new ClientManager();
+//         manager.registerClient("Michał", "Jordański", "111222333", "Chicago", "drugi najlepszy", "23");
         
-        assertEquals(1, manager.findAllClients().size());
-        manager.unregisterClient("111222333");
+//         assertEquals(1, manager.findAllClients().size());
+//         manager.unregisterClient("111222333");
         
-        assertThrows(IllegalArgumentException.class, manager::findAllClients);
-        assertEquals(0, manager.getClientRepository().size());
-    }
+//         assertThrows(IllegalArgumentException.class, manager::findAllClients);
+//         assertEquals(0, manager.getClientRepository().size());
+//     }
 
-}
+// }

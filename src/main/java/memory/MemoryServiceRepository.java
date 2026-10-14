@@ -9,7 +9,7 @@ import java.util.List;
 import pobi.repositories.ServiceRepository;
 
 public class MemoryServiceRepository
-implements pobi.repositories.ServiceRepository {
+implements ServiceRepository {
     private List<Service> services;
 
     public MemoryServiceRepository() {
@@ -21,6 +21,7 @@ implements pobi.repositories.ServiceRepository {
      * @param id ID usługi
      * @return referencja na usługę
      */
+    @Override
     public Service findByID(String id) {
         for (Service service : services) {
             if (service.getID().equals(id)) {
@@ -34,7 +35,8 @@ implements pobi.repositories.ServiceRepository {
      * Dodanie usługi do repozytorium
      * @param service usługa do dodania
      */
-     public void add(Service service) {
+    @Override
+    public void add(Service service) {
         if (service == null) {
             throw new IllegalArgumentException(
                 "Zlecenie nie może być null"
@@ -59,10 +61,44 @@ implements pobi.repositories.ServiceRepository {
         services.add(service);
     }
 
+    @Override
     public List<Service> findAll() {
         return List.copyOf(services);
     }
 
+    @Override
+    public List<Service> findByEmployeeId(String employeeId) {
+        List<Service> result = new ArrayList<>();
+        for (Service service : services) {
+            if (service.getEmployee().getId().equals(employeeId)) {
+                result.add(service);
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    @Override
+    public long countActiveByEmployeeId(String employeeId) {
+        long count = 0;
+        for (Service service : services) {
+            if (service.getEmployee().getId().equals(employeeId) && service.isActive()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public void closeService(String id) {
+        findByID(id).finishService();
+    }
+
+    @Override
+    public void changeDescription(String id, String description) {
+        findByID(id).setFaultDescription(description);
+    }
+
+    @Override
     public int size() {
         return services.size();
     }

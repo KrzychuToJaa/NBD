@@ -6,9 +6,10 @@ import pobi.model.ServiceOffering;
 import pobi.repositories.ServiceOfferingRepository;
 
 public class MemoryServiceOfferingRepository
-implements pobi.repositories.ServiceOfferingRepository {
+implements ServiceOfferingRepository {
     private final List<ServiceOffering> offerings = new ArrayList<>();
 
+    @Override
     public void add(ServiceOffering offering) {
         if (offering == null) {
             throw new IllegalArgumentException(
@@ -27,6 +28,7 @@ implements pobi.repositories.ServiceOfferingRepository {
         offerings.add(offering);
     }
 
+    @Override
     public ServiceOffering findByID(String id) {
         for (ServiceOffering offering : offerings) {
             if (offering.getId().equals(id)) {
@@ -39,6 +41,7 @@ implements pobi.repositories.ServiceOfferingRepository {
         );
     }
 
+    @Override
     public List<ServiceOffering> findAll() {
         return List.copyOf(offerings);
     }

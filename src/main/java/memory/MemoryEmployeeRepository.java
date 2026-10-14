@@ -9,6 +9,7 @@ public class MemoryEmployeeRepository
         implements EmployeeRepository {
     private final List<Employee> employees = new ArrayList<>();
 
+    @Override
     public void add(Employee employee) {
         if (employee == null) {
             throw new IllegalArgumentException(
@@ -27,6 +28,7 @@ public class MemoryEmployeeRepository
         employees.add(employee);
     }
 
+    @Override
     public Employee findByID(String id) {
         for (Employee employee : employees) {
             if (employee.getId().equals(id)) {
@@ -39,6 +41,7 @@ public class MemoryEmployeeRepository
         );
     }
 
+    @Override
     public List<Employee> findAll() {
         return List.copyOf(employees);
     }

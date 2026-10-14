@@ -8,7 +8,7 @@ import java.util.List;
 import pobi.repositories.ClientRepository;
 
 public class MemoryClientRepository 
-    implements pobi.repositories.ClientRepository {
+    implements ClientRepository {
     private List<Client> clients;
 
     public MemoryClientRepository() {
@@ -19,8 +19,11 @@ public class MemoryClientRepository
      * Dodanie klienta do repozytorium
      * @param client klient do dodania
      */
+    @Override
     public void add(Client client) {
-        if (client == null) return;
+        if (client == null) {
+            throw new IllegalArgumentException("Klient nie może być null.");
+        }
         for (Client c : clients) {
             if (c.getPhoneNumber().equals(client.getPhoneNumber())) {
                 throw new IllegalArgumentException("Klient o podanym numerze telefonu już istnieje");
@@ -33,6 +36,7 @@ public class MemoryClientRepository
      * Usunięcie klienta z repozytorium
      * @param client klient do usunięcia
      */
+    @Override
     public void remove(Client client) {
         if (client != null) {
             clients.remove(client);
@@ -43,6 +47,7 @@ public class MemoryClientRepository
      * Zwraca liczbę klientów w repozytorium
      * @return liczba klientów
      */
+    @Override
     public int size() {
         return clients.size();
     }
@@ -51,6 +56,7 @@ public class MemoryClientRepository
      * Zwraca listę wszystkich klientów
      * @return lista klientów
      */
+    @Override
     public List<Client> findAll() {
         return List.copyOf(clients);
     }
@@ -60,6 +66,7 @@ public class MemoryClientRepository
      * @param phoneNumber numer telefonu klienta
      * @return Klient o podanym numerze telefonu
      */
+    @Override
     public Client findByPhoneNumber(String phoneNumber) {
         for (Client client : clients) {
             if (client.getPhoneNumber().equals(phoneNumber)) {

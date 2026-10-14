@@ -1,5 +1,9 @@
 package pobi.repositories;
 
+import memory.MemoryDeviceRepository;
+
+import memory.MemoryClientRepository;
+
 import memory.MemoryEmployeeRepository;
 import memory.MemoryServiceOfferingRepository;
 import memory.MemoryServiceRepository;
@@ -19,24 +23,28 @@ public class LogicContainer {
     private final EmployeeManager employeeManager;
     private final ServiceOfferingManager offeringManager;
 
-    private final MemoryEmployeeRepository employeeRepository;
-    private final MemoryServiceOfferingRepository offeringRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ServiceOfferingRepository offeringRepository;
 
     public LogicContainer() {
-        clientManager = new ClientManager();
-        deviceManager = new DeviceManager();
-
+        ClientRepository clientRepository = new MemoryClientRepository();
+        DeviceRepository deviceRepository = new MemoryDeviceRepository();
         employeeRepository = new MemoryEmployeeRepository();
         offeringRepository = new MemoryServiceOfferingRepository();
+        ServiceRepository serviceRepository = new MemoryServiceRepository();
 
+        clientManager = new ClientManager(clientRepository);
+        deviceManager = new DeviceManager(deviceRepository);
         employeeManager = new EmployeeManager(employeeRepository);
-
         offeringManager = new ServiceOfferingManager(offeringRepository);
-
-        MemoryServiceRepository serviceRepository =new MemoryServiceRepository();
-
-        serviceManager = new ServiceManager(serviceRepository, clientManager.getClientRepository(), deviceManager.getDeviceRepository(), employeeRepository, offeringRepository);
-}
+        serviceManager = new ServiceManager(
+            serviceRepository,
+            clientRepository,
+            deviceRepository,
+            employeeRepository,
+            offeringRepository
+        );
+    }
 
     public void fillData() {
         clientManager.registerClient(
@@ -130,19 +138,19 @@ public class LogicContainer {
         return serviceManager;
     }
 
-    public MemoryEmployeeRepository getEmployeeRepository() {
+    public EmployeeRepository getEmployeeRepository() {
         return employeeRepository;
     }
 
-    public MemoryServiceOfferingRepository getOfferingRepository() {
+    public ServiceOfferingRepository getOfferingRepository() {
         return offeringRepository;
     }
 
     public EmployeeManager getEmployeeManager() {
-    return employeeManager;
+        return employeeManager;
     }
 
-public ServiceOfferingManager getOfferingManager() {
-    return offeringManager;
+    public ServiceOfferingManager getOfferingManager() {
+        return offeringManager;
     }
 }

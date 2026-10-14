@@ -3,14 +3,15 @@ package pobi.managers;
 import pobi.model.Employee;
 
 import java.util.List;
+import java.util.Objects;
 
-import memory.MemoryEmployeeRepository;
+import pobi.repositories.EmployeeRepository;
 
 public class EmployeeManager {
-    private final MemoryEmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public EmployeeManager(MemoryEmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeManager(EmployeeRepository employeeRepository) {
+        this.employeeRepository = Objects.requireNonNull(employeeRepository);
     }
 
     public void registerEmployee(String id, String firstName, String lastName) {

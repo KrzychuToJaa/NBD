@@ -3,6 +3,7 @@ package pobi.repositories;
 import pobi.model.Service;
 import java.util.List;
 
+
 public interface ServiceRepository {
     void add(Service service);
 
