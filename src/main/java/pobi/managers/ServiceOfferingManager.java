@@ -1,13 +1,15 @@
 package pobi.managers;
 
 import pobi.model.ServiceOffering;
-import pobi.repositories.ServiceOfferingRepository;
+
 import java.util.List;
 
-public class ServiceOfferingManager {
-    private final ServiceOfferingRepository offeringRepository;
+import memory.MemoryServiceOfferingRepository;
 
-    public ServiceOfferingManager(ServiceOfferingRepository offeringRepository) {
+public class ServiceOfferingManager {
+    private final MemoryServiceOfferingRepository offeringRepository;
+
+    public ServiceOfferingManager(MemoryServiceOfferingRepository offeringRepository) {
 
         this.offeringRepository =offeringRepository;
     }

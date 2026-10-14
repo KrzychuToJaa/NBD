@@ -1,13 +1,15 @@
 package pobi.managers;
 
 import pobi.model.Employee;
-import pobi.repositories.EmployeeRepository;
+
 import java.util.List;
 
-public class EmployeeManager {
-    private final EmployeeRepository employeeRepository;
+import memory.MemoryEmployeeRepository;
 
-    public EmployeeManager(EmployeeRepository employeeRepository) {
+public class EmployeeManager {
+    private final MemoryEmployeeRepository employeeRepository;
+
+    public EmployeeManager(MemoryEmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 

@@ -1,5 +1,8 @@
 package pobi.repositories;
 
+import memory.MemoryEmployeeRepository;
+import memory.MemoryServiceOfferingRepository;
+import memory.MemoryServiceRepository;
 import pobi.managers.ClientManager;
 import pobi.managers.DeviceManager;
 import pobi.managers.ServiceManager;
@@ -16,21 +19,21 @@ public class LogicContainer {
     private final EmployeeManager employeeManager;
     private final ServiceOfferingManager offeringManager;
 
-    private final EmployeeRepository employeeRepository;
-    private final ServiceOfferingRepository offeringRepository;
+    private final MemoryEmployeeRepository employeeRepository;
+    private final MemoryServiceOfferingRepository offeringRepository;
 
     public LogicContainer() {
         clientManager = new ClientManager();
         deviceManager = new DeviceManager();
 
-        employeeRepository = new EmployeeRepository();
-        offeringRepository = new ServiceOfferingRepository();
+        employeeRepository = new MemoryEmployeeRepository();
+        offeringRepository = new MemoryServiceOfferingRepository();
 
         employeeManager = new EmployeeManager(employeeRepository);
 
         offeringManager = new ServiceOfferingManager(offeringRepository);
 
-        ServiceRepository serviceRepository =new ServiceRepository();
+        MemoryServiceRepository serviceRepository =new MemoryServiceRepository();
 
         serviceManager = new ServiceManager(serviceRepository, clientManager.getClientRepository(), deviceManager.getDeviceRepository(), employeeRepository, offeringRepository);
 }
@@ -127,11 +130,11 @@ public class LogicContainer {
         return serviceManager;
     }
 
-    public EmployeeRepository getEmployeeRepository() {
+    public MemoryEmployeeRepository getEmployeeRepository() {
         return employeeRepository;
     }
 
-    public ServiceOfferingRepository getOfferingRepository() {
+    public MemoryServiceOfferingRepository getOfferingRepository() {
         return offeringRepository;
     }
 

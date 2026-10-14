@@ -1,43 +1,12 @@
 package pobi.repositories;
 
-import java.util.ArrayList;
-import java.util.List;
 import pobi.model.Employee;
+import java.util.List;
 
-public class EmployeeRepository {
-    private final List<Employee> employees = new ArrayList<>();
+public interface EmployeeRepository {
+    void add(Employee employee);
 
-    public void add(Employee employee) {
-        if (employee == null) {
-            throw new IllegalArgumentException(
-                "Pracownik nie może być null"
-            );
-        }
+    Employee findByID(String id);
 
-        for (Employee existing : employees) {
-            if (existing.getId().equals(employee.getId())) {
-                throw new IllegalArgumentException(
-                    "Pracownik o podanym ID już istnieje"
-                );
-            }
-        }
-
-        employees.add(employee);
-    }
-
-    public Employee findByID(String id) {
-        for (Employee employee : employees) {
-            if (employee.getId().equals(id)) {
-                return employee;
-            }
-        }
-
-        throw new IllegalArgumentException(
-            "Pracownik o podanym ID nie istnieje"
-        );
-    }
-
-    public List<Employee> findAll() {
-        return List.copyOf(employees);
-    }
+    List<Employee> findAll();
 }

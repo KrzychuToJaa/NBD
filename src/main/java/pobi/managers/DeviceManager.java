@@ -4,14 +4,16 @@ import pobi.model.Device;
 import pobi.model.Console;
 import pobi.model.PC;
 import pobi.model.Laptop;
-import pobi.repositories.DeviceRepository;
+
 import java.util.List;
 
+import memory.MemoryDeviceRepository;
+
 public class DeviceManager {
-    private DeviceRepository deviceRepository;
+    private MemoryDeviceRepository deviceRepository;
 
     public DeviceManager() {
-        this.deviceRepository = new DeviceRepository();
+        this.deviceRepository = new MemoryDeviceRepository();
     }
 
     /**
@@ -89,7 +91,7 @@ public class DeviceManager {
      * Zwraca referencję do repozytorium urządzeń
      * @return Repozytorium urządzeń
      */
-    public DeviceRepository getDeviceRepository() {
+    public MemoryDeviceRepository getDeviceRepository() {
         return deviceRepository;
     }
 }

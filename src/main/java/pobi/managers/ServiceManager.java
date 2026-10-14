@@ -5,26 +5,28 @@ import pobi.model.Device;
 import pobi.model.Employee;
 import pobi.model.ServiceOffering;
 import pobi.model.Service;
-import pobi.repositories.ClientRepository;
-import pobi.repositories.DeviceRepository;
-import pobi.repositories.EmployeeRepository;
-import pobi.repositories.ServiceOfferingRepository;
-import pobi.repositories.ServiceRepository;
+
 import java.util.List;
 
+import memory.MemoryClientRepository;
+import memory.MemoryDeviceRepository;
+import memory.MemoryEmployeeRepository;
+import memory.MemoryServiceOfferingRepository;
+import memory.MemoryServiceRepository;
+
 public class ServiceManager {
-    private final ServiceRepository serviceRepository;
-    private final ClientRepository clientRepository;
-    private final DeviceRepository deviceRepository;
-    private final EmployeeRepository employeeRepository;
-    private final ServiceOfferingRepository offeringRepository;
+    private final MemoryServiceRepository serviceRepository;
+    private final MemoryClientRepository clientRepository;
+    private final MemoryDeviceRepository deviceRepository;
+    private final MemoryEmployeeRepository employeeRepository;
+    private final MemoryServiceOfferingRepository offeringRepository;
 
     public ServiceManager(
-        ServiceRepository serviceRepository,
-        ClientRepository clientRepository,
-        DeviceRepository deviceRepository,
-        EmployeeRepository employeeRepository,
-        ServiceOfferingRepository offeringRepository
+        MemoryServiceRepository serviceRepository,
+        MemoryClientRepository clientRepository,
+        MemoryDeviceRepository deviceRepository,
+        MemoryEmployeeRepository employeeRepository,
+        MemoryServiceOfferingRepository offeringRepository
     ) 
     {
         this.serviceRepository = serviceRepository;
@@ -73,7 +75,7 @@ public class ServiceManager {
         return offeringRepository.findAll();
     }
 
-    public ServiceRepository getServiceRepository() {
+    public MemoryServiceRepository getServiceRepository() {
         return serviceRepository;
     }
 }
