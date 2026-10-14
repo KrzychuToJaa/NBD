@@ -54,21 +54,7 @@ public class ClientManager {
         return clientRepository.findAll();
     }
    
-    /**
-     * Zapisuje dane klientów do pliku
-     * @param filename nazwa pliku
-     */
-    public void saveToFile(String filename) {
-        clientRepository.saveToFile(filename);
-    }
    
-    /**
-     * Wczytuje dane klientów z pliku
-     * @param filename nazwa pliku
-     */
-    public void loadFromFile(String filename) {
-        clientRepository.loadFromFile(filename);
-    }
    
     /**
      * Zwraca referencję do repozytorium klientów

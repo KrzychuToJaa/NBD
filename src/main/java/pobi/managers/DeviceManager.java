@@ -86,22 +86,6 @@ public class DeviceManager {
     }
 
     /**
-     * Zapisuje dane urządzeń do pliku
-     * @param filename nazwa pliku
-     */
-    public void saveToFile(String filename) {
-        deviceRepository.saveToFile(filename);
-    }
-
-    /**
-     * Wczytuje dane urządzeń z pliku
-     * @param filename nazwa pliku
-     */
-    public void loadFromFile(String filename) {
-        deviceRepository.loadFromFile(filename);
-    }
-
-    /**
      * Zwraca referencję do repozytorium urządzeń
      * @return Repozytorium urządzeń
      */

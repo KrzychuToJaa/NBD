@@ -34,6 +34,7 @@ public class DeviceTest {
 
     @Test
     public void testDeviceConstructorExceptions() {
+        assertThrows(IllegalArgumentException.class, () -> new Laptop("ID2", "Laptop", "Model", "Asus", "Kabel", Double.NaN, "AMD"));
         assertThrows(IllegalArgumentException.class, () -> new PC("ID1", "PC", "Pocket", "NeoGeo", "klawiatura", -10.0, "Intel", true));
         assertThrows(IllegalArgumentException.class, () -> new Laptop("ID2", "Laptop", "Plaster", "Asus", "kabel zasilający", -1.0, "AMD"));
         assertThrows(IllegalArgumentException.class, () -> new Console("ID3", "Console", "Micro", "GameBoy", "dwa pady", -500.0, Console.ConsoleType.PlayStation));
@@ -45,6 +46,8 @@ public class DeviceTest {
     @Test
     public void testDeviceActualPrice() {
         PC pcIntelWater = new PC("ID1", "PC", "Karbo", "Politechnik", "Kabel usb i myszka", 1000.0, "Intel", true);
+        assertTrue(pcIntelWater.hasWaterCooling());
+        assertThrows(IllegalArgumentException.class, () -> pcIntelWater.setBasePrice(Double.POSITIVE_INFINITY));
         assertEquals(1700.0, pcIntelWater.getActualPrice(pcIntelWater.getBasePrice()));
 
         PC pcAmdNoWater = new PC("ID2", "PC", "Smol", "Politechnik", "kabel zasilający", 1000.0, "AMD", false);

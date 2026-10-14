@@ -31,6 +31,8 @@ public class ClientTest {
 
     @Test
     public void testClientConstructorExceptions() {
+        assertThrows(IllegalArgumentException.class, () -> new Client("Mateusz", "Jankowski", "abcdefghi", "Warszawa", "Knurowa", "12"));
+        assertThrows(IllegalArgumentException.class, () -> new Client("   ", "Jankowski", "123456789", "Warszawa", "Knurowa", "12"));
         assertThrows(IllegalArgumentException.class, () -> new Client("", "Jankowski", "123456789", "Warszawa", "Knurowa", "12"));
         assertThrows(IllegalArgumentException.class, () -> new Client("Mateusz", "Jankowski", "12345678", "Warszawa", "Knurowa", "12"));
         assertThrows(IllegalArgumentException.class, () -> new Client("Mateusz", "Jankowski", "1234567890", "Warszawa", "Knurowa", "12"));

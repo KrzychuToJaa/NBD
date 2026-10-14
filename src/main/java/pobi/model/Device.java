@@ -1,7 +1,7 @@
 package pobi.model;
 
 public abstract class Device {
-    private String id;
+    private final String id;
     private String type;
     private String model;
     private String brand;
@@ -18,6 +18,14 @@ public abstract class Device {
      * @param basePrice cena bazowa
      */
     public Device(String id, String type, String model, String brand, String accessories, double basePrice) {
+        if (id == null || id.isBlank() || type == null || type.isBlank()
+                || model == null || model.isBlank() || brand == null || brand.isBlank()
+                || accessories == null || accessories.isBlank()) {
+            throw new IllegalArgumentException("Wszystkie pola urządzenia muszą być wypełnione.");
+        }
+        if (!Double.isFinite(basePrice) || basePrice < 0) {
+            throw new IllegalArgumentException("Cena musi być skończona i nieujemna.");
+        }
         this.id = id;
         this.type = type;
         this.model = model;
@@ -79,7 +87,7 @@ public abstract class Device {
      * @param price cena którą chcemy ustawić
      */
     public void setBasePrice(double price) {
-        if (price < 0) {
+        if (!Double.isFinite(price) || price < 0) {
             throw new IllegalArgumentException("Cena bazowa nie może być ujemna.");
         }
         this.basePrice = price;

@@ -46,9 +46,7 @@ public class UserInterface {
             System.out.println("3. Wyświetl wszystkich klientów");
             System.out.println("4. Usuń klienta");
             System.out.println("5. Zmień archiwizację klienta");
-            System.out.println("6. Zapisz klientów do pliku");
-            System.out.println("7. Wczytaj klientów z pliku");
-            System.out.println("8. Zmień maksymalną liczbę usług klienta");
+            System.out.println("6. Zmień maksymalną liczbę usług klienta");
             System.out.println("0. Powrót do menu głównego");
             
             int choice = scanner.nextInt();
@@ -152,30 +150,6 @@ public class UserInterface {
                 }
                 case 6: {
                     clearScreen();
-                    System.out.print("Podaj nazwę pliku do zapisu klientów: ");
-                    String filename = scanner.next();
-                    clearScreen();
-                    clientManager.saveToFile(filename);
-                    System.out.println("Klienci zapisani do pliku");
-                    break;
-                }
-                case 7: {
-                    clearScreen();
-                    System.out.print("Uwaga: Wczytanie klientów z pliku spowoduje usunięcie wszystkich aktualnych klientów w pamięci programu. Czy chcesz kontynuować? (tak/nie): ");
-                    String loadChoice = scanner.next();
-                    if (loadChoice.equalsIgnoreCase("tak")) {
-                        System.out.print("Podaj nazwę pliku do wczytania klientów: ");
-                        String filename = scanner.next();
-                        clientManager.loadFromFile(filename);
-                        clearScreen();
-                        System.out.println("Klienci wczytani z pliku");
-                    } else {
-                        System.out.println("Operacja anulowana");
-                    }               
-                    break;
-                }
-                case 8: {
-                    clearScreen();
                     System.out.println("Zmiana maksymalnej liczby usług klienta");
                     System.out.print("Podaj numer telefonu klienta: ");
                     String phoneNumber = scanner.next();
@@ -217,8 +191,6 @@ public class UserInterface {
             System.out.println("3. Wyświetl wszystkie urządzenia");
             System.out.println("4. Zmień cenę urządzenia");
             System.out.println("5. Usuń urządzenie");
-            System.out.println("6. Zapisz urządzenia do pliku");
-            System.out.println("7. Wczytaj urządzenia z pliku");
             System.out.println("0. Powrót do menu głównego");
             
             int mainChoice = scanner.nextInt();
@@ -365,31 +337,6 @@ public class UserInterface {
                     }
                     break;
                 }
-                case 6: {
-                    clearScreen();
-                    System.out.print("Podaj nazwę pliku do zapisu urządzeń: ");
-                    String filename = scanner.next();
-                    deviceManager.saveToFile(filename);
-                    clearScreen();
-                    System.out.println("Urządzenia zapisane do pliku");
-                    break;
-                }
-                case 7: {
-                    clearScreen();
-                    System.out.print("Uwaga: Wczytanie urządzeń z pliku spowoduje usunięcie wszystkich aktualnych urządzeń w pamięci programu. Czy chcesz kontynuować? (tak/nie): ");
-                    String loadChoice = scanner.next();
-                    if (loadChoice.equalsIgnoreCase("tak")) {
-                        System.out.print("Podaj nazwę pliku do wczytania urządzeń: ");
-                        String filename = scanner.next();
-                        deviceManager.loadFromFile(filename);
-                        clearScreen();
-                        System.out.println("Urządzenia wczytane z pliku");
-                    } else {
-                        clearScreen();
-                        System.out.println("Operacja anulowana");
-                    }
-                    break;
-                }
                 case 0:
                     clearScreen();
                     return;
@@ -412,8 +359,6 @@ public class UserInterface {
             System.out.println("3. Wyświetl wszystkie usługi");
             System.out.println("4. Zmień opis usterki");
             System.out.println("5. Usuń usługę");
-            System.out.println("6. Zapisz usługi do pliku");
-            System.out.println("7. Wczytaj usługi z pliku");
             System.out.println("0. Powrót do menu głównego");
             
             int choice = scanner.nextInt();
@@ -512,31 +457,6 @@ public class UserInterface {
                         System.out.println("Usługa usunięta");
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
-                    }
-                    break;
-                }
-                case 6: {
-                    clearScreen();
-                    System.out.print("Podaj nazwę pliku do zapisu usług: ");
-                    String filename = scanner.next();
-                    serviceManager.saveToFile(filename);
-                    clearScreen();
-                    System.out.println("Usługi zapisane do pliku");
-                    break;
-                }
-                case 7: {
-                    clearScreen();
-                    System.out.print("Uwaga: Wczytanie usług z pliku spowoduje usunięcie wszystkich aktualnych usług w pamięci programu. Czy chcesz kontynuować? (tak/nie): ");
-                    String loadChoice = scanner.next();
-                    if (loadChoice.equalsIgnoreCase("tak")) {          
-                        System.out.print("Podaj nazwę pliku do wczytania usług: ");
-                        String filename = scanner.next();
-                        serviceManager.loadFromFile(filename, clientManager.getClientRepository(), deviceManager.getDeviceRepository());
-                        clearScreen();
-                        System.out.println("Usługi wczytane z pliku");
-                    } else {
-                        clearScreen();
-                        System.out.println("Operacja anulowana");
                     }
                     break;
                 }

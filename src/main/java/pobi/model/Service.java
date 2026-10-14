@@ -1,12 +1,12 @@
 package pobi.model;
 
 public class Service {
-    private String id;
+    private final String id;
     private double basePrice;
     private boolean archive = false;
-    private Client client;
-    private Device device;
-    private String faultDescription;
+    private final Client client;
+    private final Device device;
+    private String description;
 
     /**
      * Konstruktor obiektu klasy Service
@@ -14,20 +14,23 @@ public class Service {
      * @param basePrice podstawowa cena za usługę
      * @param client klient przypisywany do usługi
      * @param device urządzenie które klient oddaje do serwisu
-     * @param faultDescription opis usterki urządzenia
+     * @param description opis usługi lub usterki
      */
-    public Service(String id, double basePrice, Client client, Device device, String faultDescription) {
-        if (id == null || id.isEmpty() || client == null || device == null || faultDescription == null || faultDescription.isEmpty()) {
+    public Service(String id, double basePrice, Client client, Device device, String description) {
+        if (id == null || id.isBlank() || client == null || device == null) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");
         }
-        if (basePrice < 0) {
+        if (!Double.isFinite(basePrice) || basePrice < 0) {
             throw new IllegalArgumentException("Cena bazowa nie może być ujemna");
+        }
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("Opis usługi nie może być pusty.");
         }
         this.id = id;
         this.basePrice = basePrice;
         this.client = client;
         this.device = device;
-        this.faultDescription = faultDescription;
+        this.description = description;
     }
 
     /**
@@ -67,7 +70,7 @@ public class Service {
      * @return opis usterki urządzenia
      */
     public String getFaultDescription() {
-        return faultDescription;
+        return description;
     }
     
     /**
@@ -75,7 +78,10 @@ public class Service {
      * @param description usterka urządzenia
      */
     public void setFaultDescription(String description) {
-        this.faultDescription = description;
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("Opis usługi nie może być pusty.");
+        }
+        this.description = description;
     }
 
     /**
@@ -85,6 +91,11 @@ public class Service {
     public boolean isArchive() {
         return archive;
     }
+
+    public boolean isActive() {
+        return !isArchive();
+    }
+
     
     /**
      * metoda ustawiająca informacje o zarchiwizowaniu urządzenia
@@ -103,7 +114,7 @@ public class Service {
                "Cena bazowa: " + basePrice + "\n" + 
                "Cena końcowa: " + device.getActualPrice(basePrice) + "\n" + 
                "Archiwalne: " + (archive ? "Tak" : "Nie") + "\n" + 
-               "Opis awarii: " + faultDescription + "\n" + 
+               "Opis usługi: " + description + "\n" + 
                "Informacje o kliencie:\n" + client.getInfo() + 
                "Informacje o urządzeniu:\n" + device.getInfo();
     }

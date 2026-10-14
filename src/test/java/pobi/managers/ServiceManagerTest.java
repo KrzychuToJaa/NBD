@@ -2,8 +2,6 @@ package pobi.managers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 import pobi.model.Client;
@@ -69,28 +67,6 @@ public class ServiceManagerTest {
         
         assertEquals(2, serviceManager.findAllServices().size());
         assertThrows(IllegalArgumentException.class, () -> serviceManager.getService("Service1"));
-    }
-
-    @Test
-    public void testSaveAndLoadServicesFromFile() throws Exception {
-        ClientManager clientManager = container.getClientManager();
-        DeviceManager deviceManager = container.getDeviceManager();
-        ServiceManager serviceManager = container.getServiceManager();
-
-        String testFileName = "test_services_manager.csv";
-        serviceManager.saveToFile(testFileName);
-        
-        serviceManager.registerService("S7", 500.0, clientManager.getClient("987654321"), deviceManager.getDevice("Laptop1"), "Wymiana dysku");
-        serviceManager.loadFromFile(testFileName, clientManager.getClientRepository(), deviceManager.getDeviceRepository());
-
-        Service loadedService = serviceManager.getService("Service1");
-        
-        assertThrows(IllegalArgumentException.class, () -> serviceManager.getService("S7"));
-        assertEquals("Uszkodzony dysk", loadedService.getFaultDescription());
-        assertEquals(800.0, loadedService.getBasePrice());
-        assertEquals("LeBron", loadedService.getClient().getFirstName());
-
-        Files.deleteIfExists(Paths.get(testFileName));
     }
 
     @Test

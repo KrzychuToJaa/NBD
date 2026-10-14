@@ -33,14 +33,15 @@ public class Console extends Device {
      */
     public Console(String id, String type, String model, String brand, String accessories, double basePrice, ConsoleType consoleType) {
         super(id, type, model, brand, accessories, basePrice);
-        if (id == null || id.isEmpty() || type == null || type.isEmpty() || 
-            model == null || model.isEmpty() || brand == null || brand.isEmpty() || 
-            accessories == null || accessories.isEmpty()) {
+        if (id == null || id.isBlank() || type == null || type.isBlank() || 
+            model == null || model.isBlank() || brand == null || brand.isBlank() || 
+            accessories == null || accessories.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");
         }
-        if (basePrice < 0) {
+        if (!Double.isFinite(basePrice) || basePrice < 0) {
             throw new IllegalArgumentException("Cena bazowa nie może być ujemna");
         }
+        if (consoleType == null) throw new IllegalArgumentException("Typ konsoli jest wymagany.");
         this.consoleType = consoleType;
     }
 

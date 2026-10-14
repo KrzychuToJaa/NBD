@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import pobi.repositories.LogicContainer;
 import pobi.model.Client;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 // tEST
@@ -63,23 +61,4 @@ public class ClientManagerTest {
         assertEquals(0, manager.getClientRepository().size());
     }
 
-    @Test
-    public void testSaveAndLoadFromFile() throws Exception {
-        ClientManager saveManager = new ClientManager();
-        saveManager.registerClient("Stefan", "Curry", "444555666", "San Francisco", "Crackheadow", "13");
-        
-        String testFileName = "test_clients_manager.csv";
-        saveManager.saveToFile(testFileName);
-        saveManager.registerClient("Onufry", "Curry", "111222333", "San Francisco", "Crackheadow", "13");
-
-        ClientManager loadManager = new ClientManager();
-        loadManager.loadFromFile(testFileName);
-        
-        Client loadedClient = loadManager.getClient("444555666");
-        assertThrows(IllegalArgumentException.class, () -> loadManager.getClient("111222333"));
-        assertEquals("Stefan", loadedClient.getFirstName());
-        assertEquals("San Francisco", loadedClient.getCity());
-        
-        Files.deleteIfExists(Paths.get(testFileName));
-    }
 }

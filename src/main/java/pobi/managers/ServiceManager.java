@@ -4,8 +4,6 @@ import pobi.model.Service;
 import pobi.model.Client;
 import pobi.model.Device;
 
-import pobi.repositories.ClientRepository;
-import pobi.repositories.DeviceRepository;
 import pobi.repositories.ServiceRepository;
 
 import java.util.List;
@@ -76,24 +74,6 @@ public class ServiceManager {
      */
     public List<Service> findAllServices() {
         return serviceRepository.findAll();
-    }
-
-    /**
-     * Zapisuje dane usług do pliku
-     * @param filename nazwa pliku
-     */
-    public void saveToFile(String filename) {
-        serviceRepository.saveToFile(filename);
-    }
-
-    /**
-     * Wczytuje dane usług z pliku
-     * @param filename nazwa pliku
-     * @param clientRepo referencja do repozytorium klientów
-     * @param deviceRepo referencja do repozytorium urządzeń
-     */
-    public void loadFromFile(String filename, ClientRepository clientRepo, DeviceRepository deviceRepo) {
-        serviceRepository.loadFromFile(filename, clientRepo, deviceRepo);
     }
 
     /**

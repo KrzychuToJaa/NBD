@@ -40,6 +40,9 @@ public class ServiceTest {
         assertThrows(IllegalArgumentException.class, () -> new Service("S1", 150.0, null, device, "Opis"));
         assertThrows(IllegalArgumentException.class, () -> new Service("S1", 150.0, client, null, "Opis"));
         assertThrows(IllegalArgumentException.class, () -> new Service("S1", 150.0, client, device, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Service("S1", 150.0, client, device, "   "));
+        assertThrows(IllegalArgumentException.class, () -> new Service("S1", Double.NaN, client, device, "Opis"));
+        assertThrows(IllegalArgumentException.class, () -> new Service("S1", Double.POSITIVE_INFINITY, client, device, "Opis"));
     }
 
     @Test
@@ -51,6 +54,7 @@ public class ServiceTest {
         assertFalse(service.isArchive());
         service.setArchive(true);
         assertTrue(service.isArchive());
+        assertFalse(service.isActive());
     }
 
     @Test
@@ -60,6 +64,8 @@ public class ServiceTest {
         Service service = new Service("S1", 150.0, client, device, "Wymiana obudowy na większą");
 
         assertEquals("Wymiana obudowy na większą", service.getFaultDescription());
+        assertThrows(IllegalArgumentException.class, () -> service.setFaultDescription(null));
+        assertThrows(IllegalArgumentException.class, () -> service.setFaultDescription("   "));
 
         service.setFaultDescription("Wymiana obudowy na większą i dodanie dodatkowego wentylatora");
         assertEquals("Wymiana obudowy na większą i dodanie dodatkowego wentylatora", service.getFaultDescription());

@@ -1,9 +1,10 @@
 package pobi.model;
 
+
 public class Client {
     private String firstName;
     private String lastName;
-    private String phoneNumber;
+    private final String phoneNumber;
     private String city;
     private String street;
     private String number;
@@ -20,16 +21,16 @@ public class Client {
      * @param number numer domu klienta
      */
     public Client(String firstName, String lastName, String phoneNumber, String city, String street, String number) {
-        if (firstName == null || firstName.isEmpty() || lastName == null || lastName.isEmpty() ||
-            phoneNumber == null || phoneNumber.isEmpty() || city == null || city.isEmpty() ||
-            street == null || street.isEmpty() || number == null || number.isEmpty()) {
-            throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione.");
+        if (firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank() ||
+            phoneNumber == null || phoneNumber.isBlank() || city == null || city.isBlank() ||
+            street == null || street.isBlank() || number == null || number.isBlank()) {
+            throw new IllegalArgumentException("Nie można utworzyć klienta z pustymi polami");
         }
-        if (phoneNumber.length() != 9) {
-            throw new IllegalArgumentException("Numer telefonu musi mieć dokładnie 9 cyfr.");
+        if (phoneNumber == null || !phoneNumber.matches("[0-9]{9}")) {
+            throw new IllegalArgumentException("Numer telefonu musi składać się z dokładnie 9 cyfr");
         }
         if (number.length() < 1 || number.length() > 3) {
-            throw new IllegalArgumentException("Numer domu musi mieć maksymalnie 3 znaki.");
+            throw new IllegalArgumentException("Numer domu musi mieć max 3 znaki");
         }
 
         this.firstName = firstName;
