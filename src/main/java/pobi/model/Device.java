@@ -6,7 +6,6 @@ public abstract class Device {
     private String model;
     private String brand;
     private String accessories;
-    private double basePrice;
 
     /**
      * Konstruktor obiektu klasy device
@@ -15,23 +14,18 @@ public abstract class Device {
      * @param model nazwa modelu urządzenia
      * @param brand nazwa marki urządzenia
      * @param accessories akcesoria
-     * @param basePrice cena bazowa
      */
-    public Device(String id, String type, String model, String brand, String accessories, double basePrice) {
+    public Device(String id, String type, String model, String brand, String accessories) {
         if (id == null || id.isBlank() || type == null || type.isBlank()
                 || model == null || model.isBlank() || brand == null || brand.isBlank()
                 || accessories == null || accessories.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola urządzenia muszą być wypełnione.");
-        }
-        if (!Double.isFinite(basePrice) || basePrice < 0) {
-            throw new IllegalArgumentException("Cena musi być skończona i nieujemna.");
         }
         this.id = id;
         this.type = type;
         this.model = model;
         this.brand = brand;
         this.accessories = accessories;
-        this.basePrice = basePrice;
     }
     
     /**
@@ -75,31 +69,12 @@ public abstract class Device {
     }
     
     /**
-     * metoda pobierająca cenę bazową urządzenia
-     * @return zwraca cenę bazową urządzenia
-     */
-    public double getBasePrice() {
-        return basePrice;
-    }
-    
-    /**
-     * metoda ustawiająca cenę bazową urządzenia
-     * @param price cena którą chcemy ustawić
-     */
-    public void setBasePrice(double price) {
-        if (!Double.isFinite(price) || price < 0) {
-            throw new IllegalArgumentException("Cena bazowa nie może być ujemna.");
-        }
-        this.basePrice = price;
-    }
-
-    /**
      * metoda pobierająca informacje o urządzeniu
      * @return zwraca informację o urządzeniu
      */
     public String getInfo() {
         return "ID: " + id + "\nTyp: " + type + "\nModel: " + model + "\nMarka: " + brand + 
-               "\nAkcesoria: " + accessories + "\nCena bazowa: " + basePrice + "\n";
+               "\nAkcesoria: " + accessories + "\n";
     }
     
     /**

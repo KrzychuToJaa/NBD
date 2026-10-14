@@ -10,19 +10,15 @@ public class PC extends Computer {
      * @param model nazwa modelu komputera
      * @param brand nazwa producenta komputera
      * @param accessories akcesoria które zostały z komputerem w serwisie
-     * @param basePrice cena bazowa
      * @param cpuManufacturer nazwa producenta jednostki przetwarzającej
      * @param waterCooling czy jest chłodzenie wodne
      */
-    public PC(String id, String type, String model, String brand, String accessories, double basePrice, String cpuManufacturer, boolean waterCooling) {
-        super(id, type, model, brand, accessories, basePrice, cpuManufacturer);
+    public PC(String id, String type, String model, String brand, String accessories, String cpuManufacturer, boolean waterCooling) {
+        super(id, type, model, brand, accessories, cpuManufacturer);
         if (id == null || id.isBlank() || type == null || type.isBlank() || 
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank() || cpuManufacturer == null || cpuManufacturer.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");
-        }
-        if (!Double.isFinite(basePrice) || basePrice < 0) {
-            throw new IllegalArgumentException("Cena bazowa nie może być ujemna");
         }
         this.waterCooling = waterCooling;
     }

@@ -48,36 +48,41 @@ public class LogicContainer {
 
     public void fillData() {
         clientManager.registerClient(
-            "Jan", "Kowalski", "123456789",
-            "Łódź", "Polna", "12"
+            "Maciej", "Mamrot", "123456789",
+            "Łęczno", "Łysa", "12"
         );
 
         clientManager.registerClient(
-            "Anna", "Nowak", "987654321",
-            "Warszawa", "Lipowa", "3"
+            "Michał", "Woźniak", "987654321",
+            "Ręczno", "Piotrkowska", "3"
         );
 
         deviceManager.registerPC(
             "PC1", "PC", "OptiPlex", "Dell",
-            "Mysz i klawiatura", 800.0, "Intel", true
+            "Mysz i klawiatura", "Intel", true
         );
 
         deviceManager.registerLaptop(
-            "Laptop1", "Laptop", "MacBook Pro", "Apple",
-            "Zasilacz", 1500.0, "Apple"
+            "Laptop1", "Laptop", "ThinkPad", "Lenovo",
+            "Zasilacz", "Intel"
+        );
+
+        deviceManager.registerLaptop(
+            "Laptop2", "Laptop", "Jabko Pro", "Apple",
+            "Zasilacz", "Apple"
         );
 
         deviceManager.registerConsole(
             "Console1", "Console", "Switch", "Nintendo",
-            "JoyCon", 500.0, Console.ConsoleType.Nintendo
+            "JoyCon", Console.ConsoleType.Nintendo
         );
 
         employeeRepository.add(
-            new Employee("EMP1", "Adam", "Nowicki")
+            new Employee("EMP1", "Maciej", "Mamrot")
         );
 
         employeeRepository.add(
-            new Employee("EMP2", "Ewa", "Wiśniewska")
+            new Employee("EMP2", "Michał", "Woźniak")
         );
 
         offeringRepository.add(

@@ -28,18 +28,14 @@ public class Console extends Device {
      * @param model nazwa modelu konsoli
      * @param brand nazwa producenta konsoli
      * @param accessories akcesoria które zostały w serwisie z urządzeniem
-     * @param basePrice cena bazowa
      * @param consoleType typ konsoli
      */
-    public Console(String id, String type, String model, String brand, String accessories, double basePrice, ConsoleType consoleType) {
-        super(id, type, model, brand, accessories, basePrice);
+    public Console(String id, String type, String model, String brand, String accessories, ConsoleType consoleType) {
+        super(id, type, model, brand, accessories);
         if (id == null || id.isBlank() || type == null || type.isBlank() || 
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");
-        }
-        if (!Double.isFinite(basePrice) || basePrice < 0) {
-            throw new IllegalArgumentException("Cena bazowa nie może być ujemna");
         }
         if (consoleType == null) throw new IllegalArgumentException("Typ konsoli jest wymagany.");
         this.consoleType = consoleType;

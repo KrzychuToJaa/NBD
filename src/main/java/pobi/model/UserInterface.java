@@ -187,10 +187,6 @@ public class UserInterface {
         String model = readText("Model: ");
         String accessories = readText("Akcesoria: ");
 
-        double basePrice = readDouble(
-            "Cena bazowa w obecnym modelu urządzenia: "
-        );
-
         switch (type) {
             case 1 -> {
                 String cpu = readText("Producent procesora: ");
@@ -198,18 +194,18 @@ public class UserInterface {
                     "Chłodzenie wodne? (tak/nie): "
                 );
 
-                deviceManager.registerPC(id, "PC", model, brand, accessories, basePrice, cpu, cooling);
+                deviceManager.registerPC(id, "PC", model, brand, accessories, cpu, cooling);
             }
             case 2 -> {
                 String cpu = readText("Producent procesora: ");
 
-                deviceManager.registerLaptop(id, "Laptop",model, brand, accessories, basePrice, cpu);
+                deviceManager.registerLaptop(id, "Laptop",model, brand, accessories, cpu);
             }
             case 3 -> {
                 Console.ConsoleType consoleType =
                     readConsoleType();
 
-                deviceManager.registerConsole(id,"Console", model, brand, accessories, basePrice, consoleType);
+                deviceManager.registerConsole(id,"Console", model, brand, accessories, consoleType);
             }
         }
 

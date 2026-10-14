@@ -9,18 +9,14 @@ public class Laptop extends Computer {
      * @param model nazwa modelu laptopa
      * @param brand nazwa producena laptopa
      * @param accessories akcesoria które zostały z laptopem w serwisie
-     * @param basePrice bazowa cena 
      * @param cpuManufacturer producent jednostki przetwarzającej
      */
-    public Laptop(String id, String type, String model, String brand, String accessories, double basePrice, String cpuManufacturer) {
-        super(id, type, model, brand, accessories, basePrice, cpuManufacturer);
+    public Laptop(String id, String type, String model, String brand, String accessories, String cpuManufacturer) {
+        super(id, type, model, brand, accessories, cpuManufacturer);
         if (id == null || id.isBlank() || type == null || type.isBlank() || 
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank() || cpuManufacturer == null || cpuManufacturer.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");
-        }
-        if (!Double.isFinite(basePrice) || basePrice < 0) {
-            throw new IllegalArgumentException("Cena bazowa nie może być ujemna");
         }
     }
     

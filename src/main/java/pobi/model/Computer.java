@@ -10,11 +10,10 @@ public abstract class Computer extends Device {
      * @param model nazwa modelu komputera
      * @param brand nazwa producenta komputera
      * @param accessories akcesoria zostawione wraz z urządzeniem w serwisie
-     * @param basePrice cena podstawowa
      * @param cpuManufacturer nazwa producenta jednostki przetwarzającej
      */
-    public Computer(String id, String type, String model, String brand, String accessories, double basePrice, String cpuManufacturer) {
-        super(id, type, model, brand, accessories, basePrice);
+    public Computer(String id, String type, String model, String brand, String accessories, String cpuManufacturer) {
+        super(id, type, model, brand, accessories);
         this.cpuManufacturer = cpuManufacturer;
     }
 
