@@ -1,0 +1,21 @@
+name: nbd
+
+services:
+  db:
+    image: postgres:17.11-bookworm
+    environment:
+      POSTGRES_DB: nbddb
+      POSTGRES_USER: nbd
+      POSTGRES_PASSWORD: nbdpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg17:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nbd -d nbddb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pg17:
