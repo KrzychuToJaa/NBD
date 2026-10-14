@@ -1,10 +1,6 @@
 package pobi.repositories;
 
 import pobi.model.Device;
-import pobi.model.Console;
-import pobi.model.PC;
-import pobi.model.Laptop;
-
 
 import java.util.ArrayList;
 import java.util.List;
