@@ -8,7 +8,6 @@ public class Client {
     private String city;
     private String street;
     private String number;
-    private int maxServices = 3;
     private boolean archive = false;
 
     /**
@@ -90,14 +89,6 @@ public class Client {
     }
 
     /**
-     * Pobiera maksymalną liczbę usług, które klient może zarejestrować
-     * @return maksymalna liczba usług
-     */
-    public int getMaxServices() {
-        return maxServices;
-    }
-
-    /**
      * Sprawdza, czy klient jest zarchiwizowany
      * @return true jeśli klient jest zarchiwizowany, false w przeciwnym przypadku 
      */
@@ -113,16 +104,6 @@ public class Client {
         this.archive = archive;
     }
 
-    /**
-     * Zmienia maksymalną liczbę usług, które klient może zarejestrować
-     * @param maxServices nowa maksymalna liczba usług, które klient może zarejestrować
-     */
-    public void setMaxServices(int maxServices) {
-        if (maxServices < 1) {
-            throw new IllegalArgumentException("Maksymalna liczba usług musi być większa niż 0.");
-        }
-        this.maxServices = maxServices;
-    }
 
     /**
      * Pobiera informacje o kliencie

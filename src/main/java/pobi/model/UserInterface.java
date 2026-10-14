@@ -46,7 +46,6 @@ public class UserInterface {
             System.out.println("3. Wyświetl wszystkich klientów");
             System.out.println("4. Usuń klienta");
             System.out.println("5. Zmień archiwizację klienta");
-            System.out.println("6. Zmień maksymalną liczbę usług klienta");
             System.out.println("0. Powrót do menu głównego");
             
             int choice = scanner.nextInt();
@@ -143,27 +142,6 @@ public class UserInterface {
                     if (client != null) {
                         client.setArchive(archive);
                         System.out.println("Archiwizacja klienta zaktualizowana");
-                    } else {
-                        System.out.println("Klient nie został znaleziony");
-                    }
-                    break;
-                }
-                case 6: {
-                    clearScreen();
-                    System.out.println("Zmiana maksymalnej liczby usług klienta");
-                    System.out.print("Podaj numer telefonu klienta: ");
-                    String phoneNumber = scanner.next();
-                    System.out.print("Podaj nową maksymalną liczbę usług: ");
-                    int maxServices = scanner.nextInt();
-                    clearScreen();
-                    Client client = clientManager.getClient(phoneNumber);
-                    if (client != null) {
-                        try {
-                            client.setMaxServices(maxServices);
-                            System.out.println("Maksymalna liczba usług klienta zaktualizowana");
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }
                     } else {
                         System.out.println("Klient nie został znaleziony");
                     }

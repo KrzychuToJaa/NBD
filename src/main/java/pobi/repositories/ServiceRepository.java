@@ -32,40 +32,36 @@ public class ServiceRepository {
      * Dodanie usługi do repozytorium
      * @param service usługa do dodania
      */
-    public void add(Service service) {
-        if (service == null) return;
-        for (Service s : services) {
-            if (s.getID().equals(service.getID())) {
-                throw new IllegalArgumentException("Usługa o podanym ID już istnieje");
+     public void add(Service service) {
+        if (service == null) {
+            throw new IllegalArgumentException(
+                "Zlecenie nie może być null"
+            );
+        }
+
+        for (Service existing : services) {
+            if (existing.getID().equals(service.getID())) {
+                throw new IllegalArgumentException(
+                    "Zlecenie o podanym ID już istnieje"
+                );
             }
         }
+
+        if (service.isActive() && service.getClient().isArchive()) {
+            throw new IllegalStateException(
+                "Nie można przyjąć zlecenia dla zarchiwizowanego klienta"
+            );
+        }
+
+        service.getEmployee().addService(service);
         services.add(service);
     }
 
-    /**
-     * Usunięcie usługi z repozytorium
-     * @param service usuługa do usunięcia
-     */
-    public void remove(Service service) {
-        if (service != null) {
-            services.remove(service);
-        }
+    public List<Service> findAll() {
+        return List.copyOf(services);
     }
 
-    /**
-     * Zwraca liczbę usług w repozytorium
-     * @return liczba usług
-     */
     public int size() {
         return services.size();
     }
-
-    /**
-     * Zwraca listę wszystkich usług
-     * @return lista usług
-     */
-    public List<Service> findAll() {
-        return services;
-    }
-
 }
