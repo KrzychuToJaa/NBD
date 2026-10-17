@@ -102,7 +102,7 @@ public class UserInterface {
     private void registerClient() {
         String firstName = readText("Imię: ");
         String lastName = readText("Nazwisko: ");
-        String phone = readText("Telefon — 9 cyfr: ");
+        long phone = readLong("Telefon — 9 cyfr: ");
         String city = readText("Miasto: ");
         String street = readText("Ulica: ");
         String number = readText("Numer domu: ");
@@ -113,7 +113,7 @@ public class UserInterface {
     }
 
     private void showClient() {
-        String phone = readText("Telefon klienta: ");
+        long phone = readLong("Telefon klienta: ");
         Client client = clientManager.getClient(phone);
 
         if (client == null) {
@@ -151,7 +151,7 @@ public class UserInterface {
                 switch (choice) {
                     case 1 -> registerDevice();
                     case 2 -> {
-                        String id = readText("ID urządzenia: ");
+                        long id = readLong("ID urządzenia: ");
                         Device device = deviceManager.getDevice(id);
                         System.out.println(device.getInfo());
                     }
@@ -182,7 +182,7 @@ public class UserInterface {
             );
         }
 
-        String id = readText("ID urządzenia: ");
+        long id = readLong("ID urządzenia: ");
         String brand = readText("Marka: ");
         String model = readText("Model: ");
         String accessories = readText("Akcesoria: ");
@@ -194,18 +194,18 @@ public class UserInterface {
                     "Chłodzenie wodne? (tak/nie): "
                 );
 
-                deviceManager.registerPC(id, "PC", model, brand, accessories, cpu, cooling);
+                deviceManager.registerPC(id, model, brand, accessories, cpu, cooling);
             }
             case 2 -> {
                 String cpu = readText("Producent procesora: ");
 
-                deviceManager.registerLaptop(id, "Laptop",model, brand, accessories, cpu);
+                deviceManager.registerLaptop(id, model, brand, accessories, cpu);
             }
             case 3 -> {
                 Console.ConsoleType consoleType =
                     readConsoleType();
 
-                deviceManager.registerConsole(id,"Console", model, brand, accessories, consoleType);
+                deviceManager.registerConsole(id, model, brand, accessories, consoleType);
             }
         }
 
@@ -258,7 +258,7 @@ public class UserInterface {
             try {
                 switch (choice) {
                     case 1 -> {
-                        String id = readText("ID pracownika: ");
+                        long id = readLong("ID pracownika: ");
                         String firstName = readText("Imię: ");
                         String lastName = readText("Nazwisko: ");
 
@@ -267,7 +267,7 @@ public class UserInterface {
                         System.out.println("Pracownik został dodany");
                     }
                     case 2 -> {
-                        String id = readText("ID pracownika: ");
+                        long id = readLong("ID pracownika: ");
                         Employee employee =
                             employeeManager.getEmployee(id);
 
@@ -302,7 +302,7 @@ public class UserInterface {
     }
 
     private void showEmployeeServices() {
-        String id = readText("ID pracownika: ");
+        long id = readLong("ID pracownika: ");
         Employee employee = employeeManager.getEmployee(id);
 
         List<Service> services = employee.getServices();
@@ -334,7 +334,7 @@ public class UserInterface {
             try {
                 switch (choice) {
                     case 1 -> {
-                        String id = readText("ID pozycji katalogu: ");
+                        long id = readLong("ID pozycji katalogu: ");
                         String name = readText("Nazwa usługi: ");
                         double price = readDouble("Cena bazowa: ");
 
@@ -345,7 +345,7 @@ public class UserInterface {
                         );
                     }
                     case 2 -> {
-                        String id = readText("ID pozycji katalogu: ");
+                        long id = readLong("ID pozycji katalogu: ");
                         ServiceOffering offering = offeringManager.getOffering(id);
                         System.out.println(offering.getInfo());
                     }
@@ -393,7 +393,7 @@ public class UserInterface {
                 switch (choice) {
                     case 1 -> registerService();
                     case 2 -> {
-                        String id = readText("ID zlecenia: ");
+                        long id = readLong("ID zlecenia: ");
                         Service service = serviceManager.getService(id);
 
                         System.out.println(service.getInfo());
@@ -401,7 +401,7 @@ public class UserInterface {
                     }
                     case 3 -> showAllServices();
                     case 4 -> {
-                        String id = readText("ID zlecenia: ");
+                        long id = readLong("ID zlecenia: ");
                         String description = readText("Nowy opis: ");
 
                         serviceManager.changeServiceDescription(id, description);
@@ -409,7 +409,7 @@ public class UserInterface {
                         System.out.println("Opis został zmieniony.");
                     }
                     case 5 -> {
-                        String id = readText("ID zlecenia: ");
+                        long id = readLong("ID zlecenia: ");
                         serviceManager.closeService(id);
 
                         System.out.println( "Zlecenie zakończone " + "Historia została zachowana" );
@@ -434,11 +434,11 @@ public class UserInterface {
         System.out.println("\nKatalog usług:");
         showAllOfferings();
 
-        String id = readText("\nID nowego zlecenia: ");
-        String phone = readText("Telefon klienta: ");
-        String employeeId = readText("ID pracownika: ");
-        String offeringId = readText("ID pozycji katalogu: ");
-        String deviceId = readText("ID urządzenia: ");
+        long id = readLong("\nID nowego zlecenia: ");
+        long phone = readLong("Telefon klienta: ");
+        long employeeId = readLong("ID pracownika: ");
+        long offeringId = readLong("ID pozycji katalogu: ");
+        long deviceId = readLong("ID urządzenia: ");
         String description = readText("Opis zlecenia: ");
 
         serviceManager.registerService(id, phone, employeeId, offeringId, deviceId, description );
@@ -477,6 +477,18 @@ public class UserInterface {
                 return Integer.parseInt(value);
             } catch (NumberFormatException e) {
                 System.out.println("Podaj liczbę całkowitą");
+            }
+        }
+    }
+
+    private long readLong(String prompt) {
+        while (true) {
+            String value = readText(prompt);
+
+            try {
+                return Long.parseLong(value);
+            } catch (NumberFormatException e) {
+                System.out.println("Podaj poprawny numer");
             }
         }
     }

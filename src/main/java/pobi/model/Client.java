@@ -4,7 +4,7 @@ package pobi.model;
 public class Client {
     private String firstName;
     private String lastName;
-    private final String phoneNumber;
+    private final long phoneNumber;
     private String city;
     private String street;
     private String number;
@@ -19,16 +19,16 @@ public class Client {
      * @param street ulica klienta
      * @param number numer domu klienta
      */
-    public Client(String firstName, String lastName, String phoneNumber, String city, String street, String number) {
+    public Client(String firstName, String lastName, long phoneNumber, String city, String street, String number) {
         if (firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank() ||
-            phoneNumber == null || phoneNumber.isBlank() || city == null || city.isBlank() ||
+            city == null || city.isBlank() ||
             street == null || street.isBlank() || number == null || number.isBlank()) {
             throw new IllegalArgumentException("Nie można utworzyć klienta z pustymi polami");
         }
-        if (phoneNumber == null || !phoneNumber.matches("[0-9]{9}")) {
+        if (phoneNumber <= 0 || String.valueOf(phoneNumber).length() != 9) {
             throw new IllegalArgumentException("Numer telefonu musi składać się z dokładnie 9 cyfr");
         }
-        if (number.length() < 1 || number.length() > 3) {
+        if (number.length() > 3) {
             throw new IllegalArgumentException("Numer domu musi mieć max 3 znaki");
         }
 
@@ -60,7 +60,7 @@ public class Client {
      * Pobiera numer telefonu klienta
      * @return numer telefonu klienta
      */
-    public String getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 

@@ -24,15 +24,14 @@ public class Console extends Device {
     /**
      * Konstruktor obiektu klasy Console
      * @param id ID konsoli
-     * @param type typ urządzenia
      * @param model nazwa modelu konsoli
      * @param brand nazwa producenta konsoli
      * @param accessories akcesoria które zostały w serwisie z urządzeniem
      * @param consoleType typ konsoli
      */
-    public Console(String id, String type, String model, String brand, String accessories, ConsoleType consoleType) {
-        super(id, type, model, brand, accessories);
-        if (id == null || id.isBlank() || type == null || type.isBlank() || 
+    public Console(long id, String model, String brand, String accessories, ConsoleType consoleType) {
+        super(id, model, brand, accessories);
+        if (id <= 0 || 
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");

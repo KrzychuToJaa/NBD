@@ -18,7 +18,7 @@ public class MemoryEmployeeRepository
         }
 
         for (Employee existing : employees) {
-            if (existing.getId().equals(employee.getId())) {
+            if (existing.getId() == employee.getId()) {
                 throw new IllegalArgumentException(
                     "Pracownik o podanym ID już istnieje"
                 );
@@ -29,9 +29,9 @@ public class MemoryEmployeeRepository
     }
 
     @Override
-    public Employee findByID(String id) {
+    public Employee findByID(long id) {
         for (Employee employee : employees) {
-            if (employee.getId().equals(id)) {
+            if (employee.getId() == id) {
                 return employee;
             }
         }

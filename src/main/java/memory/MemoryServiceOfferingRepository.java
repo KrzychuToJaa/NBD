@@ -18,7 +18,7 @@ implements ServiceOfferingRepository {
         }
 
         for (ServiceOffering existing : offerings) {
-            if (existing.getId().equals(offering.getId())) {
+            if (existing.getId() == offering.getId()) {
                 throw new IllegalArgumentException(
                     "Pozycja katalogu o podanym ID już istnieje"
                 );
@@ -29,9 +29,9 @@ implements ServiceOfferingRepository {
     }
 
     @Override
-    public ServiceOffering findByID(String id) {
+    public ServiceOffering findByID(long id) {
         for (ServiceOffering offering : offerings) {
-            if (offering.getId().equals(id)) {
+            if (offering.getId() == id) {
                 return offering;
             }
         }

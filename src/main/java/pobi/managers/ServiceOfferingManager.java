@@ -15,14 +15,14 @@ public class ServiceOfferingManager {
         this.offeringRepository =Objects.requireNonNull(offeringRepository);
     }
 
-    public void registerOffering(String id, double basePrice, String name) {
+    public void registerOffering(long id, double basePrice, String name) {
 
         ServiceOffering offering = new ServiceOffering(id, basePrice, name);
 
         offeringRepository.add(offering);
     }
 
-    public ServiceOffering getOffering(String id) {
+    public ServiceOffering getOffering(long id) {
         return offeringRepository.findByID(id);
     }
 

@@ -6,7 +6,7 @@ import java.util.List;
 public interface ServiceOfferingRepository {
     void add(ServiceOffering offering);
 
-    ServiceOffering findByID(String id);
+    ServiceOffering findByID(long id);
 
     List<ServiceOffering> findAll();
 }

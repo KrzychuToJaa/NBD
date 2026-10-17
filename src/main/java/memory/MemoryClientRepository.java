@@ -25,7 +25,7 @@ public class MemoryClientRepository
             throw new IllegalArgumentException("Klient nie może być null.");
         }
         for (Client c : clients) {
-            if (c.getPhoneNumber().equals(client.getPhoneNumber())) {
+            if (c.getPhoneNumber() == client.getPhoneNumber()) {
                 throw new IllegalArgumentException("Klient o podanym numerze telefonu już istnieje");
             }
         }
@@ -67,9 +67,9 @@ public class MemoryClientRepository
      * @return Klient o podanym numerze telefonu
      */
     @Override
-    public Client findByPhoneNumber(String phoneNumber) {
+    public Client findByPhoneNumber(long phoneNumber) {
         for (Client client : clients) {
-            if (client.getPhoneNumber().equals(phoneNumber)) {
+            if (client.getPhoneNumber() == phoneNumber) {
                 return client;
             }
         }

@@ -6,16 +6,15 @@ public class PC extends Computer {
     /**
      * Konstruktor klasy PC
      * @param id ID komputera
-     * @param type typ urządzenia
      * @param model nazwa modelu komputera
      * @param brand nazwa producenta komputera
      * @param accessories akcesoria które zostały z komputerem w serwisie
      * @param cpuManufacturer nazwa producenta jednostki przetwarzającej
      * @param waterCooling czy jest chłodzenie wodne
      */
-    public PC(String id, String type, String model, String brand, String accessories, String cpuManufacturer, boolean waterCooling) {
-        super(id, type, model, brand, accessories, cpuManufacturer);
-        if (id == null || id.isBlank() || type == null || type.isBlank() || 
+    public PC(long id, String model, String brand, String accessories, String cpuManufacturer, boolean waterCooling) {
+        super(id, model, brand, accessories, cpuManufacturer);
+        if (id <= 0 || 
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank() || cpuManufacturer == null || cpuManufacturer.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");

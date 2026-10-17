@@ -20,43 +20,40 @@ public class DeviceManager {
     /**
      * Zapisuje nowe urządzenie do repozytorium (konsole), wraz z podanymi przez użytkownika danymi
      * @param id ID urządzenia
-     * @param type typ urządzenia
      * @param model model urządzenia
      * @param brand marka urządzenia
      * @param accessories akcesoria urządzenia
      * @param consoleType typ konsoli
      */
-    public void registerConsole(String id, String type, String model, String brand, String accessories, Console.ConsoleType consoleType) {
-        Device console = new Console(id, type, model, brand, accessories, consoleType);
+    public void registerConsole(long id, String model, String brand, String accessories, Console.ConsoleType consoleType) {
+        Device console = new Console(id, model, brand, accessories, consoleType);
         deviceRepository.add(console);
     }
     
     /**
      * Zapisuje nowe urządzenie do repozytorium (PC), wraz z podanymi przez użytkownika danymi
      * @param id ID urządzenia
-     * @param type typ urządzenia
      * @param model model urządzenia
      * @param brand marka urządzenia
      * @param accessories akcesoria urządzenia
      * @param cpuManufacturer producent procesora
      * @param waterCooling czy posiada chłodzenie wodne
      */
-    public void registerPC(String id, String type, String model, String brand, String accessories, String cpuManufacturer, boolean waterCooling) {
-        Device pc = new PC(id, type, model, brand, accessories, cpuManufacturer, waterCooling);
+    public void registerPC(long id, String model, String brand, String accessories, String cpuManufacturer, boolean waterCooling) {
+        Device pc = new PC(id, model, brand, accessories, cpuManufacturer, waterCooling);
         deviceRepository.add(pc);
     }
 
     /**
      * Zapisuje nowe urządzenie do repozytorium (Laptop), wraz z podanymi przez użytkownika danymi
      * @param id ID urządzenia
-     * @param type typ urządzenia
      * @param model model urządzenia
      * @param brand marka urządzenia
      * @param accessories akcesoria urządzenia
      * @param cpuManufacturer producent procesora
      */
-    public void registerLaptop(String id, String type, String model, String brand, String accessories, String cpuManufacturer) {
-        Device laptop = new Laptop(id, type, model, brand, accessories, cpuManufacturer);
+    public void registerLaptop(long id, String model, String brand, String accessories, String cpuManufacturer) {
+        Device laptop = new Laptop(id, model, brand, accessories, cpuManufacturer);
         deviceRepository.add(laptop);
     }
     
@@ -65,7 +62,7 @@ public class DeviceManager {
      * @param id ID urządzenia
      * @return Urządzenie o podanym ID
      */
-    public Device getDevice(String id) {
+    public Device getDevice(long id) {
         return deviceRepository.findByID(id);
     }
 
@@ -73,7 +70,7 @@ public class DeviceManager {
      * Usuwa urządzenie o podanym ID z repozytorium
      * @param id ID urządzenia
      */
-    public void unregisterDevice(String id) {
+    public void unregisterDevice(long id) {
         deviceRepository.remove(deviceRepository.findByID(id));
     }
 

@@ -12,6 +12,14 @@
         </provider>
 
         <class>pobi.infrastructure.jpa.entity.ClientEnt</class>
+        <class>pobi.infrastructure.jpa.entity.DeviceEnt</class>
+        <class>pobi.infrastructure.jpa.entity.ComputerEnt</class>
+        <class>pobi.infrastructure.jpa.entity.PCEnt</class>
+        <class>pobi.infrastructure.jpa.entity.LaptopEnt</class>
+        <class>pobi.infrastructure.jpa.entity.ConsoleEnt</class>
+        <class>pobi.infrastructure.jpa.entity.EmployeeEnt</class>
+        <class>pobi.infrastructure.jpa.entity.ServiceOfferingEnt</class>
+        <class>pobi.infrastructure.jpa.entity.ServiceEnt</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

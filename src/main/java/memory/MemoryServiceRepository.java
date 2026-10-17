@@ -22,9 +22,9 @@ implements ServiceRepository {
      * @return referencja na usługę
      */
     @Override
-    public Service findByID(String id) {
+    public Service findByID(long id) {
         for (Service service : services) {
-            if (service.getID().equals(id)) {
+            if (service.getID() == id) {
                 return service;
             }
         }
@@ -44,7 +44,7 @@ implements ServiceRepository {
         }
 
         for (Service existing : services) {
-            if (existing.getID().equals(service.getID())) {
+            if (existing.getID() == service.getID()) {
                 throw new IllegalArgumentException(
                     "Zlecenie o podanym ID już istnieje"
                 );
@@ -67,10 +67,10 @@ implements ServiceRepository {
     }
 
     @Override
-    public List<Service> findByEmployeeId(String employeeId) {
+    public List<Service> findByEmployeeId(long employeeId) {
         List<Service> result = new ArrayList<>();
         for (Service service : services) {
-            if (service.getEmployee().getId().equals(employeeId)) {
+            if (service.getEmployee().getId() == employeeId) {
                 result.add(service);
             }
         }
@@ -78,10 +78,10 @@ implements ServiceRepository {
     }
 
     @Override
-    public long countActiveByEmployeeId(String employeeId) {
+    public long countActiveByEmployeeId(long employeeId) {
         long count = 0;
         for (Service service : services) {
-            if (service.getEmployee().getId().equals(employeeId) && service.isActive()) {
+            if (service.getEmployee().getId() == employeeId && service.isActive()) {
                 count++;
             }
         }
@@ -89,12 +89,12 @@ implements ServiceRepository {
     }
 
     @Override
-    public void closeService(String id) {
+    public void closeService(long id) {
         findByID(id).finishService();
     }
 
     @Override
-    public void changeDescription(String id, String description) {
+    public void changeDescription(long id, String description) {
         findByID(id).setFaultDescription(description);
     }
 

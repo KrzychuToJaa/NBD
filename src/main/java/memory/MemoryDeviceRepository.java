@@ -20,9 +20,9 @@ public class MemoryDeviceRepository implements DeviceRepository {
      * @return referencja na urządzenie
      */
     @Override
-    public Device findByID(String id) {
+    public Device findByID(long id) {
         for (Device device : devices) {
-            if (device.getID().equals(id)) {
+            if (device.getID() == id) {
                 return device;
             }
         }
@@ -39,7 +39,7 @@ public class MemoryDeviceRepository implements DeviceRepository {
             throw new IllegalArgumentException("Urządzenie nie może być null.");
         }
         for (Device d : devices) {
-            if (d.getID().equals(device.getID())) {
+            if (d.getID() == device.getID()) {
                 throw new IllegalArgumentException("Urządzenie o podanym ID już istnieje");
             }
         }
@@ -53,7 +53,7 @@ public class MemoryDeviceRepository implements DeviceRepository {
     @Override
     public void remove(Device device) {
         if (device != null) {
-            devices.removeIf(d -> d.getID().equals(device.getID()));
+            devices.removeIf(d -> d.getID() == device.getID());
         }
     }
 

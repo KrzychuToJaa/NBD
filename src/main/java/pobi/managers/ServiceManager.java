@@ -37,7 +37,7 @@ public class ServiceManager {
         this.offeringRepository = Objects.requireNonNull(offeringRepository);
     }
 
-    public void registerService (String id, String clientPhone, String employeeId, String offeringId, String deviceId, String description) {
+    public void registerService (long id, long clientPhone, long employeeId, long offeringId, long deviceId, String description) {
         Client client = clientRepository.findByPhoneNumber(clientPhone);
         Employee employee = employeeRepository.findByID(employeeId);
         ServiceOffering offering = offeringRepository.findByID(offeringId);
@@ -55,15 +55,15 @@ public class ServiceManager {
         serviceRepository.add(service);
     }
 
-    public Service getService(String id) {
+    public Service getService(long id) {
         return serviceRepository.findByID(id);
     }
 
-    public void closeService(String id) {
+    public void closeService(long id) {
         serviceRepository.closeService(id);
     }
 
-    public void changeServiceDescription(String id, String description) {
+    public void changeServiceDescription(long id, String description) {
         serviceRepository.changeDescription(id, description);
     }
 

@@ -7,17 +7,17 @@ import java.util.List;
 public interface ServiceRepository {
     void add(Service service);
 
-    Service findByID(String id);
+    Service findByID(long id);
 
     List<Service> findAll();
 
-    List<Service> findByEmployeeId(String employeeId);
+    List<Service> findByEmployeeId(long employeeId);
 
-    long countActiveByEmployeeId(String employeeId);
+    long countActiveByEmployeeId(long employeeId);
 
-    void closeService(String id);
+    void closeService(long id);
 
-    void changeDescription(String id, String description);
+    void changeDescription(long id, String description);
 
     int size();
 }

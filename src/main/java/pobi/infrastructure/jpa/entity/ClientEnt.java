@@ -16,7 +16,7 @@ public class ClientEnt {
         nullable = false,
         updatable = false
     )
-    private String phoneNumber;
+    private long phoneNumber;
 
     @Column(
         name = "first_name",
@@ -48,7 +48,7 @@ public class ClientEnt {
     protected ClientEnt() {
     }
 
-    public ClientEnt(String firstName, String lastName, String phoneNumber, String city, String street, String number, boolean archive) 
+    public ClientEnt(String firstName, String lastName, long phoneNumber, String city, String street, String number, boolean archive)
     {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -67,7 +67,7 @@ public class ClientEnt {
         return lastName;
     }
 
-    public String getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 

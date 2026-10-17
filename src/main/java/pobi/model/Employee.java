@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public class Employee {
-    private final String id;
+    private final long id;
     private final String firstName;
     private final String lastName;
 
@@ -13,8 +13,8 @@ public class Employee {
 
     private final List<Service> services = new ArrayList<>();
 
-public Employee(String id, String firstName, String lastName) {
-        if (id == null || id.isBlank() || firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank()) {
+    public Employee(long id, String firstName, String lastName) {
+        if (id <= 0 || firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank()) {
             throw new IllegalArgumentException("Nie można utworzyć pracownika z pustymi polami");
         }
         this.id = id;
@@ -22,7 +22,7 @@ public Employee(String id, String firstName, String lastName) {
         this.lastName = lastName;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
@@ -70,7 +70,7 @@ public Employee(String id, String firstName, String lastName) {
         }
 
         for (Service existing : services) {
-            if (existing.getID().equals(service.getID())) {
+            if (existing.getID() == service.getID()) {
                 throw new IllegalArgumentException(
                     "Usługa jest już przypisana do pracownika"
                 );

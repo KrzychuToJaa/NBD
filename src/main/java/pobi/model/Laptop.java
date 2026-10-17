@@ -5,15 +5,14 @@ public class Laptop extends Computer {
     /**
      * Konstruktor obiektów klasy Laptop
      * @param id ID laptopa
-     * @param type typ urządzenia
      * @param model nazwa modelu laptopa
      * @param brand nazwa producena laptopa
      * @param accessories akcesoria które zostały z laptopem w serwisie
      * @param cpuManufacturer producent jednostki przetwarzającej
      */
-    public Laptop(String id, String type, String model, String brand, String accessories, String cpuManufacturer) {
-        super(id, type, model, brand, accessories, cpuManufacturer);
-        if (id == null || id.isBlank() || type == null || type.isBlank() || 
+    public Laptop(long id, String model, String brand, String accessories, String cpuManufacturer) {
+        super(id, model, brand, accessories, cpuManufacturer);
+        if (id <= 0 || 
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank() || cpuManufacturer == null || cpuManufacturer.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");

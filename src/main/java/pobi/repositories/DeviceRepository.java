@@ -6,7 +6,7 @@ import java.util.List;
 public interface DeviceRepository {
     void add(Device device);
 
-    Device findByID(String id);
+    Device findByID(long id);
 
     List<Device> findAll();
 

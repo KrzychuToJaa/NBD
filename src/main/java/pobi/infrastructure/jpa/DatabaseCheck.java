@@ -12,7 +12,7 @@ import pobi.model.Client;
 public class DatabaseCheck {
 
     public static void main(String[] args) {
-        String phone = "111222333";
+        long phone = 111222333L;
 
         try (EntityManagerFactory factory =
                 Persistence.createEntityManagerFactory("nbd")) {
@@ -37,7 +37,7 @@ public class DatabaseCheck {
 
     private static void saveExampleClient(
             EntityManagerFactory factory,
-            String phone) {
+            long phone) {
 
         try (EntityManager entityManager = factory.createEntityManager()) {
 

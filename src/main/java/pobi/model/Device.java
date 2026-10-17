@@ -1,8 +1,7 @@
 package pobi.model;
 
 public abstract class Device {
-    private final String id;
-    private String type;
+    private final long id;
     private String model;
     private String brand;
     private String accessories;
@@ -10,19 +9,17 @@ public abstract class Device {
     /**
      * Konstruktor obiektu klasy device
      * @param id ID urządzenia
-     * @param type typ urządzenia
      * @param model nazwa modelu urządzenia
      * @param brand nazwa marki urządzenia
      * @param accessories akcesoria
      */
-    public Device(String id, String type, String model, String brand, String accessories) {
-        if (id == null || id.isBlank() || type == null || type.isBlank()
+    public Device(long id, String model, String brand, String accessories) {
+        if (id <= 0
                 || model == null || model.isBlank() || brand == null || brand.isBlank()
                 || accessories == null || accessories.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola urządzenia muszą być wypełnione.");
         }
         this.id = id;
-        this.type = type;
         this.model = model;
         this.brand = brand;
         this.accessories = accessories;
@@ -32,16 +29,8 @@ public abstract class Device {
      * metoda pobierająca ID urządzenia
      * @return zwraca ID urządzenia
      */
-    public String getID() {
+    public long getID() {
         return id;
-    }
-    
-    /**
-     * metoda pobierająca typ urządzenia
-     * @return zwraca typ urządzenia
-     */
-    public String getType() {
-        return type;
     }
     
     /**
@@ -73,7 +62,7 @@ public abstract class Device {
      * @return zwraca informację o urządzeniu
      */
     public String getInfo() {
-        return "ID: " + id + "\nTyp: " + type + "\nModel: " + model + "\nMarka: " + brand + 
+        return "ID: " + id + "\nModel: " + model + "\nMarka: " + brand + 
                "\nAkcesoria: " + accessories + "\n";
     }
     
