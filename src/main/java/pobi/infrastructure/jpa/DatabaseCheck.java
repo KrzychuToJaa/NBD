@@ -7,6 +7,7 @@ import jakarta.persistence.Persistence;
 
 import pobi.infrastructure.jpa.entity.ClientEnt;
 import pobi.infrastructure.jpa.mapper.ClientMapper;
+import pobi.infrastructure.jpa.repository.JpaClientRepository;
 import pobi.model.Client;
 
 public class DatabaseCheck {
@@ -15,43 +16,45 @@ public class DatabaseCheck {
         String phone = "111222333";
 
         try (EntityManagerFactory factory =
-                Persistence.createEntityManagerFactory("nbd")) {
+                 Persistence.createEntityManagerFactory("nbd")) {
 
-            saveExampleClient(factory, phone);
+            long clientId = saveExampleClient(factory, phone);
 
             try (EntityManager entityManager = factory.createEntityManager()) {
+                JpaClientRepository repository = new JpaClientRepository(entityManager);
 
-                ClientEnt entity = entityManager.createQuery("select c from ClientEnt c where c.phoneNumber = :phone", ClientEnt.class)
-                    .setParameter("phone", phone).getSingleResult();
-
-                if (entity == null) {
-                    throw new IllegalStateException("Nie odczytano zapisanego klienta" );
-                }
-
+                ClientEnt entity = repository.findById(clientId);
                 Client client = ClientMapper.toDomain(entity);
 
-                System.out.println("\nKlient odczytany z bazy:");
+                System.out.println("\nKlient odczytany po ID:");
                 System.out.println(client.getInfo());
+
+                ClientEnt foundByPhone = repository.findByPhoneNumber(phone);
+
+                System.out.println("ID znalezione po telefonie: " + foundByPhone.getClientId());
+
+                System.out.println("Liczba klientów w bazie: " + repository.count());
             }
         }
     }
 
-    private static void saveExampleClient(
-            EntityManagerFactory factory,
-            String phone) {
+    private static long saveExampleClient(EntityManagerFactory factory,String phone) {
 
         try (EntityManager entityManager = factory.createEntityManager()) {
+            JpaClientRepository repository = new JpaClientRepository(entityManager);
 
             EntityTransaction transaction = entityManager.getTransaction();
 
             try {
                 transaction.begin();
 
-                ClientEnt existing = entityManager.createQuery(
-                    "select c from ClientEnt c where c.phoneNumber = :phone", ClientEnt.class)
-                    .setParameter("phone", phone).getResultStream().findFirst().orElse(null);
+                ClientEnt entity = entityManager.createQuery("select c from ClientEnt c where c.phoneNumber = :phone", ClientEnt.class)
+                    .setParameter("phone", phone)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
 
-                if (existing == null) {
+                if (entity == null) {
                     Client client = new Client(
                         0,
                         "Maciej",
@@ -62,12 +65,14 @@ public class DatabaseCheck {
                         "12"
                     );
 
-                    ClientEnt entity = ClientMapper.toEntity(client);
-
-                    entityManager.persist(entity);
+                    entity = repository.add(
+                        ClientMapper.toEntity(client)
+                    );
                 }
 
                 transaction.commit();
+                return entity.getClientId();
+
             } catch (RuntimeException e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
