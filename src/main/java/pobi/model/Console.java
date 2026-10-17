@@ -31,7 +31,7 @@ public class Console extends Device {
      */
     public Console(long id, String model, String brand, String accessories, ConsoleType consoleType) {
         super(id, model, brand, accessories);
-        if (id <= 0 || 
+        if (id < 0 ||
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");

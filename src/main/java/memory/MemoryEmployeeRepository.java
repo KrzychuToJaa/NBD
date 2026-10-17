@@ -9,8 +9,10 @@ public class MemoryEmployeeRepository
         implements EmployeeRepository {
     private final List<Employee> employees = new ArrayList<>();
 
+    private long nextId = 1;
+
     @Override
-    public void add(Employee employee) {
+    public synchronized Employee add(Employee employee) {
         if (employee == null) {
             throw new IllegalArgumentException(
                 "Pracownik nie może być null"
@@ -25,11 +27,15 @@ public class MemoryEmployeeRepository
             }
         }
 
-        employees.add(employee);
+        long id = employee.getId() == 0 ? nextId : employee.getId();
+        Employee saved = employee.getId() == 0 ? new Employee(id, employee.getFirstName(), employee.getLastName()) : employee;
+        employees.add(saved);
+        nextId = Math.max(nextId, id + 1);
+        return saved;
     }
 
     @Override
-    public Employee findByID(long id) {
+    public Employee findById(long id) {
         for (Employee employee : employees) {
             if (employee.getId() == id) {
                 return employee;

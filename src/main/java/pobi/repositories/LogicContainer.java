@@ -47,88 +47,20 @@ public class LogicContainer {
     }
 
     public void fillData() {
-        clientManager.registerClient(
-            "Maciej", "Mamrot", 123456789L,
-            "Łęczno", "Łysa", "12"
-        );
-
-        clientManager.registerClient(
-            "Michał", "Woźniak", 987654321L,
-            "Ręczno", "Piotrkowska", "3"
-        );
-
-        deviceManager.registerPC(
-            1L, "OptiPlex", "Dell",
-            "Mysz i klawiatura", "Intel", true
-        );
-
-        deviceManager.registerLaptop(
-            2L, "ThinkPad", "Lenovo",
-            "Zasilacz", "Intel"
-        );
-
-        deviceManager.registerLaptop(
-            3L, "Jabko Pro", "Apple",
-            "Zasilacz", "Apple"
-        );
-
-        deviceManager.registerConsole(
-            4L, "Switch", "Nintendo",
-            "JoyCon", Console.ConsoleType.Nintendo
-        );
-
-        employeeRepository.add(
-            new Employee(1L, "Maciej", "Mamrot")
-        );
-
-        employeeRepository.add(
-            new Employee(2L, "Michał", "Woźniak")
-        );
-
-        offeringRepository.add(
-            new ServiceOffering(
-                1L, 200.0, "Wymiana dysku"
-            )
-        );
-
-        offeringRepository.add(
-            new ServiceOffering(
-                2L, 100.0, "Aktualizacja systemu"
-            )
-        );
-
-        offeringRepository.add(
-            new ServiceOffering(
-                3L, 150.0, "Czyszczenie sprzętu"
-            )
-        );
-
-        serviceManager.registerService(
-            1L,
-            123456789L,
-            1L,
-            1L,
-            1L,
-            "Wymiana uszkodzonego dysku"
-        );
-
-        serviceManager.registerService(
-            2L,
-            123456789L,
-            1L,
-            2L,
-            1L,
-            "Aktualizacja systemu po wymianie dysku"
-        );
-
-        serviceManager.registerService(
-            3L,
-            987654321L,
-            2L,
-            3L,
-            2L,
-            "Czyszczenie układu chłodzenia"
-        );
+        var client1 = clientManager.registerClient("Maciej", "Mamrot", "123456789", "Łęczno", "Łysa", "12");
+        var client2 = clientManager.registerClient("Michał", "Woźniak", "987654321", "Ręczno", "Piotrkowska", "3");
+        var pc = deviceManager.registerPC("OptiPlex", "Dell", "Mysz i klawiatura", "Intel", true);
+        var laptop = deviceManager.registerLaptop("ThinkPad", "Lenovo", "Zasilacz", "Intel");
+        deviceManager.registerLaptop("Jabko Pro", "Apple", "Zasilacz", "Apple");
+        deviceManager.registerConsole("Switch", "Nintendo", "JoyCon", Console.ConsoleType.Nintendo);
+        var employee1 = employeeManager.registerEmployee("Maciej", "Mamrot");
+        var employee2 = employeeManager.registerEmployee("Michał", "Woźniak");
+        var disk = offeringManager.registerOffering(200.0, "Wymiana dysku");
+        var update = offeringManager.registerOffering(100.0, "Aktualizacja systemu");
+        var clean = offeringManager.registerOffering(150.0, "Czyszczenie sprzętu");
+        serviceManager.registerService(client1.getClientId(), employee1.getId(), disk.getId(), pc.getId(), "Wymiana uszkodzonego dysku");
+        serviceManager.registerService(client1.getClientId(), employee1.getId(), update.getId(), pc.getId(), "Aktualizacja systemu po wymianie dysku");
+        serviceManager.registerService(client2.getClientId(), employee2.getId(), clean.getId(), laptop.getId(), "Czyszczenie układu chłodzenia");
     }
 
     public ClientManager getClientManager() {

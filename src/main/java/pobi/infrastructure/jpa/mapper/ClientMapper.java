@@ -11,6 +11,7 @@ public final class ClientMapper {
     public static ClientEnt toEntity(Client client) {
 
         return new ClientEnt(
+            client.getClientId(),
             client.getFirstName(),
             client.getLastName(),
             client.getPhoneNumber(),
@@ -24,15 +25,16 @@ public final class ClientMapper {
     public static Client toDomain(ClientEnt entity) {
 
         Client client = new Client(
+            entity.getClientId(),
             entity.getFirstName(),
             entity.getLastName(),
             entity.getPhoneNumber(),
             entity.getCity(),
             entity.getStreet(),
-            entity.getNumber()
+            entity.getNumber(),
+            entity.isArchive()
         );
 
-        client.setArchive(entity.isArchive());
 
         return client;
     }

@@ -7,7 +7,7 @@ public class Service {
     private final ServiceOffering offering;
     private final Device device;
     private final double basePrice;
-    private final double actualPrice;
+    private final double finalPrice;
     private String description;
     private boolean archive = false;
 
@@ -19,10 +19,10 @@ public class Service {
     }
 
     public Service(long id, Client client, Employee employee, ServiceOffering offering, Device device,
-                   String description, double basePrice, double actualPrice, boolean archive) {
+                   String description, double basePrice, double finalPrice, boolean archive) {
 
-        if (id <= 0) {
-            throw new IllegalArgumentException("ID zlecenia musi być większe od zera");
+        if (id < 0) {
+            throw new IllegalArgumentException("ID zlecenia nie może być ujemne");
         }
 
         if (client == null || employee == null
@@ -34,6 +34,13 @@ public class Service {
             throw new IllegalArgumentException("Opis zlecenia nie może być pusty");
         }
 
+        if (!Double.isFinite(basePrice) || basePrice < 0
+                || !Double.isFinite(finalPrice) || finalPrice < 0) {
+            throw new IllegalArgumentException("Ceny muszą być skończone i nieujemne");
+        }
+        if (!archive && client.isArchive()) {
+            throw new IllegalStateException("Nie można przyjąć zlecenia dla zarchiwizowanego klienta");
+        }
         this.id = id;
         this.client = client;
         this.employee = employee;
@@ -41,11 +48,11 @@ public class Service {
         this.device = device;
         this.description = description;
         this.basePrice = basePrice;
-        this.actualPrice = actualPrice;
+        this.finalPrice = finalPrice;
         this.archive = archive;
     }
 
-    public long getID() {
+    public long getId() {
         return id;
     }
 
@@ -69,12 +76,8 @@ public class Service {
         return basePrice;
     }
 
-    public double getActualPrice() {
-        return actualPrice;
-    }
-
     public double getFinalPrice() {
-        return actualPrice;
+        return finalPrice;
     }
 
     public String getFaultDescription() {
@@ -82,6 +85,7 @@ public class Service {
     }
 
     public void setFaultDescription(String description) {
+        requireActive();
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException(
                 "Opis zlecenia nie może być pusty"
@@ -100,10 +104,17 @@ public class Service {
     }
 
     public void finishService() {
+        requireActive();
         archive = true;
     }
 
+    private void requireActive() {
+        if (archive) {
+            throw new IllegalStateException("Zakończonego zlecenia nie można zmieniać ani ponownie zakończyć");
+        }
+    }
+
     public String getInfo() {
-        return "ID: " + id + ", Klient: " + client.getFirstName() + " " + client.getLastName() + ", Pracownik: " + employee.getFirstName() + " " + employee.getLastName() + ", Usługa: " + offering.getName() + ", Urządzenie: " + device.getBrand() + " " + device.getModel() + ", Cena bazowa: " + basePrice + ", Cena aktualna: " + actualPrice + ", Opis usterki: " + description + ", Status: " + (archive ? "zakończona" : "aktywna");
+        return "ID: " + id + ", Klient: " + client.getFirstName() + " " + client.getLastName() + ", Pracownik: " + employee.getFirstName() + " " + employee.getLastName() + ", Usługa: " + offering.getName() + ", Urządzenie: " + device.getBrand() + " " + device.getModel() + ", Cena bazowa: " + basePrice + ", Cena końcowa: " + finalPrice + ", Opis usterki: " + description + ", Status: " + (archive ? "zakończona" : "aktywna");
     }
 }

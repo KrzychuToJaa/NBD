@@ -21,7 +21,7 @@ public final class DeviceMapper {
 
         if (device instanceof PC pc) {
             return new PCEnt(
-                pc.getID(),
+                pc.getId(),
                 pc.getModel(),
                 pc.getBrand(),
                 pc.getAccessories(),
@@ -30,7 +30,7 @@ public final class DeviceMapper {
             );
         } else if (device instanceof Laptop laptop) {
             return new LaptopEnt(
-                laptop.getID(),
+                laptop.getId(),
                 laptop.getModel(),
                 laptop.getBrand(),
                 laptop.getAccessories(),
@@ -38,7 +38,7 @@ public final class DeviceMapper {
             );
         } else if (device instanceof Console console) {
             return new ConsoleEnt(
-                console.getID(),
+                console.getId(),
                 console.getModel(),
                 console.getBrand(),
                 console.getAccessories(),

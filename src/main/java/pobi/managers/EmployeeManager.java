@@ -14,15 +14,15 @@ public class EmployeeManager {
         this.employeeRepository = Objects.requireNonNull(employeeRepository);
     }
 
-    public void registerEmployee(long id, String firstName, String lastName) {
+    public Employee registerEmployee(String firstName, String lastName) {
 
-        Employee employee = new Employee(id, firstName, lastName);
+        Employee employee = new Employee(0, firstName, lastName);
 
-        employeeRepository.add(employee);
+        return employeeRepository.add(employee);
     }
 
     public Employee getEmployee(long id) {
-        return employeeRepository.findByID(id);
+        return employeeRepository.findById(id);
     }
 
     public List<Employee> findAllEmployees() {

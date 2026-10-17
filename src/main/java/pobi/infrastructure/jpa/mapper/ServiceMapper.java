@@ -14,13 +14,13 @@ public final class ServiceMapper {
         }
 
         return new ServiceEnt(
-            service.getID(),
+            service.getId(),
             ClientMapper.toEntity(service.getClient()),
             EmployeeMapper.toEntity(service.getEmployee()),
             ServiceOfferingMapper.toEntity(service.getOffering()),
             DeviceMapper.toEntity(service.getDevice()),
             service.getBasePrice(),
-            service.getActualPrice(),
+            service.getFinalPrice(),
             service.getFaultDescription(),
             service.isArchive()
         );
@@ -31,7 +31,7 @@ public final class ServiceMapper {
             return null;
         }
 
-        return new Service(
+        Service service = new Service(
             entity.getId(),
             ClientMapper.toDomain(entity.getClient()),
             EmployeeMapper.toDomain(entity.getEmployee()),
@@ -39,8 +39,11 @@ public final class ServiceMapper {
             DeviceMapper.toDomain(entity.getDevice()),
             entity.getDescription(),
             entity.getBasePrice(),
-            entity.getActualPrice(),
+            entity.getFinalPrice(),
             entity.isArchive()
         );
+        service.getEmployee().addService(service);
+        service.getClient().addService(service);
+        return service;
     }
 }

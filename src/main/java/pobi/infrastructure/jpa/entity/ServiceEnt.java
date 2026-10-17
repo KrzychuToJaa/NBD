@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 public class ServiceEnt {
 
     @Id
+    @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
     @Column(name = "service_id", nullable = false, updatable = false)
     private long id;
 
@@ -30,8 +31,8 @@ public class ServiceEnt {
     @Column(name = "base_price", nullable = false)
     private double basePrice;
 
-    @Column(name = "actual_price", nullable = false)
-    private double actualPrice;
+    @Column(name = "final_price", nullable = false)
+    private double finalPrice;
 
     @Column(name = "description", nullable = false, columnDefinition = "text")
     private String description;
@@ -52,7 +53,7 @@ public class ServiceEnt {
                       ServiceOfferingEnt offering,
                       DeviceEnt device,
                       double basePrice,
-                      double actualPrice,
+                      double finalPrice,
                       String description,
                       boolean archive) {
         this.id = id;
@@ -61,7 +62,7 @@ public class ServiceEnt {
         this.offering = offering;
         this.device = device;
         this.basePrice = basePrice;
-        this.actualPrice = actualPrice;
+        this.finalPrice = finalPrice;
         this.description = description;
         this.archive = archive;
     }
@@ -90,8 +91,8 @@ public class ServiceEnt {
         return basePrice;
     }
 
-    public double getActualPrice() {
-        return actualPrice;
+    public double getFinalPrice() {
+        return finalPrice;
     }
 
     public String getDescription() {
@@ -99,6 +100,8 @@ public class ServiceEnt {
     }
 
     public void setDescription(String description) {
+        if (archive) { throw new IllegalStateException("Zakończonego zlecenia nie można zmieniać"); }
+        if (description == null || description.isBlank()) { throw new IllegalArgumentException("Opis nie może być pusty"); }
         this.description = description;
     }
 
@@ -106,7 +109,8 @@ public class ServiceEnt {
         return archive;
     }
 
-    public void setArchive(boolean archive) {
-        this.archive = archive;
+    public void finishService() {
+        if (archive) { throw new IllegalStateException("Zlecenie jest już zakończone"); }
+        archive = true;
     }
 }

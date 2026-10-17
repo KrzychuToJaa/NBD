@@ -14,7 +14,7 @@ public class PC extends Computer {
      */
     public PC(long id, String model, String brand, String accessories, String cpuManufacturer, boolean waterCooling) {
         super(id, model, brand, accessories, cpuManufacturer);
-        if (id <= 0 || 
+        if (id < 0 ||
             model == null || model.isBlank() || brand == null || brand.isBlank() || 
             accessories == null || accessories.isBlank() || cpuManufacturer == null || cpuManufacturer.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola muszą być wypełnione");

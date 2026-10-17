@@ -9,9 +9,14 @@ import java.util.List;
 
 public class MemoryDeviceRepository implements DeviceRepository {
     private List<Device> devices;
+    private long nextId = 1;
 
     public MemoryDeviceRepository() {
         this.devices = new ArrayList<>();
+    }
+
+    private Device unsupportedDevice() {
+        throw new IllegalArgumentException("Nieobsługiwany typ urządzenia");
     }
 
     /**
@@ -20,9 +25,9 @@ public class MemoryDeviceRepository implements DeviceRepository {
      * @return referencja na urządzenie
      */
     @Override
-    public Device findByID(long id) {
+    public Device findById(long id) {
         for (Device device : devices) {
-            if (device.getID() == id) {
+            if (device.getId() == id) {
                 return device;
             }
         }
@@ -34,16 +39,26 @@ public class MemoryDeviceRepository implements DeviceRepository {
      * @param device urządzenie do dodania
      */
     @Override
-    public void add(Device device) {
+    public synchronized Device add(Device device) {
         if (device == null) {
             throw new IllegalArgumentException("Urządzenie nie może być null.");
         }
         for (Device d : devices) {
-            if (d.getID() == device.getID()) {
+            if (d.getId() == device.getId()) {
                 throw new IllegalArgumentException("Urządzenie o podanym ID już istnieje");
             }
         }
-        devices.add(device);
+        long id = device.getId() == 0 ? nextId : device.getId();
+        Device saved = device.getId() == 0 ? device instanceof pobi.model.PC pc
+                ? new pobi.model.PC(id, pc.getModel(), pc.getBrand(), pc.getAccessories(), pc.getCpuManufacturer(), pc.hasWaterCooling())
+                : device instanceof pobi.model.Laptop laptop
+                    ? new pobi.model.Laptop(id, laptop.getModel(), laptop.getBrand(), laptop.getAccessories(), laptop.getCpuManufacturer())
+                    : device instanceof pobi.model.Console console
+                        ? new pobi.model.Console(id, console.getModel(), console.getBrand(), console.getAccessories(), console.getConsoleType())
+                        : unsupportedDevice() : device;
+        devices.add(saved);
+        nextId = Math.max(nextId, id + 1);
+        return saved;
     }
 
     /**
@@ -53,7 +68,7 @@ public class MemoryDeviceRepository implements DeviceRepository {
     @Override
     public void remove(Device device) {
         if (device != null) {
-            devices.removeIf(d -> d.getID() == device.getID());
+            devices.removeIf(d -> d.getId() == device.getId());
         }
     }
 

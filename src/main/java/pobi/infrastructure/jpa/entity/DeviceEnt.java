@@ -19,6 +19,7 @@ import jakarta.persistence.Version;
 public abstract class DeviceEnt {
 
     @Id
+    @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
     @Column(
         name = "id",
         nullable = false,

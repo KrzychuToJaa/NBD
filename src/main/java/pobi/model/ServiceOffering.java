@@ -6,10 +6,10 @@ public class ServiceOffering {
     private final String name;
 
     public ServiceOffering(long id, double basePrice, String name) {
-        if (id <= 0 || name == null || name.isBlank()) {
+        if (id < 0 || name == null || name.isBlank()) {
             throw new IllegalArgumentException("Nie można utworzyć oferty z pustymi polami");
         }
-        if (basePrice < 0) {
+        if (!Double.isFinite(basePrice) || basePrice < 0) {
             throw new IllegalArgumentException("Cena podstawowa nie może być ujemna");
         }
         this.id = id;
@@ -26,7 +26,7 @@ public class ServiceOffering {
     }
 
     public void setBasePrice(double basePrice) {
-        if (basePrice < 0) {
+        if (!Double.isFinite(basePrice) || basePrice < 0) {
             throw new IllegalArgumentException("Cena podstawowa nie może być ujemna");
         }
         this.basePrice = basePrice;

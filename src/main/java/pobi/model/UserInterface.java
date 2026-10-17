@@ -77,6 +77,10 @@ public class UserInterface {
             System.out.println("1. Dodaj klienta");
             System.out.println("2. Wyświetl klienta");
             System.out.println("3. Wyświetl wszystkich klientów");
+            System.out.println("4. Wyszukaj po telefonie");
+            System.out.println("5. Zmień telefon klienta");
+            System.out.println("6. Archiwizuj klienta");
+            System.out.println("7. Historia zleceń klienta");
             System.out.println("0. Powrót");
 
             int choice = readInt("Wybierz opcję: ");
@@ -86,6 +90,21 @@ public class UserInterface {
                     case 1 -> registerClient();
                     case 2 -> showClient();
                     case 3 -> showAllClients();
+                    case 4 -> System.out.println(clientManager.getClientByPhoneNumber(readText("Telefon klienta: ")).getInfo());
+                    case 5 -> {
+                        long id = readLong("ID klienta: ");
+                        clientManager.changePhoneNumber(id, readText("Nowy telefon — 9 cyfr: "));
+                        System.out.println("Numer telefonu został zmieniony");
+                    }
+                    case 6 -> {
+                        clientManager.archiveClient(readLong("ID klienta: "));
+                        System.out.println("Klient został zarchiwizowany");
+                    }
+                    case 7 -> {
+                        var history = serviceManager.getClientServices(readLong("ID klienta: "));
+                        if (history.isEmpty()) { System.out.println("Brak zleceń klienta"); }
+                        history.forEach(service -> System.out.println(service.getInfo()));
+                    }
                     case 0 -> {
                         return;
                     }
@@ -102,19 +121,19 @@ public class UserInterface {
     private void registerClient() {
         String firstName = readText("Imię: ");
         String lastName = readText("Nazwisko: ");
-        long phone = readLong("Telefon — 9 cyfr: ");
+        String phone = readText("Telefon — 9 cyfr: ");
         String city = readText("Miasto: ");
         String street = readText("Ulica: ");
         String number = readText("Numer domu: ");
 
-        clientManager.registerClient(firstName, lastName, phone, city, street, number);
+        Client saved = clientManager.registerClient(firstName, lastName, phone, city, street, number);
 
-        System.out.println("Klient został dodany");
+        System.out.println("Klient został dodany. ID: " + saved.getClientId());
     }
 
     private void showClient() {
-        long phone = readLong("Telefon klienta: ");
-        Client client = clientManager.getClient(phone);
+        long clientId = readLong("ID klienta: ");
+        Client client = clientManager.getClient(clientId);
 
         if (client == null) {
             System.out.println("Klient jest niedostępny");
@@ -182,7 +201,7 @@ public class UserInterface {
             );
         }
 
-        long id = readLong("ID urządzenia: ");
+        Device saved = null;
         String brand = readText("Marka: ");
         String model = readText("Model: ");
         String accessories = readText("Akcesoria: ");
@@ -194,22 +213,22 @@ public class UserInterface {
                     "Chłodzenie wodne? (tak/nie): "
                 );
 
-                deviceManager.registerPC(id, model, brand, accessories, cpu, cooling);
+                saved = deviceManager.registerPC(model, brand, accessories, cpu, cooling);
             }
             case 2 -> {
                 String cpu = readText("Producent procesora: ");
 
-                deviceManager.registerLaptop(id, model, brand, accessories, cpu);
+                saved = deviceManager.registerLaptop(model, brand, accessories, cpu);
             }
             case 3 -> {
                 Console.ConsoleType consoleType =
                     readConsoleType();
 
-                deviceManager.registerConsole(id, model, brand, accessories, consoleType);
+                saved = deviceManager.registerConsole(model, brand, accessories, consoleType);
             }
         }
 
-        System.out.println("Urządzenie zostało dodane");
+        System.out.println("Urządzenie zostało dodane. ID: " + saved.getId());
     }
 
     private Console.ConsoleType readConsoleType() {
@@ -258,13 +277,12 @@ public class UserInterface {
             try {
                 switch (choice) {
                     case 1 -> {
-                        long id = readLong("ID pracownika: ");
                         String firstName = readText("Imię: ");
                         String lastName = readText("Nazwisko: ");
 
-                        employeeManager.registerEmployee(id, firstName, lastName);
+                        Employee saved = employeeManager.registerEmployee(firstName, lastName);
 
-                        System.out.println("Pracownik został dodany");
+                        System.out.println("Pracownik został dodany. ID: " + saved.getId());
                     }
                     case 2 -> {
                         long id = readLong("ID pracownika: ");
@@ -334,14 +352,13 @@ public class UserInterface {
             try {
                 switch (choice) {
                     case 1 -> {
-                        long id = readLong("ID pozycji katalogu: ");
                         String name = readText("Nazwa usługi: ");
                         double price = readDouble("Cena bazowa: ");
 
-                        offeringManager.registerOffering( id, price, name);
+                        ServiceOffering saved = offeringManager.registerOffering(price, name);
 
                         System.out.println(
-                            "Rodzaj usługi został dodany do katalogu"
+                            "Rodzaj usługi został dodany do katalogu. ID: " + saved.getId()
                         );
                     }
                     case 2 -> {
@@ -434,16 +451,15 @@ public class UserInterface {
         System.out.println("\nKatalog usług:");
         showAllOfferings();
 
-        long id = readLong("\nID nowego zlecenia: ");
-        long phone = readLong("Telefon klienta: ");
+        long clientId = readLong("ID klienta: ");
         long employeeId = readLong("ID pracownika: ");
         long offeringId = readLong("ID pozycji katalogu: ");
         long deviceId = readLong("ID urządzenia: ");
         String description = readText("Opis zlecenia: ");
 
-        serviceManager.registerService(id, phone, employeeId, offeringId, deviceId, description );
+        Service saved = serviceManager.registerService(clientId, employeeId, offeringId, deviceId, description );
 
-        System.out.println("Zlecenie zostało przyjęte");
+        System.out.println("Zlecenie zostało przyjęte. ID: " + saved.getId());
     }
 
     private void showAllServices() {

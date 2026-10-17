@@ -1,79 +1,59 @@
 package memory;
 
 import pobi.model.Client;
-
-
+import pobi.repositories.ClientRepository;
 import java.util.ArrayList;
 import java.util.List;
-import pobi.repositories.ClientRepository;
 
-public class MemoryClientRepository 
-    implements ClientRepository {
-    private List<Client> clients;
+public class MemoryClientRepository implements ClientRepository {
+    private final List<Client> clients = new ArrayList<>();
+    private long nextId = 1;
 
-    public MemoryClientRepository() {
-        this.clients = new ArrayList<>();
-    }
-
-    /**
-     * Dodanie klienta do repozytorium
-     * @param client klient do dodania
-     */
     @Override
-    public void add(Client client) {
-        if (client == null) {
-            throw new IllegalArgumentException("Klient nie może być null.");
+    public synchronized Client add(Client client) {
+        if (client == null) { throw new IllegalArgumentException("Klient nie może być null"); }
+        requireUniquePhone(client.getPhoneNumber(), -1);
+        long id = client.getClientId() == 0 ? nextId : client.getClientId();
+        if (clients.stream().anyMatch(c -> c.getClientId() == id)) {
+            throw new IllegalArgumentException("Klient o podanym ID już istnieje");
         }
-        for (Client c : clients) {
-            if (c.getPhoneNumber() == client.getPhoneNumber()) {
-                throw new IllegalArgumentException("Klient o podanym numerze telefonu już istnieje");
-            }
+        Client saved = client.getClientId() == 0
+            ? new Client(id, client.getFirstName(), client.getLastName(), client.getPhoneNumber(),
+                         client.getCity(), client.getStreet(), client.getNumber(), client.isArchive())
+            : client;
+        clients.add(saved);
+        nextId = Math.max(nextId, id + 1);
+        return saved;
+    }
+
+    @Override
+    public Client findById(long clientId) {
+        return clients.stream().filter(c -> c.getClientId() == clientId).findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Klient o podanym ID nie został znaleziony"));
+    }
+
+    @Override
+    public Client findByPhoneNumber(String phoneNumber) {
+        return clients.stream().filter(c -> c.getPhoneNumber().equals(phoneNumber)).findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Klient o podanym numerze telefonu nie został znaleziony"));
+    }
+
+    @Override
+    public synchronized void changePhoneNumber(long clientId, String phoneNumber) {
+        Client client = findById(clientId);
+        requireUniquePhone(phoneNumber, clientId);
+        client.changePhoneNumber(phoneNumber);
+    }
+
+    private void requireUniquePhone(String phoneNumber, long exceptClientId) {
+        Client.validatePhoneNumber(phoneNumber);
+        if (clients.stream().anyMatch(c -> c.getClientId() != exceptClientId
+                && c.getPhoneNumber().equals(phoneNumber))) {
+            throw new IllegalArgumentException("Klient o podanym numerze telefonu już istnieje");
         }
-        clients.add(client);
     }
 
-    /**
-     * Usunięcie klienta z repozytorium
-     * @param client klient do usunięcia
-     */
-    @Override
-    public void remove(Client client) {
-        if (client != null) {
-            clients.remove(client);
-        }
-    }
-
-    /**
-     * Zwraca liczbę klientów w repozytorium
-     * @return liczba klientów
-     */
-    @Override
-    public int size() {
-        return clients.size();
-    }
-
-    /**
-     * Zwraca listę wszystkich klientów
-     * @return lista klientów
-     */
-    @Override
-    public List<Client> findAll() {
-        return List.copyOf(clients);
-    }
-
-    /**
-     * Znalezienie klienta po numerze telefonu, a następnie zwrócenie go
-     * @param phoneNumber numer telefonu klienta
-     * @return Klient o podanym numerze telefonu
-     */
-    @Override
-    public Client findByPhoneNumber(long phoneNumber) {
-        for (Client client : clients) {
-            if (client.getPhoneNumber() == phoneNumber) {
-                return client;
-            }
-        }
-        throw new IllegalArgumentException("Klient o podanym numerze telefonu nie został znaleziony");
-    }
-
+    @Override public void archive(long clientId) { findById(clientId).archive(); }
+    @Override public List<Client> findAll() { return List.copyOf(clients); }
+    @Override public int size() { return clients.size(); }
 }

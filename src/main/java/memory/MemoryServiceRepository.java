@@ -11,6 +11,7 @@ import pobi.repositories.ServiceRepository;
 public class MemoryServiceRepository
 implements ServiceRepository {
     private List<Service> services;
+    private long nextId = 1;
 
     public MemoryServiceRepository() {
         this.services = new ArrayList<>();
@@ -22,9 +23,9 @@ implements ServiceRepository {
      * @return referencja na usługę
      */
     @Override
-    public Service findByID(long id) {
+    public Service findById(long id) {
         for (Service service : services) {
-            if (service.getID() == id) {
+            if (service.getId() == id) {
                 return service;
             }
         }
@@ -36,7 +37,7 @@ implements ServiceRepository {
      * @param service usługa do dodania
      */
     @Override
-    public void add(Service service) {
+    public synchronized Service add(Service service) {
         if (service == null) {
             throw new IllegalArgumentException(
                 "Zlecenie nie może być null"
@@ -44,7 +45,7 @@ implements ServiceRepository {
         }
 
         for (Service existing : services) {
-            if (existing.getID() == service.getID()) {
+            if (existing.getId() == service.getId()) {
                 throw new IllegalArgumentException(
                     "Zlecenie o podanym ID już istnieje"
                 );
@@ -57,8 +58,13 @@ implements ServiceRepository {
             );
         }
 
-        service.getEmployee().addService(service);
-        services.add(service);
+        long id = service.getId() == 0 ? nextId : service.getId();
+        Service saved = service.getId() == 0 ? new Service(id, service.getClient(), service.getEmployee(), service.getOffering(), service.getDevice(), service.getFaultDescription(), service.getBasePrice(), service.getFinalPrice(), service.isArchive()) : service;
+        saved.getEmployee().addService(saved);
+        saved.getClient().addService(saved);
+        services.add(saved);
+        nextId = Math.max(nextId, id + 1);
+        return saved;
     }
 
     @Override
@@ -90,12 +96,17 @@ implements ServiceRepository {
 
     @Override
     public void closeService(long id) {
-        findByID(id).finishService();
+        findById(id).finishService();
     }
 
     @Override
     public void changeDescription(long id, String description) {
-        findByID(id).setFaultDescription(description);
+        findById(id).setFaultDescription(description);
+    }
+
+    @Override
+    public List<Service> findByClientId(long clientId) {
+        return services.stream().filter(s -> s.getClient().getClientId() == clientId).toList();
     }
 
     @Override

@@ -10,13 +10,12 @@ import jakarta.persistence.Table;
 public class ClientEnt {
 
     @Id
-    @Column(
-        name = "phone_number",
-        length = 9,
-        nullable = false,
-        updatable = false
-    )
-    private long phoneNumber;
+    @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
+    @Column(name = "client_id", nullable = false, updatable = false)
+    private long clientId;
+
+    @Column(name = "phone_number", length = 9, nullable = false, unique = true)
+    private String phoneNumber;
 
     @Column(
         name = "first_name",
@@ -48,8 +47,9 @@ public class ClientEnt {
     protected ClientEnt() {
     }
 
-    public ClientEnt(String firstName, String lastName, long phoneNumber, String city, String street, String number, boolean archive)
+    public ClientEnt(long clientId, String firstName, String lastName, String phoneNumber, String city, String street, String number, boolean archive)
     {
+        this.clientId = clientId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -67,7 +67,9 @@ public class ClientEnt {
         return lastName;
     }
 
-    public long getPhoneNumber() {
+    public long getClientId() { return clientId; }
+
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -87,7 +89,4 @@ public class ClientEnt {
         return archive;
     }
 
-    public void setArchive(boolean archive) {
-        this.archive = archive;
-    }
 }

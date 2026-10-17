@@ -14,7 +14,7 @@ public abstract class Device {
      * @param accessories akcesoria
      */
     public Device(long id, String model, String brand, String accessories) {
-        if (id <= 0
+        if (id < 0
                 || model == null || model.isBlank() || brand == null || brand.isBlank()
                 || accessories == null || accessories.isBlank()) {
             throw new IllegalArgumentException("Wszystkie pola urządzenia muszą być wypełnione.");
@@ -29,7 +29,7 @@ public abstract class Device {
      * metoda pobierająca ID urządzenia
      * @return zwraca ID urządzenia
      */
-    public long getID() {
+    public long getId() {
         return id;
     }
     

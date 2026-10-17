@@ -12,7 +12,7 @@ import pobi.model.Client;
 public class DatabaseCheck {
 
     public static void main(String[] args) {
-        long phone = 111222333L;
+        String phone = "111222333";
 
         try (EntityManagerFactory factory =
                 Persistence.createEntityManagerFactory("nbd")) {
@@ -21,7 +21,8 @@ public class DatabaseCheck {
 
             try (EntityManager entityManager = factory.createEntityManager()) {
 
-                ClientEnt entity = entityManager.find(ClientEnt.class, phone);
+                ClientEnt entity = entityManager.createQuery("select c from ClientEnt c where c.phoneNumber = :phone", ClientEnt.class)
+                    .setParameter("phone", phone).getSingleResult();
 
                 if (entity == null) {
                     throw new IllegalStateException("Nie odczytano zapisanego klienta" );
@@ -37,7 +38,7 @@ public class DatabaseCheck {
 
     private static void saveExampleClient(
             EntityManagerFactory factory,
-            long phone) {
+            String phone) {
 
         try (EntityManager entityManager = factory.createEntityManager()) {
 
@@ -46,13 +47,13 @@ public class DatabaseCheck {
             try {
                 transaction.begin();
 
-                ClientEnt existing = entityManager.find(
-                    ClientEnt.class,
-                    phone
-                );
+                ClientEnt existing = entityManager.createQuery(
+                    "select c from ClientEnt c where c.phoneNumber = :phone", ClientEnt.class)
+                    .setParameter("phone", phone).getResultStream().findFirst().orElse(null);
 
                 if (existing == null) {
                     Client client = new Client(
+                        0,
                         "Maciej",
                         "Mamrot",
                         phone,

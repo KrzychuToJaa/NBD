@@ -4,10 +4,11 @@ import pobi.model.Service;
 import java.util.List;
 
 
+/** Brak wyniku: IllegalArgumentException. add nadaje ID obiektom z ID 0 i zwraca zapisany obiekt. */
 public interface ServiceRepository {
-    void add(Service service);
+    Service add(Service service);
 
-    Service findByID(long id);
+    Service findById(long id);
 
     List<Service> findAll();
 
@@ -18,6 +19,8 @@ public interface ServiceRepository {
     void closeService(long id);
 
     void changeDescription(long id, String description);
+
+    List<Service> findByClientId(long clientId);
 
     int size();
 }

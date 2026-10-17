@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 public class ServiceOfferingEnt {
 
     @Id
+    @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
     @Column(
         name = "id",
         nullable = false,

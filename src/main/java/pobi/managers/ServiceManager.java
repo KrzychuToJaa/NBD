@@ -37,11 +37,11 @@ public class ServiceManager {
         this.offeringRepository = Objects.requireNonNull(offeringRepository);
     }
 
-    public void registerService (long id, long clientPhone, long employeeId, long offeringId, long deviceId, String description) {
-        Client client = clientRepository.findByPhoneNumber(clientPhone);
-        Employee employee = employeeRepository.findByID(employeeId);
-        ServiceOffering offering = offeringRepository.findByID(offeringId);
-        Device device = deviceRepository.findByID(deviceId);
+    public Service registerService (long clientId, long employeeId, long offeringId, long deviceId, String description) {
+        Client client = clientRepository.findById(clientId);
+        Employee employee = employeeRepository.findById(employeeId);
+        ServiceOffering offering = offeringRepository.findById(offeringId);
+        Device device = deviceRepository.findById(deviceId);
 
         if  (client.isArchive()) {
             throw new IllegalStateException("Nie można zarejestrować usługi dla klienta zarchiwizowanego");
@@ -51,12 +51,17 @@ public class ServiceManager {
             throw new IllegalStateException("Nie można zarejestrować usługi dla pracownika ponad limit aktywnych usług");
         }
 
-        Service service = new Service(id, client, employee, offering, device, description);
-        serviceRepository.add(service);
+        Service service = new Service(0, client, employee, offering, device, description);
+        return serviceRepository.add(service);
+    }
+
+    public List<Service> getClientServices(long clientId) {
+        clientRepository.findById(clientId);
+        return serviceRepository.findByClientId(clientId);
     }
 
     public Service getService(long id) {
-        return serviceRepository.findByID(id);
+        return serviceRepository.findById(id);
     }
 
     public void closeService(long id) {

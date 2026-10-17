@@ -9,8 +9,10 @@ public class MemoryServiceOfferingRepository
 implements ServiceOfferingRepository {
     private final List<ServiceOffering> offerings = new ArrayList<>();
 
+    private long nextId = 1;
+
     @Override
-    public void add(ServiceOffering offering) {
+    public synchronized ServiceOffering add(ServiceOffering offering) {
         if (offering == null) {
             throw new IllegalArgumentException(
                 "Pozycja katalogu nie może być null"
@@ -25,11 +27,15 @@ implements ServiceOfferingRepository {
             }
         }
 
-        offerings.add(offering);
+        long id = offering.getId() == 0 ? nextId : offering.getId();
+        ServiceOffering saved = offering.getId() == 0 ? new ServiceOffering(id, offering.getBasePrice(), offering.getName()) : offering;
+        offerings.add(saved);
+        nextId = Math.max(nextId, id + 1);
+        return saved;
     }
 
     @Override
-    public ServiceOffering findByID(long id) {
+    public ServiceOffering findById(long id) {
         for (ServiceOffering offering : offerings) {
             if (offering.getId() == id) {
                 return offering;

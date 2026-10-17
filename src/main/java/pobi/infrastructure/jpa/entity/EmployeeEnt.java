@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 public class EmployeeEnt {
 
     @Id
+    @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
     @Column(
         name = "employee_id",
         nullable = false,
