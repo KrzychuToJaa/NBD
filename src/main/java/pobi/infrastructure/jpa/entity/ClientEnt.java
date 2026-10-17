@@ -58,6 +58,26 @@ public class ClientEnt {
         this.number = number;
         this.archive = archive;
     }
+    public void changePhoneNumber(String phoneNumber) {
+        if (archive) {
+            throw new IllegalStateException(
+                "Zarchiwizowanego klienta nie można modyfikować"
+            );
+        }
+
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void archive() {
+        if (archive) {
+            throw new IllegalStateException(
+                "Klient jest już zarchiwizowany"
+            );
+        }
+
+        archive = true;
+    }
+        
 
     public String getFirstName() {
         return firstName;

@@ -62,4 +62,32 @@ public class JpaClientRepository {
             )
             .getSingleResult();
     }
+
+    public boolean phoneNumberExists (String phoneNumber, long excludedClientId) {
+
+        long count = entityManager.createQuery("select count(c) from ClientEnt c where c.phoneNumber = :phone and c.clientId <> :excludedId", Long.class)
+            .setParameter("phone", phoneNumber)
+            .setParameter("excludedId", excludedClientId)
+            .getSingleResult();
+
+        return count > 0;
+    }
+
+    public boolean hasActiveServices(long clientId) {
+        long count = entityManager.createQuery("select count(s) from ServiceEnt s where s.client.clientId = :clientId and s.archive = false", Long.class)
+            .setParameter("clientId", clientId)
+            .getSingleResult();
+
+        return count > 0;
+    }
+
+    public void changePhoneNumber(long clientId, String phoneNumber) {
+        ClientEnt entity = findById(clientId);
+        entity.changePhoneNumber(phoneNumber);
+    }
+
+    public void archive(long clientId) {
+        ClientEnt entity = findById(clientId);
+        entity.archive();
+    }
 }
