@@ -13,8 +13,6 @@ import pobi.managers.ServiceManager;
 import pobi.managers.EmployeeManager;
 import pobi.managers.ServiceOfferingManager;
 import pobi.model.Console;
-import pobi.model.Employee;
-import pobi.model.ServiceOffering;
 
 public class LogicContainer {
     private final ClientManager clientManager;
