@@ -30,7 +30,6 @@ public final class JpaDataInitializer {
             ClientEnt client2 = new ClientEnt(0, "Michał", "Woźniak", "987654321", "Ręczno", "Piotrkowska", "3", false);
             PCEnt pc = new PCEnt(0, "OptiPlex", "Dell", "Mysz i klawiatura", "Intel", true);
             LaptopEnt laptop = new LaptopEnt(0, "ThinkPad", "Lenovo", "Zasilacz", "Intel");
-            ConsoleEnt console = new ConsoleEnt(0, "Switch", "Nintendo", "JoyCon", Console.ConsoleType.Nintendo);
             EmployeeEnt employee1 = new EmployeeEnt(0, "Krzysztof", "Kata");
             EmployeeEnt employee2 = new EmployeeEnt(0, "Piotr", "Matuszczyk");
             ServiceOfferingEnt disk = new ServiceOfferingEnt(0, 200.0, "Wymiana dysku");
@@ -41,8 +40,6 @@ public final class JpaDataInitializer {
             em.persist(client2);
             em.persist(pc);
             em.persist(laptop);
-            em.persist(apple);
-            em.persist(console);
             em.persist(employee1);
             em.persist(employee2);
             em.persist(disk);
