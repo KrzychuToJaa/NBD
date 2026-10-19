@@ -1,6 +1,7 @@
 package pobi.infrastructure.jpa.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import pobi.infrastructure.jpa.entity.EmployeeEnt;
 
 import java.util.List;
@@ -21,9 +22,19 @@ public class JpaEmployeeRepository {
         if (employee.getId() != 0) {
             throw new IllegalArgumentException("Nowy pracownik nie może mieć nadanego ID");
         }
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(employee);
+            transaction.commit();
+            return employee;
+        } catch (RuntimeException e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        }
 
-        entityManager.persist(employee);
-        return employee;
     }
 
     public EmployeeEnt findById(long id) {
@@ -37,7 +48,6 @@ public class JpaEmployeeRepository {
     }
 
     public List<EmployeeEnt> findAll() {
-        return entityManager.createQuery("select e from EmployeeEnt e order by e.id", EmployeeEnt.class)
-            .getResultList();
+        return entityManager.createQuery("select e from EmployeeEnt e order by e.id", EmployeeEnt.class).getResultList();
     }
 }

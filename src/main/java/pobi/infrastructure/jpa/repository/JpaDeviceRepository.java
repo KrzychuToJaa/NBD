@@ -1,6 +1,7 @@
 package pobi.infrastructure.jpa.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import pobi.infrastructure.jpa.entity.DeviceEnt;
 
 import java.util.List;
@@ -21,9 +22,19 @@ public class JpaDeviceRepository {
         if (device.getId() != 0) {
             throw new IllegalArgumentException("Nowe urządzenie nie może mieć nadanego ID");
         }
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(device);
+            transaction.commit();
+            return device;
+        } catch (RuntimeException ex) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw ex;
+        }
 
-        entityManager.persist(device);
-        return device;
     }
 
     public DeviceEnt findById(long id) {
@@ -37,26 +48,32 @@ public class JpaDeviceRepository {
     }
 
     public List<DeviceEnt> findAll() {
-        return entityManager.createQuery("select d from DeviceEnt d order by d.id", DeviceEnt.class)
-            .getResultList();
+        return entityManager.createQuery("select d from DeviceEnt d order by d.id", DeviceEnt.class).getResultList();
     }
 
     public void remove(long id) {
-        DeviceEnt device = findById(id);
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            DeviceEnt device = findById(id);
 
-        long count = entityManager.createQuery("select count(s) from ServiceEnt s where s.device.id = :deviceId", Long.class)
-            .setParameter("deviceId", id)
-            .getSingleResult();
+            long count = entityManager.createQuery("select count(s) from ServiceEnt s where s.device.id = :deviceId", Long.class).setParameter("deviceId", id).getSingleResult();
 
-        if (count > 0) {
-            throw new IllegalStateException("Nie można usunąć urządzenia powiązanego ze zleceniem");
+            if (count > 0) {
+                throw new IllegalStateException("Nie można usunąć urządzenia powiązanego ze zleceniem");
+            }
+
+            entityManager.remove(device);
+            transaction.commit();
+        } catch (RuntimeException ex) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw ex;
         }
-
-        entityManager.remove(device);
     }
 
     public long count() {
-        return entityManager.createQuery("select count(d) from DeviceEnt d", Long.class)
-            .getSingleResult();
+        return entityManager.createQuery("select count(d) from DeviceEnt d", Long.class).getSingleResult();
     }
 }
