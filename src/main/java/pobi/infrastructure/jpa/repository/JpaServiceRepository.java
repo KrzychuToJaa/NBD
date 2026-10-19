@@ -27,12 +27,19 @@ public class JpaServiceRepository {
         try {
             tx.begin();
 
-            ClientEnt client = em.find(ClientEnt.class, entity.getClient().getClientId());
+            ClientEnt client = em.find(ClientEnt.class, entity.getClient().getClientId(), LockModeType.PESSIMISTIC_WRITE);
+            if (client == null) {
+                throw new IllegalArgumentException("Klient o ID " + entity.getClient().getClientId() + " nie istnieje");
+            }
+            em.refresh(client, LockModeType.PESSIMISTIC_WRITE);
+            if (!entity.isArchive() && client.isArchive()) {
+                throw new IllegalStateException("Nie można zarejestrować usługi dla klienta zarchiwizowanego");
+            }
             EmployeeEnt employee = em.find(EmployeeEnt.class, entity.getEmployee().getId(), LockModeType.PESSIMISTIC_WRITE);
             ServiceOfferingEnt offering = em.find(ServiceOfferingEnt.class, entity.getOffering().getId());
             DeviceEnt device = em.find(DeviceEnt.class, entity.getDevice().getId());
 
-            if (client == null || employee == null || device == null || offering == null) {
+            if (employee == null || device == null || offering == null) {
                 throw new IllegalArgumentException("Powiązany obiekt (klient/pracownik/oferta/urządzenie) nie istnieje w bazie");
             }
             if (!entity.isArchive() && countActiveByEmployeeId(employee.getId()) >= Employee.maxServices) {

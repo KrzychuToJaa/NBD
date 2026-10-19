@@ -2,6 +2,7 @@ package pobi.infrastructure.jpa.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.LockModeType;
 import pobi.infrastructure.jpa.entity.ClientEnt;
 
 import java.util.List;
@@ -111,7 +112,14 @@ public class JpaClientRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            ClientEnt entity = findById(clientId);
+            ClientEnt entity = entityManager.find(ClientEnt.class, clientId, LockModeType.PESSIMISTIC_WRITE);
+            if (entity == null) {
+                throw new IllegalArgumentException("Klient o ID " + clientId + " nie istnieje");
+            }
+            entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
+            if (hasActiveServices(clientId)) {
+                throw new IllegalStateException("Klient ma aktywne zlecenia; najpierw je zakończ");
+            }
             entity.archive();
             transaction.commit();
         } catch (RuntimeException ex) {

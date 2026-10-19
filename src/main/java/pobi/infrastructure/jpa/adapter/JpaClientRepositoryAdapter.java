@@ -69,13 +69,7 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public void archive(long clientId) {
-        Client client = findById(clientId);
-
-        if (repository.hasActiveServices(clientId)) {
-            throw new IllegalStateException("Klient ma aktywne zlecenia; najpierw je zakończ");
-        }
-
-        client.archive();
+        // Ostateczna kontrola odbywa się po zablokowaniu klienta, w transakcji repozytorium.
         repository.archive(clientId);
     }
 
