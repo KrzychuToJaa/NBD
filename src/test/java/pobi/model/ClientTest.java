@@ -1,43 +1,91 @@
-// package pobi.model;
+package pobi.model;
 
-// import org.junit.jupiter.api.Test;
-// import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-// public class ClientTest {
+public class ClientTest {
 
-//     @Test
-//     public void testClientConstructor() {
-//         Client client = new Client("Mateusz", "Jankowski", 123456789L, "Warszawa", "Knurowa", "12");
+    @Test
+    public void testClientConstructor() {
+        Client client = new Client(1, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "12");
         
-//         assertEquals("Mateusz", client.getFirstName());
-//         assertEquals("Jankowski", client.getLastName());
-//         assertEquals(123456789L, client.getPhoneNumber());
-//         assertEquals("Warszawa", client.getCity());
-//         assertEquals("Knurowa", client.getStreet());
-//         assertEquals("12", client.getNumber());
-//         assertFalse(client.isArchive());
-//     }
+        assertEquals(1, client.getClientId());
+        assertEquals("Mateusz", client.getFirstName());
+        assertEquals("Jankowski", client.getLastName());
+        assertEquals("123456789", client.getPhoneNumber());
+        assertEquals("Warszawa", client.getCity());
+        assertEquals("Knurowa", client.getStreet());
+        assertEquals("12", client.getNumber());
+        assertFalse(client.isArchive());
+        assertTrue(client.getServices().isEmpty());
+    }
 
-//     @Test
-//     public void testClientConstructorExceptions() {
-//         assertThrows(IllegalArgumentException.class, () -> new Client("   ", "Jankowski", 123456789L, "Warszawa", "Knurowa", "12"));
-//         assertThrows(IllegalArgumentException.class, () -> new Client("", "Jankowski", 123456789L, "Warszawa", "Knurowa", "12"));
-//         // Test sprawdzający długość numeru telefonu (za krótki - 8 cyfr):
-//         assertThrows(IllegalArgumentException.class, () -> new Client("Mateusz", "Jankowski", 12345678L, "Warszawa", "Knurowa", "12"));
-//         // Test sprawdzający długość numeru telefonu (za długi - 10 cyfr):
-//         assertThrows(IllegalArgumentException.class, () -> new Client("Mateusz", "Jankowski", 1234567890L, "Warszawa", "Knurowa", "12"));
-//         // Test sprawdzający ujemny numer telefonu:
-//         assertThrows(IllegalArgumentException.class, () -> new Client("Mateusz", "Jankowski", -123456789L, "Warszawa", "Knurowa", "12"));
-//         // Za długi numer domu:
-//         assertThrows(IllegalArgumentException.class, () -> new Client("Mateusz", "Jankowski", 123456789L, "Warszawa", "Knurowa", "1234"));
-//     }
+    @Test
+    public void testClientConstructorExceptions() {
+        assertThrows(IllegalArgumentException.class, () -> new Client(0, "   ", "Jankowski", "123456789", "Warszawa", "Knurowa", "12"));
+        assertThrows(IllegalArgumentException.class, () -> new Client(0, "", "Jankowski", "123456789", "Warszawa", "Knurowa", "12"));
+        assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "", "123456789", "Warszawa", "Knurowa", "12"));
+        assertThrows(IllegalArgumentException.class, () -> new Client(-1, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "12"));
+        // Za krótki numer telefonu (8 cyfr):
+        assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "12345678", "Warszawa", "Knurowa", "12"));
+        // Za długi numer telefonu (10 cyfr):
+        assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "1234567890", "Warszawa", "Knurowa", "12"));
+        // Litery w numerze telefonu:
+        assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "12345678a", "Warszawa", "Knurowa", "12"));
+        // Za długi numer domu (> 3 znaki):
+        assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "1234"));
+    }
 
-//     @Test
-//     public void testClientArchiveStatus() {
-//         Client client = new Client("Mateusz", "Jankowski", 123456789L, "Warszawa", "Knurowa", "12");
-//         assertFalse(client.isArchive());
-        
-//         client.setArchive(true);
-//         assertTrue(client.isArchive());
-//     }
-// }
+    @Test
+    public void testChangePhoneNumber() {
+        Client client = new Client(1, "Mateusz", "Jankowski", "012345678", "Warszawa", "Knurowa", "12");
+        client.changePhoneNumber("987654321");
+        assertEquals("987654321", client.getPhoneNumber());
+
+        assertThrows(IllegalArgumentException.class, () -> client.changePhoneNumber("invalid"));
+        assertThrows(IllegalArgumentException.class, () -> client.changePhoneNumber(null));
+    }
+
+    @Test
+    public void testArchivingClient() {
+        Client client = new Client(1, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "12");
+        assertFalse(client.isArchive());
+
+        client.archive();
+        assertTrue(client.isArchive());
+
+        // Ponowna archiwizacja rzuca błąd
+        assertThrows(IllegalStateException.class, client::archive);
+        // Zmiana telefonu zarchiwizowanego klienta rzuca błąd
+        assertThrows(IllegalStateException.class, () -> client.changePhoneNumber("999888777"));
+    }
+
+    @Test
+    public void testArchivingClientWithActiveServicesFails() {
+        Client client = new Client(1, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "12");
+        Employee employee = new Employee(1, "Adam", "Nowak");
+        ServiceOffering offering = new ServiceOffering(1, 100.0, "Diagnoza");
+        Device device = new PC(1, "Optiplex", "Dell", "Brak", "Intel", false);
+
+        Service service = new Service(1, client, employee, offering, device, "Opis problemu");
+        client.addService(service);
+
+        // Nie można zarchiwizować klienta z aktywnym zleceniem
+        assertThrows(IllegalStateException.class, client::archive);
+
+        // Po zakończeniu zlecenia można zarchiwizować
+        service.finishService();
+        assertDoesNotThrow(client::archive);
+        assertTrue(client.isArchive());
+    }
+
+    @Test
+    public void testGetInfo() {
+        Client client = new Client(1, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "12");
+        String info = client.getInfo();
+        assertTrue(info.contains("Mateusz"));
+        assertTrue(info.contains("Jankowski"));
+        assertTrue(info.contains("123456789"));
+        assertTrue(info.contains("aktywny"));
+    }
+}

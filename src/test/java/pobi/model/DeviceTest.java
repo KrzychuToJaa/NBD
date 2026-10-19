@@ -1,65 +1,82 @@
-// package pobi.model;
+package pobi.model;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-// import pobi.repositories.LogicContainer;
+public class DeviceTest {
 
-// public class DeviceTest {
-//     private LogicContainer container;
+    @Test
+    public void testDeviceConstructors() {
+        PC pc = new PC(1, "OptiPlex", "Dell", "Mysz i klawiatura", "Intel", true);
+        assertEquals(1, pc.getId());
+        assertEquals("OptiPlex", pc.getModel());
+        assertEquals("Dell", pc.getBrand());
+        assertEquals("Mysz i klawiatura", pc.getAccessories());
+        assertEquals("Intel", pc.getCpuManufacturer());
+        assertTrue(pc.hasWaterCooling());
 
-//     @BeforeEach
-//     public void setUp() {
-//         container = new LogicContainer();
-//         container.fillData();
-//     }
+        Laptop laptop = new Laptop(2, "ThinkPad", "Lenovo", "Zasilacz", "AMD");
+        assertEquals(2, laptop.getId());
+        assertEquals("AMD", laptop.getCpuManufacturer());
 
-//     @Test
-//     public void testDeviceConstructors() {
-//         PC pc = new PC("ID1", "PC", "MegaDuperPC", "SuperBrand", "Myszka i monitor", 1000.0, "Intel", true);
-//         assertEquals("ID1", pc.getID());
-//         assertEquals("PC", pc.getType());
-//         assertEquals(1000.0, pc.getBasePrice());
-//         assertEquals("Intel", pc.getCpuManufacturer());
+        Console console = new Console(3, "Switch", "Nintendo", "JoyCon", Console.ConsoleType.Nintendo);
+        assertEquals(3, console.getId());
+        assertEquals(Console.ConsoleType.Nintendo, console.getConsoleType());
+        assertEquals("Nintendo", console.getConsoleTypeName());
+    }
 
-//         Laptop laptop = new Laptop("ID2", "Laptop", "Model Astra Zeneca", "Szczepion", "Torba", 2000.0, "AMD");
-//         assertEquals("ID2", laptop.getID());
-//         assertEquals("AMD", laptop.getCpuManufacturer());
+    @Test
+    public void testDeviceConstructorExceptions() {
+        assertThrows(IllegalArgumentException.class, () -> new Laptop(1, "", "Lenovo", "Zasilacz", "AMD"));
+        assertThrows(IllegalArgumentException.class, () -> new Laptop(1, "ThinkPad", "", "Zasilacz", "AMD"));
+        assertThrows(IllegalArgumentException.class, () -> new Laptop(1, "ThinkPad", "Lenovo", "", "AMD"));
+        assertThrows(IllegalArgumentException.class, () -> new Laptop(1, "ThinkPad", "Lenovo", "Zasilacz", ""));
+        assertThrows(IllegalArgumentException.class, () -> new Laptop(-1, "ThinkPad", "Lenovo", "Zasilacz", "AMD"));
 
-//         Console console = new Console("ID3", "Console", "Model Y", "Tesla", "Pad i kabel", 1500.0, Console.ConsoleType.PlayStation);
-//         assertEquals(Console.ConsoleType.PlayStation, console.getConsoleType());
-//         assertEquals("PlayStation", console.getConsoleTypeName());
-//     }
+        assertThrows(IllegalArgumentException.class, () -> new Console(1, "PS5", "Sony", "Pad", null));
+    }
 
-//     @Test
-//     public void testDeviceConstructorExceptions() {
-//         assertThrows(IllegalArgumentException.class, () -> new Laptop("ID2", "Laptop", "Model", "Asus", "Kabel", Double.NaN, "AMD"));
-//         assertThrows(IllegalArgumentException.class, () -> new PC("ID1", "PC", "Pocket", "NeoGeo", "klawiatura", -10.0, "Intel", true));
-//         assertThrows(IllegalArgumentException.class, () -> new Laptop("ID2", "Laptop", "Plaster", "Asus", "kabel zasilający", -1.0, "AMD"));
-//         assertThrows(IllegalArgumentException.class, () -> new Console("ID3", "Console", "Micro", "GameBoy", "dwa pady", -500.0, Console.ConsoleType.PlayStation));
+    @Test
+    public void testPCActualPrice() {
+        // Intel (1.5x) + chłodzenie wodne (+200): 1000 * 1.5 + 200 = 1700
+        PC pcIntelWater = new PC(1, "Custom", "Corsair", "Kabel", "Intel", true);
+        assertEquals(1700.0, pcIntelWater.getActualPrice(1000.0));
 
-//         assertThrows(IllegalArgumentException.class, () -> new PC("", "PC", "KFD", "Robur", "brak", 1000.0, "Intel", true));
-//         assertThrows(IllegalArgumentException.class, () -> new Laptop("ID2", "", "Earth", "Jupiter", "Myszka i torba", 2000.0, "AMD"));
-//     }
+        // AMD (bez mnożnika) + bez chłodzenia wodnego: 1000
+        PC pcAmdNoWater = new PC(2, "Custom", "NZXT", "Kabel", "AMD", false);
+        assertEquals(1000.0, pcAmdNoWater.getActualPrice(1000.0));
+    }
 
-//     @Test
-//     public void testDeviceActualPrice() {
-//         PC pcIntelWater = new PC("ID1", "PC", "Karbo", "Politechnik", "Kabel usb i myszka", 1000.0, "Intel", true);
-//         assertTrue(pcIntelWater.hasWaterCooling());
-//         assertThrows(IllegalArgumentException.class, () -> pcIntelWater.setBasePrice(Double.POSITIVE_INFINITY));
-//         assertEquals(1700.0, pcIntelWater.getActualPrice(pcIntelWater.getBasePrice()));
+    @Test
+    public void testLaptopActualPrice() {
+        // Intel: 1.5x
+        Laptop laptopIntel = new Laptop(1, "X1", "Lenovo", "Zasilacz", "Intel");
+        assertEquals(1500.0, laptopIntel.getActualPrice(1000.0));
 
-//         PC pcAmdNoWater = new PC("ID2", "PC", "Smol", "Politechnik", "kabel zasilający", 1000.0, "AMD", false);
-//         assertEquals(1000.0, pcAmdNoWater.getActualPrice(pcAmdNoWater.getBasePrice()));
+        // Inny producent procesora: bez zmian
+        Laptop laptopAmd = new Laptop(2, "Zephyrus", "Asus", "Zasilacz", "AMD");
+        assertEquals(1000.0, laptopAmd.getActualPrice(1000.0));
+    }
 
-//         Laptop laptopIntel = new Laptop("ID3", "Laptop", "Bigga", "USA-comp", "Torba", 1000.0, "Intel");
-//         assertEquals(1500.0, laptopIntel.getActualPrice(laptopIntel.getBasePrice()));
+    @Test
+    public void testConsoleActualPrice() {
+        Console ps = new Console(1, "PS5", "Sony", "Pad", Console.ConsoleType.PlayStation);
+        assertEquals(1500.0, ps.getActualPrice(1000.0)); // 1.5x
 
-//         Console consoleXbox = new Console("ID4", "Console", "thin", "Rat", "Stacja do dyskietek", 1000.0, Console.ConsoleType.Xbox);
-//         assertEquals(2000.0, consoleXbox.getActualPrice(consoleXbox.getBasePrice()));
-        
-//         Console consoleNintendo = new Console("ID5", "Console", "big", "Boy", "Stacja do płyt CD", 1000.0, Console.ConsoleType.Nintendo);
-//         assertEquals(900.0, consoleNintendo.getActualPrice(consoleNintendo.getBasePrice()));
-//     }
-// }
+        Console xbox = new Console(2, "Series X", "Microsoft", "Pad", Console.ConsoleType.Xbox);
+        assertEquals(2000.0, xbox.getActualPrice(1000.0)); // 2.0x
+
+        Console nintendo = new Console(3, "Switch", "Nintendo", "JoyCon", Console.ConsoleType.Nintendo);
+        assertEquals(900.0, nintendo.getActualPrice(1000.0)); // 0.9x
+    }
+
+    @Test
+    public void testDeviceInfoAndSpecialInfo() {
+        PC pc = new PC(1, "OptiPlex", "Dell", "Mysz", "Intel", true);
+        assertTrue(pc.getInfo().contains("Dell"));
+        assertEquals("Intel,tak", pc.getSpecialInfo());
+
+        Console console = new Console(2, "Switch", "Nintendo", "JoyCon", Console.ConsoleType.Nintendo);
+        assertEquals("Nintendo", console.getSpecialInfo());
+    }
+}
