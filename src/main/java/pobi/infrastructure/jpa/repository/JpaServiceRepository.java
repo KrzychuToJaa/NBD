@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.LockModeType;
 import pobi.infrastructure.jpa.entity.*;
+import pobi.model.Employee;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,15 +28,15 @@ public class JpaServiceRepository {
             tx.begin();
 
             ClientEnt client = em.find(ClientEnt.class, entity.getClient().getClientId());
-            EmployeeEnt employee = em.find(EmployeeEnt.class, entity.getEmployee().getId());
+            EmployeeEnt employee = em.find(EmployeeEnt.class, entity.getEmployee().getId(), LockModeType.PESSIMISTIC_WRITE);
             ServiceOfferingEnt offering = em.find(ServiceOfferingEnt.class, entity.getOffering().getId());
-            DeviceEnt device = em.find(DeviceEnt.class, entity.getDevice().getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            DeviceEnt device = em.find(DeviceEnt.class, entity.getDevice().getId());
 
             if (client == null || employee == null || device == null || offering == null) {
                 throw new IllegalArgumentException("Powiązany obiekt (klient/pracownik/oferta/urządzenie) nie istnieje w bazie");
             }
-            if (hasActiveServiceForDevice(device.getId())) {
-                throw new IllegalStateException("Urządzenie posiada już aktywne zlecenie serwisowe");
+            if (!entity.isArchive() && countActiveByEmployeeId(employee.getId()) >= Employee.maxServices) {
+                throw new IllegalStateException("Pracownik osiągnął limit aktywnych usług");
             }
             ServiceEnt service = new ServiceEnt(
                     0,
@@ -73,8 +74,8 @@ public class JpaServiceRepository {
     }
 
     public int count() {
-        return em.createQuery("select count(s) from ServiceEnt s", int.class)
-                .getSingleResult();
+        return Math.toIntExact(em.createQuery("select count(s) from ServiceEnt s", Long.class)
+                .getSingleResult());
     }
 
     public List<ServiceEnt> findByEmployeeId(long id) {
@@ -123,17 +124,6 @@ public class JpaServiceRepository {
             }
             throw e;
         }
-    }
-
-    public boolean hasActiveServiceForDevice(long deviceId) {
-        long count = em.createQuery(
-                        "select count(s) from ServiceEnt s where s.device.id = :deviceId and s.archive = false",
-                        Long.class
-                )
-                .setParameter("deviceId", deviceId)
-                .getSingleResult();
-
-        return count > 0;
     }
 
 }

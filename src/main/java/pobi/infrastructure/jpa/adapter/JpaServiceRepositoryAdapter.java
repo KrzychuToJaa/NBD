@@ -21,9 +21,9 @@ public class JpaServiceRepositoryAdapter implements ServiceRepository {
         if (service == null) {
             throw new IllegalArgumentException("Serwis nie może być null");
         }
-        if (repository.findById(service.getId()) != null) {
+        if (service.getId() != 0) {
             throw new IllegalArgumentException(
-                    "Zlecenie o podanym ID już istnieje"
+                    "Nowe zlecenie nie może mieć nadanego ID"
             );
         }
         ServiceEnt serviceEnt = ServiceMapper.toEntity(service);

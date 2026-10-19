@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "devices")
@@ -37,10 +36,6 @@ public abstract class DeviceEnt {
     @Column(name = "accessories", nullable = false)
     private String accessories;
 
-    @Version
-    @Column(name = "version")
-    private Long version;
-
     protected DeviceEnt() {
     }
 
@@ -67,7 +62,4 @@ public abstract class DeviceEnt {
         return accessories;
     }
 
-    public Long getVersion() {
-        return version;
-    }
 }
