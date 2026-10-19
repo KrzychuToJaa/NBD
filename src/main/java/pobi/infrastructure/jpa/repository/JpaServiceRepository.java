@@ -3,7 +3,6 @@ package pobi.infrastructure.jpa.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import pobi.infrastructure.jpa.entity.*;
-import pobi.model.ServiceOffering;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +14,7 @@ public class JpaServiceRepository {
         this.em = Objects.requireNonNull(entityManager);
     }
 
-    ServiceEnt add(ServiceEnt entity) {
+    public ServiceEnt add(ServiceEnt entity) {
         if(entity == null){
             throw new IllegalArgumentException("Zlecenie nie może być null");
         }
@@ -44,27 +43,43 @@ public class JpaServiceRepository {
         return service;
     }
 
-    ServiceEnt findById(long id) {
-        return null;
+    public ServiceEnt findById(long id) {
+        return em.createQuery("select s from ServiceEnt s where s.id = :id", ServiceEnt.class)
+                .setParameter("id",id)
+                .getResultStream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Taka usługa nie istnieje."));
     }
-    List<ServiceEnt> findAll() {
-        return null;
+    public List<ServiceEnt> findAll() {
+        return em.createQuery("select s from ServiceEnt s order by s.id", ServiceEnt.class)
+                .getResultList();
     }
-    long count() {
-        return 0;
+    public int count() {
+        return  em.createQuery("select count(s) from ServiceEnt s", int.class)
+                .getSingleResult();
     }
-    List<ServiceEnt> findByEmployeeId(long id) {
-        return null;
+    public List<ServiceEnt> findByEmployeeId(long id) {
+        return em.createQuery("select s from ServiceEnt s where s.employee.id = :id",ServiceEnt.class)
+                .setParameter("id", id)
+                .getResultList();
     }
-    long countActiveByEmployeeId(long id) {
-        return 0;
+    public long countActiveByEmployeeId(long id) {
+        return em.createQuery("select count(s) from ServiceEnt s where s.employee.id = :id and s.archive = false",Long.class)
+                .setParameter("id",id)
+                .getSingleResult();
     }
-    List<ServiceEnt> findByClientId(long id) {
-        return null;
+    public List<ServiceEnt> findByClientId(long id) {
+        return em.createQuery("select s from ServiceEnt s where s.client.id = :id", ServiceEnt.class)
+                .setParameter("id",id)
+                .getResultList();
     }
-    void closeService() {
+    public void closeService(long id) {
+        ServiceEnt service = findById(id);
+        service.finishService();
     }
-    void changeDescription(long id, String description) {
+    public void changeDescription(long id, String description) {
+        ServiceEnt service = findById(id);
+        service.setDescription(description);
     }
 
 
