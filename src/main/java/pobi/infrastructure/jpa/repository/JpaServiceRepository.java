@@ -25,8 +25,12 @@ public class JpaServiceRepository {
         EmployeeEnt employee = em.find(EmployeeEnt.class, entity.getEmployee().getId());
         ServiceOfferingEnt offering = em.find(ServiceOfferingEnt.class, entity.getOffering().getId());
         DeviceEnt device = em.find(DeviceEnt.class, entity.getDevice().getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+
         if (client == null ||  employee == null || device==null || offering==null){
             throw new IllegalArgumentException("Powiązany obiekt (klient/pracownik/oferta/urządzenie) nie istnieje w bazie");
+        }
+        if(hasActiveServiceForDevice(device.getId())){
+            throw new IllegalStateException("Urządzenie posiada już aktywne zlecenie serwisowe");
         }
         ServiceEnt service = new ServiceEnt(
                 0,
@@ -82,5 +86,15 @@ public class JpaServiceRepository {
         service.setDescription(description);
     }
 
+    public boolean hasActiveServiceForDevice(long deviceId) {
+        long count = em.createQuery(
+                        "select count(s) from ServiceEnt s where s.device.id = :deviceId and s.archive = false",
+                        Long.class
+                )
+                .setParameter("deviceId", deviceId)
+                .getSingleResult();
+
+        return count > 0;
+    }
 
 }

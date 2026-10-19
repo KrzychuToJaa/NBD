@@ -1,11 +1,8 @@
 package pobi.infrastructure.jpa.entity;
 
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -27,6 +24,9 @@ public class EmployeeEnt {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @OneToMany(mappedBy = "employee")
+    private List<ServiceEnt> services;
+
     protected EmployeeEnt() {
     }
 
@@ -46,5 +46,9 @@ public class EmployeeEnt {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public List<ServiceEnt> getServices() {
+        return services;
     }
 }

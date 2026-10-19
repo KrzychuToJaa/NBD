@@ -1,9 +1,8 @@
 package pobi.infrastructure.jpa.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
@@ -42,6 +41,9 @@ public class ClientEnt {
 
     @Column(name = "archived", nullable = false)
     private boolean archive;
+
+    @OneToMany(mappedBy = "client")
+    private List<ServiceEnt> services;
 
     //musiało być bo JPA się wywalał
     protected ClientEnt() {
@@ -107,6 +109,10 @@ public class ClientEnt {
 
     public boolean isArchive() {
         return archive;
+    }
+
+    public List<ServiceEnt> getServices() {
+        return services;
     }
 
 }
