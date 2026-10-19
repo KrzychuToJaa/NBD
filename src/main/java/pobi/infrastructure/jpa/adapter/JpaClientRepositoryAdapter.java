@@ -46,10 +46,7 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public List<Client> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(ClientMapper::toDomain)
-            .toList();
+        return ClientMapper.toDomainList(repository.findAll());
     }
 
     @Override

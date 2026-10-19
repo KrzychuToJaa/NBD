@@ -40,18 +40,12 @@ public class JpaServiceRepositoryAdapter implements ServiceRepository {
 
     @Override
     public List<Service> findAll() {
-        return repository.findAll()
-                .stream()
-                .map(ServiceMapper::toDomain)
-                .toList();
+        return ServiceMapper.toDomainList(repository.findAll());
     }
 
     @Override
     public List<Service> findByEmployeeId(long employeeId) {
-        return repository.findByEmployeeId(employeeId)
-                .stream()
-                .map(ServiceMapper::toDomain)
-                .toList();
+        return ServiceMapper.toDomainList(repository.findByEmployeeId(employeeId));
     }
 
     @Override
@@ -71,10 +65,7 @@ public class JpaServiceRepositoryAdapter implements ServiceRepository {
 
     @Override
     public List<Service> findByClientId(long clientId) {
-        return repository.findByClientId(clientId)
-                .stream()
-                .map(ServiceMapper::toDomain)
-                .toList();
+        return ServiceMapper.toDomainList(repository.findByClientId(clientId));
     }
 
     @Override

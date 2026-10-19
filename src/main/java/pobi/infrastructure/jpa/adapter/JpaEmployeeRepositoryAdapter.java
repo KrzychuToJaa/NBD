@@ -35,9 +35,6 @@ public class JpaEmployeeRepositoryAdapter implements EmployeeRepository {
 
     @Override
     public List<Employee> findAll() {
-        return repository.findAll()
-            .stream()
-            .map(EmployeeMapper::toDomain)
-            .toList();
+        return EmployeeMapper.toDomainList(repository.findAll());
     }
 }

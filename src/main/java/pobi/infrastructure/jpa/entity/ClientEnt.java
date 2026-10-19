@@ -3,6 +3,7 @@ package pobi.infrastructure.jpa.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "clients")
@@ -43,7 +44,7 @@ public class ClientEnt {
     private boolean archive;
 
     @OneToMany(mappedBy = "client")
-    private List<ServiceEnt> services;
+    private List<ServiceEnt> services = new ArrayList<>();
 
     //musiało być bo JPA się wywalał
     protected ClientEnt() {
@@ -111,6 +112,15 @@ public class ClientEnt {
         return archive;
     }
 
+    /** Utrzymuje obie strony relacji także dla kolekcji już załadowanej przez JPA. */
+    public void addService(ServiceEnt service) {
+        if (service == null || service.getClient() != this) {
+            throw new IllegalArgumentException("Zlecenie wskazuje innego właściciela relacji");
+        }
+        if (!services.contains(service)) {
+            services.add(service);
+        }
+    }
     public List<ServiceEnt> getServices() {
         return services;
     }

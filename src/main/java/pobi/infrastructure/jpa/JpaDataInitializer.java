@@ -68,7 +68,10 @@ public final class JpaDataInitializer {
     }
 
     private static void persistService(EntityManager em, ClientEnt client, EmployeeEnt employee, ServiceOfferingEnt offering, DeviceEnt device, String description) {
-        Service service = new Service(0, ClientMapper.toDomain(client), EmployeeMapper.toDomain(employee), ServiceOfferingMapper.toDomain(offering), DeviceMapper.toDomain(device), description);
-        em.persist(new ServiceEnt(0, client, employee, offering, device, service.getBasePrice(), service.getFinalPrice(), description, false));
+        Service service = new Service(0, ClientMapper.toDomainWithoutServices(client), EmployeeMapper.toDomainWithoutServices(employee), ServiceOfferingMapper.toDomain(offering), DeviceMapper.toDomain(device), description);
+        ServiceEnt entity = new ServiceEnt(0, client, employee, offering, device, service.getBasePrice(), service.getFinalPrice(), description, false);
+        em.persist(entity);
+        client.addService(entity);
+        employee.addService(entity);
     }
 }

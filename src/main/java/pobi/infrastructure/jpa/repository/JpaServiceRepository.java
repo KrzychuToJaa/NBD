@@ -50,6 +50,8 @@ public class JpaServiceRepository {
                     entity.isArchive()
             );
             em.persist(service);
+            client.addService(service);
+            employee.addService(service);
             tx.commit();
             return service;
         } catch (RuntimeException e) {

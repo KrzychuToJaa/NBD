@@ -3,6 +3,7 @@ package pobi.infrastructure.jpa.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -25,7 +26,7 @@ public class EmployeeEnt {
     private String lastName;
 
     @OneToMany(mappedBy = "employee")
-    private List<ServiceEnt> services;
+    private List<ServiceEnt> services = new ArrayList<>();
 
     protected EmployeeEnt() {
     }
@@ -48,6 +49,14 @@ public class EmployeeEnt {
         return lastName;
     }
 
+    public void addService(ServiceEnt service) {
+        if (service == null || service.getEmployee() != this) {
+            throw new IllegalArgumentException("Zlecenie wskazuje innego właściciela relacji");
+        }
+        if (!services.contains(service)) {
+            services.add(service);
+        }
+    }
     public List<ServiceEnt> getServices() {
         return services;
     }
