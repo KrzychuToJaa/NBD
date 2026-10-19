@@ -7,7 +7,6 @@ import pobi.infrastructure.jpa.mapper.ClientMapper;
 import pobi.infrastructure.jpa.mapper.DeviceMapper;
 import pobi.infrastructure.jpa.mapper.EmployeeMapper;
 import pobi.infrastructure.jpa.mapper.ServiceOfferingMapper;
-import pobi.model.Console;
 import pobi.model.Service;
 
 public final class JpaDataInitializer {
