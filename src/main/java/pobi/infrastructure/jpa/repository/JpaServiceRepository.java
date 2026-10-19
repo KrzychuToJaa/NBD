@@ -91,7 +91,7 @@ public class JpaServiceRepository {
     }
 
     public List<ServiceEnt> findByClientId(long id) {
-        return em.createQuery("select s from ServiceEnt s where s.client.id = :id", ServiceEnt.class)
+        return em.createQuery("select s from ServiceEnt s where s.client.clientId = :id", ServiceEnt.class)
                 .setParameter("id", id)
                 .getResultList();
     }
