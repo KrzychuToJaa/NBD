@@ -30,20 +30,17 @@ public final class TestDataInitializer {
         try {
             tx.begin();
 
-            // Usunięcie poprzednich rekordów testowych w poprawnej kolejności kluczy obcych
             em.createQuery("delete from ServiceEnt").executeUpdate();
             em.createQuery("delete from ClientEnt").executeUpdate();
             em.createQuery("delete from DeviceEnt").executeUpdate();
             em.createQuery("delete from EmployeeEnt").executeUpdate();
             em.createQuery("delete from ServiceOfferingEnt").executeUpdate();
 
-            // 1. Klienci testowi
             ClientEnt client1 = new ClientEnt(0, "Jan", "Kowalski", "111222333", "Warszawa", "Marszałkowska", "10", false);
             ClientEnt client2 = new ClientEnt(0, "Anna", "Nowak", "444555666", "Kraków", "Floriańska", "5", false);
             em.persist(client1);
             em.persist(client2);
 
-            // 2. Urządzenia (polimorfizm dziedziczenia)
             PCEnt pc = new PCEnt(0, "OptiPlex", "Dell", "Mysz i klawiatura", "Intel", true);
             LaptopEnt laptop = new LaptopEnt(0, "ThinkPad", "Lenovo", "Zasilacz", "AMD");
             ConsoleEnt console = new ConsoleEnt(0, "PlayStation 5", "Sony", "Pad", Console.ConsoleType.PlayStation);
@@ -51,19 +48,17 @@ public final class TestDataInitializer {
             em.persist(laptop);
             em.persist(console);
 
-            // 3. Pracownicy
+            // PC z procesorem Intel i chłodzeniem wodnym: 200 * 1.5 + 200 = 500.0
             EmployeeEnt employee1 = new EmployeeEnt(0, "Janusz", "Serwisant");
             EmployeeEnt employee2 = new EmployeeEnt(0, "Piotr", "Informatyk");
             em.persist(employee1);
             em.persist(employee2);
 
-            // 4. Pozycje katalogu usług
             ServiceOfferingEnt disk = new ServiceOfferingEnt(0, 200.0, "Wymiana dysku");
             ServiceOfferingEnt clean = new ServiceOfferingEnt(0, 100.0, "Czyszczenie");
             em.persist(disk);
             em.persist(clean);
 
-            // 5. Usługi (1 aktywna, 1 zakończona)
             // PC z procesorem Intel i chłodzeniem wodnym: 200 * 1.5 + 200 = 500.0
             ServiceEnt activeService = new ServiceEnt(0, client1, employee1, disk, pc, 200.0, 500.0, "Wymiana dysku SSD", false);
             // Laptop AMD: 100.0
@@ -78,7 +73,6 @@ public final class TestDataInitializer {
 
             tx.commit();
 
-            // Przypisanie wygenerowanych ID do stałych referencyjnych dla asercji testowych
             CLIENT_1_ID = client1.getClientId();
             CLIENT_2_ID = client2.getClientId();
             PC_ID = pc.getId();

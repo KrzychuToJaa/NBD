@@ -32,7 +32,7 @@ public class DatabaseIntegrationTest {
     @BeforeAll
     public void setUpFactory() {
         try {
-            emf = Persistence.createEntityManagerFactory("nbd");
+            emf = Persistence.createEntityManagerFactory("nbd_test");
             em = emf.createEntityManager();
             dbAvailable = true;
         } catch (Exception e) {
@@ -55,7 +55,6 @@ public class DatabaseIntegrationTest {
     public void setUp() {
         Assumptions.assumeTrue(dbAvailable, "Baza danych PostgreSQL nie jest aktywna.");
 
-        // Inicjalizacja bazy predefiniowanymi danymi testowymi
         TestDataInitializer.initializeTestData(em);
         em.clear();
 
@@ -84,18 +83,15 @@ public class DatabaseIntegrationTest {
 
     @Test
     public void testPolymorphicDevicesLoadedFromDatabase() {
-        // Weryfikacja polimorfizmu: PC
         Device pc = deviceRepository.findById(TestDataInitializer.PC_ID);
         assertInstanceOf(PC.class, pc);
         assertEquals("OptiPlex", pc.getModel());
         assertTrue(((PC) pc).hasWaterCooling());
 
-        // Weryfikacja polimorfizmu: Laptop
         Device laptop = deviceRepository.findById(TestDataInitializer.LAPTOP_ID);
         assertInstanceOf(Laptop.class, laptop);
         assertEquals("ThinkPad", laptop.getModel());
 
-        // Weryfikacja polimorfizmu: Console
         Device console = deviceRepository.findById(TestDataInitializer.CONSOLE_ID);
         assertInstanceOf(Console.class, console);
         assertEquals(Console.ConsoleType.PlayStation, ((Console) console).getConsoleType());
@@ -107,12 +103,10 @@ public class DatabaseIntegrationTest {
     public void testEmployeesAndActiveServicesCount() {
         Employee employee1 = employeeRepository.findById(TestDataInitializer.EMPLOYEE_1_ID);
         assertEquals("Janusz", employee1.getFirstName());
-        // Pracownik 1 ma 1 aktywną usługę zainicjalizowaną w bazie
         assertEquals(1, serviceRepository.countActiveByEmployeeId(employee1.getId()));
 
         Employee employee2 = employeeRepository.findById(TestDataInitializer.EMPLOYEE_2_ID);
         assertEquals("Piotr", employee2.getFirstName());
-        // Pracownik 2 ma 0 aktywnych usług (jego usługa jest zakończona)
         assertEquals(0, serviceRepository.countActiveByEmployeeId(employee2.getId()));
     }
 
@@ -134,13 +128,10 @@ public class DatabaseIntegrationTest {
 
     @Test
     public void testBusinessRuleWithDatabaseArchiving() {
-        // Klient 1 ma aktywne zlecenie, więc próba archiwizacji rzuci błąd
         assertThrows(IllegalStateException.class, () -> clientRepository.archive(TestDataInitializer.CLIENT_1_ID));
 
-        // Zamykamy zlecenie klienta 1
         serviceRepository.closeService(TestDataInitializer.ACTIVE_SERVICE_ID);
 
-        // Teraz archiwizacja klienta 1 zakończy się sukcesem
         assertDoesNotThrow(() -> clientRepository.archive(TestDataInitializer.CLIENT_1_ID));
 
         Client archived = clientRepository.findById(TestDataInitializer.CLIENT_1_ID);
