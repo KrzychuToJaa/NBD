@@ -17,7 +17,6 @@ public final class JpaDataInitializer {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            // Blokada PostgreSQL zapobiega podwójnej inicjalizacji przy równoczesnym starcie
             em.createNativeQuery("select 1 from pg_advisory_xact_lock(723601019)").getSingleResult();
 
             if (hasAnyData(em)) {

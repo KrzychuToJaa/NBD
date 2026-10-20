@@ -38,22 +38,18 @@ public class DeviceTest {
 
     @Test
     public void testPCActualPrice() {
-        // Intel (1.5x) + chłodzenie wodne (+200): 1000 * 1.5 + 200 = 1700
         PC pcIntelWater = new PC(1, "Custom", "Corsair", "Kabel", "Intel", true);
         assertEquals(1700.0, pcIntelWater.getActualPrice(1000.0));
 
-        // AMD (bez mnożnika) + bez chłodzenia wodnego: 1000
         PC pcAmdNoWater = new PC(2, "Custom", "NZXT", "Kabel", "AMD", false);
         assertEquals(1000.0, pcAmdNoWater.getActualPrice(1000.0));
     }
 
     @Test
     public void testLaptopActualPrice() {
-        // Intel: 1.5x
         Laptop laptopIntel = new Laptop(1, "X1", "Lenovo", "Zasilacz", "Intel");
         assertEquals(1500.0, laptopIntel.getActualPrice(1000.0));
 
-        // Inny producent procesora: bez zmian
         Laptop laptopAmd = new Laptop(2, "Zephyrus", "Asus", "Zasilacz", "AMD");
         assertEquals(1000.0, laptopAmd.getActualPrice(1000.0));
     }
@@ -61,13 +57,13 @@ public class DeviceTest {
     @Test
     public void testConsoleActualPrice() {
         Console ps = new Console(1, "PS5", "Sony", "Pad", Console.ConsoleType.PlayStation);
-        assertEquals(1500.0, ps.getActualPrice(1000.0)); // 1.5x
+        assertEquals(1500.0, ps.getActualPrice(1000.0));
 
         Console xbox = new Console(2, "Series X", "Microsoft", "Pad", Console.ConsoleType.Xbox);
-        assertEquals(2000.0, xbox.getActualPrice(1000.0)); // 2.0x
+        assertEquals(2000.0, xbox.getActualPrice(1000.0));
 
         Console nintendo = new Console(3, "Switch", "Nintendo", "JoyCon", Console.ConsoleType.Nintendo);
-        assertEquals(900.0, nintendo.getActualPrice(1000.0)); // 0.9x
+        assertEquals(900.0, nintendo.getActualPrice(1000.0));
     }
 
     @Test

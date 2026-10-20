@@ -26,13 +26,9 @@ public class ClientTest {
         assertThrows(IllegalArgumentException.class, () -> new Client(0, "", "Jankowski", "123456789", "Warszawa", "Knurowa", "12"));
         assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "", "123456789", "Warszawa", "Knurowa", "12"));
         assertThrows(IllegalArgumentException.class, () -> new Client(-1, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "12"));
-        // Za krótki numer telefonu (8 cyfr):
         assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "12345678", "Warszawa", "Knurowa", "12"));
-        // Za długi numer telefonu (10 cyfr):
         assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "1234567890", "Warszawa", "Knurowa", "12"));
-        // Litery w numerze telefonu:
         assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "12345678a", "Warszawa", "Knurowa", "12"));
-        // Za długi numer domu (> 3 znaki):
         assertThrows(IllegalArgumentException.class, () -> new Client(0, "Mateusz", "Jankowski", "123456789", "Warszawa", "Knurowa", "1234"));
     }
 
@@ -54,9 +50,7 @@ public class ClientTest {
         client.archive();
         assertTrue(client.isArchive());
 
-        // Ponowna archiwizacja rzuca błąd
         assertThrows(IllegalStateException.class, client::archive);
-        // Zmiana telefonu zarchiwizowanego klienta rzuca błąd
         assertThrows(IllegalStateException.class, () -> client.changePhoneNumber("999888777"));
     }
 
@@ -70,10 +64,8 @@ public class ClientTest {
         Service service = new Service(1, client, employee, offering, device, "Opis problemu");
         client.addService(service);
 
-        // Nie można zarchiwizować klienta z aktywnym zleceniem
         assertThrows(IllegalStateException.class, client::archive);
 
-        // Po zakończeniu zlecenia można zarchiwizować
         service.finishService();
         assertDoesNotThrow(client::archive);
         assertTrue(client.isArchive());

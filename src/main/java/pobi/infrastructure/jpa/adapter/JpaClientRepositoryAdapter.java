@@ -69,7 +69,6 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public void archive(long clientId) {
-        // Ostateczna kontrola odbywa się po zablokowaniu klienta, w transakcji repozytorium.
         repository.archive(clientId);
     }
 

@@ -8,7 +8,6 @@ import pobi.repositories.LogicContainer;
 
 public class Main {
     public static void main(String[] args) {
-        // Zasoby zamykają się także wtedy, gdy inicjalizacja lub menu zgłosi wyjątek.
         try (EntityManagerFactory factory = Persistence.createEntityManagerFactory("nbd");
              EntityManager entityManager = factory.createEntityManager()) {
             LogicContainer container = new LogicContainer(entityManager);

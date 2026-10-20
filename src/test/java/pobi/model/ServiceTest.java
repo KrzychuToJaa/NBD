@@ -28,7 +28,6 @@ public class ServiceTest {
         assertSame(offering, service.getOffering());
         assertSame(device, service.getDevice());
         assertEquals(200.0, service.getBasePrice());
-        // PC Intel without water cooling: 200.0 * 1.5 = 300.0
         assertEquals(300.0, service.getFinalPrice());
         assertEquals("Wymiana uszkodzonego dysku", service.getFaultDescription());
         assertFalse(service.isArchive());
@@ -76,9 +75,7 @@ public class ServiceTest {
         assertTrue(service.isArchive());
         assertFalse(service.isActive());
 
-        // Nie można zakończyć zlecenia ponownie
         assertThrows(IllegalStateException.class, service::finishService);
-        // Nie można modyfikować zakończonego zlecenia
         assertThrows(IllegalStateException.class, () -> service.setFaultDescription("Nowy opis"));
     }
 

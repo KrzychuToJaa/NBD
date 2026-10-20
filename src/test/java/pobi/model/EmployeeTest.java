@@ -39,12 +39,10 @@ public class EmployeeTest {
             assertEquals(i, employee.getActiveServices());
         }
 
-        // Limit 5 aktywnych zleceń osiągnięty
         assertFalse(employee.canTakeMoreServices());
         Service extraService = new Service(6, client, employee, offering, device, "Zlecenie 6");
         assertThrows(IllegalStateException.class, () -> employee.addService(extraService));
 
-        // Po zakończeniu jednego zlecenia limit znowu pozwala na dodanie nowego
         employee.getServices().getFirst().finishService();
         assertEquals(4, employee.getActiveServices());
         assertTrue(employee.canTakeMoreServices());

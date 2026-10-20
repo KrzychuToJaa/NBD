@@ -18,9 +18,7 @@ public class MemoryClientRepository implements ClientRepository {
             throw new IllegalArgumentException("Klient o podanym ID już istnieje");
         }
         Client saved = client.getClientId() == 0
-            ? new Client(id, client.getFirstName(), client.getLastName(), client.getPhoneNumber(),
-                         client.getCity(), client.getStreet(), client.getNumber(), client.isArchive())
-            : client;
+            ? new Client(id, client.getFirstName(), client.getLastName(), client.getPhoneNumber(), client.getCity(), client.getStreet(), client.getNumber(), client.isArchive()) : client;
         clients.add(saved);
         nextId = Math.max(nextId, id + 1);
         return saved;

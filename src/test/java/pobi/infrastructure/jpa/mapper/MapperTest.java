@@ -107,7 +107,7 @@ public class MapperTest {
         Client client = new Client(1, "Jan", "Kowalski", "123456789", "Miasto", "Ulica", "1");
         Employee employee = new Employee(1, "Adam", "Nowak");
         ServiceOffering offering = new ServiceOffering(1, 100.0, "Czyszczenie");
-        PC pc = new PC(1, "PC", "Dell", "Brak", "Intel", true); // Intel + chłodzenie wodne: 100 * 1.5 + 200 = 350
+        PC pc = new PC(1, "PC", "Dell", "Brak", "Intel", true);
 
         Service service = new Service(100, client, employee, offering, pc, "Czyszczenie i wymiana pasty");
         assertEquals(100.0, service.getBasePrice());
@@ -127,7 +127,6 @@ public class MapperTest {
         assertEquals(100.0, restored.getBasePrice());
         assertEquals(350.0, restored.getFinalPrice());
         assertEquals("Czyszczenie i wymiana pasty", restored.getFaultDescription());
-        // Sprawdzenie dwukierunkowej relacji odtworzonej w obiekcie domenowym
         assertTrue(restored.getClient().getServices().stream().anyMatch(s -> s.getId() == 100));
         assertTrue(restored.getEmployee().getServices().stream().anyMatch(s -> s.getId() == 100));
 

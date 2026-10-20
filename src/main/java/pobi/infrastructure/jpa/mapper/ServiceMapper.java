@@ -32,7 +32,6 @@ public final class ServiceMapper {
                 context.employee(entity.getEmployee()), ServiceOfferingMapper.toDomain(entity.getOffering()),
                 DeviceMapper.toDomain(entity.getDevice()), entity.getDescription(),
                 entity.getBasePrice(), entity.getFinalPrice(), entity.isArchive());
-        // Zapamiętujemy przed mapowaniem relacji: kolejne odwiedziny zwrócą ten sam obiekt.
         context.services.put(entity.getId(), service);
         service.getClient().addService(service);
         service.getEmployee().addService(service);

@@ -48,7 +48,6 @@ public final class TestDataInitializer {
             em.persist(laptop);
             em.persist(console);
 
-            // PC z procesorem Intel i chłodzeniem wodnym: 200 * 1.5 + 200 = 500.0
             EmployeeEnt employee1 = new EmployeeEnt(0, "Janusz", "Serwisant");
             EmployeeEnt employee2 = new EmployeeEnt(0, "Piotr", "Informatyk");
             em.persist(employee1);
@@ -59,9 +58,7 @@ public final class TestDataInitializer {
             em.persist(disk);
             em.persist(clean);
 
-            // PC z procesorem Intel i chłodzeniem wodnym: 200 * 1.5 + 200 = 500.0
             ServiceEnt activeService = new ServiceEnt(0, client1, employee1, disk, pc, 200.0, 500.0, "Wymiana dysku SSD", false);
-            // Laptop AMD: 100.0
             ServiceEnt finishedService = new ServiceEnt(0, client2, employee2, clean, laptop, 100.0, 100.0, "Czyszczenie chłodzenia", true);
             em.persist(activeService);
             em.persist(finishedService);

@@ -22,7 +22,6 @@ public class LogicContainer {
     private final EmployeeRepository employeeRepository;
     private final ServiceOfferingRepository offeringRepository;
 
-    /** EntityManager należy do wywołującego; ten kontener go nie zamyka. */
     public LogicContainer(EntityManager entityManager) {
         this.entityManager = Objects.requireNonNull(entityManager);
         ClientRepository clientRepository = new JpaClientRepositoryAdapter(new JpaClientRepository(entityManager));

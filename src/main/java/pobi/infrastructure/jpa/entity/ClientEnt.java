@@ -46,7 +46,6 @@ public class ClientEnt {
     @OneToMany(mappedBy = "client")
     private List<ServiceEnt> services = new ArrayList<>();
 
-    //musiało być bo JPA się wywalał
     protected ClientEnt() {
     }
 
