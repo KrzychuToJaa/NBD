@@ -56,15 +56,10 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
         client.changePhoneNumber(phoneNumber);
 
         if (repository.phoneNumberExists(phoneNumber, clientId)) {
-            throw new IllegalArgumentException(
-                "Klient o podanym numerze telefonu już istnieje"
-            );
+            throw new IllegalArgumentException("Klient o podanym numerze telefonu już istnieje");
         }
 
-        repository.changePhoneNumber(
-            clientId,
-            client.getPhoneNumber()
-        );
+        repository.changePhoneNumber(clientId, client.getPhoneNumber());
     }
 
     @Override

@@ -36,7 +36,7 @@ public class DatabaseIntegrationTest {
             em = emf.createEntityManager();
             dbAvailable = true;
         } catch (Exception e) {
-            System.out.println("PostgreSQL nie jest uruchomiony na porcie 5433 (uruchom: cd Docker && docker compose up -d). Testy bazy danych zostaną pominięte.");
+            System.out.println("PostgreSQL nie jest uruchomiony na porcie 5433");
             dbAvailable = false;
         }
     }

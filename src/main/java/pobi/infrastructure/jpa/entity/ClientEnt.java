@@ -17,18 +17,10 @@ public class ClientEnt {
     @Column(name = "phone_number", length = 9, nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(
-        name = "first_name",
-        nullable = false,
-        columnDefinition = "text"
-    )
+    @Column(name = "first_name", nullable = false, columnDefinition = "text")
     private String firstName;
 
-    @Column(
-        name = "last_name",
-        nullable = false,
-        columnDefinition = "text"
-    )
+    @Column(name = "last_name", nullable = false, columnDefinition = "text")
     private String lastName;
 
     @Column(name = "city", nullable = false, columnDefinition = "text")
@@ -62,9 +54,7 @@ public class ClientEnt {
     }
     public void changePhoneNumber(String phoneNumber) {
         if (archive) {
-            throw new IllegalStateException(
-                "Zarchiwizowanego klienta nie można modyfikować"
-            );
+            throw new IllegalStateException("Zarchiwizowanego klienta nie można modyfikować");
         }
 
         this.phoneNumber = phoneNumber;
@@ -72,9 +62,7 @@ public class ClientEnt {
 
     public void archive() {
         if (archive) {
-            throw new IllegalStateException(
-                "Klient jest już zarchiwizowany"
-            );
+            throw new IllegalStateException("Klient jest już zarchiwizowany");
         }
 
         archive = true;

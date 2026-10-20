@@ -14,16 +14,12 @@ public class MemoryEmployeeRepository
     @Override
     public synchronized Employee add(Employee employee) {
         if (employee == null) {
-            throw new IllegalArgumentException(
-                "Pracownik nie może być null"
-            );
+            throw new IllegalArgumentException("Pracownik nie może być null");
         }
 
         for (Employee existing : employees) {
             if (existing.getId() == employee.getId()) {
-                throw new IllegalArgumentException(
-                    "Pracownik o podanym ID już istnieje"
-                );
+                throw new IllegalArgumentException("Pracownik o podanym ID już istnieje");
             }
         }
 
@@ -42,9 +38,7 @@ public class MemoryEmployeeRepository
             }
         }
 
-        throw new IllegalArgumentException(
-            "Pracownik o podanym ID nie istnieje"
-        );
+        throw new IllegalArgumentException("Pracownik o podanym ID nie istnieje");
     }
 
     @Override

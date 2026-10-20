@@ -54,8 +54,7 @@ public class MemoryDeviceRepository implements DeviceRepository {
                 : device instanceof pobi.model.Laptop laptop
                     ? new pobi.model.Laptop(id, laptop.getModel(), laptop.getBrand(), laptop.getAccessories(), laptop.getCpuManufacturer())
                     : device instanceof pobi.model.Console console
-                        ? new pobi.model.Console(id, console.getModel(), console.getBrand(), console.getAccessories(), console.getConsoleType())
-                        : unsupportedDevice() : device;
+                        ? new pobi.model.Console(id, console.getModel(), console.getBrand(), console.getAccessories(), console.getConsoleType()) : unsupportedDevice() : device;
         devices.add(saved);
         nextId = Math.max(nextId, id + 1);
         return saved;

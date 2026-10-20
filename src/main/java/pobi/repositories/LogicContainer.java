@@ -34,13 +34,7 @@ public class LogicContainer {
         deviceManager = new DeviceManager(deviceRepository);
         employeeManager = new EmployeeManager(employeeRepository);
         offeringManager = new ServiceOfferingManager(offeringRepository);
-        serviceManager = new ServiceManager(
-            serviceRepository,
-            clientRepository,
-            deviceRepository,
-            employeeRepository,
-            offeringRepository
-        );
+        serviceManager = new ServiceManager(serviceRepository, clientRepository, deviceRepository, employeeRepository, offeringRepository);
     }
 
     public void fillData() {

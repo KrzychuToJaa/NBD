@@ -12,14 +12,10 @@ public class Service {
     private boolean archive = false;
 
     public Service(long id, Client client, Employee employee, ServiceOffering offering, Device device, String description) {
-        this(id, client, employee, offering, device, description,
-                offering != null ? offering.getBasePrice() : 0.0,
-                (offering != null && device != null) ? device.getActualPrice(offering.getBasePrice()) : 0.0,
-                false);
+        this(id, client, employee, offering, device, description, offering != null ? offering.getBasePrice() : 0.0, (offering != null && device != null) ? device.getActualPrice(offering.getBasePrice()) : 0.0, false);
     }
 
-    public Service(long id, Client client, Employee employee, ServiceOffering offering, Device device,
-                   String description, double basePrice, double finalPrice, boolean archive) {
+    public Service(long id, Client client, Employee employee, ServiceOffering offering, Device device, String description, double basePrice, double finalPrice, boolean archive) {
 
         if (id < 0) {
             throw new IllegalArgumentException("ID zlecenia nie może być ujemne");
@@ -87,9 +83,7 @@ public class Service {
     public void setFaultDescription(String description) {
         requireActive();
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException(
-                "Opis zlecenia nie może być pusty"
-            );
+            throw new IllegalArgumentException("Opis zlecenia nie może być pusty");
         }
 
         this.description = description;

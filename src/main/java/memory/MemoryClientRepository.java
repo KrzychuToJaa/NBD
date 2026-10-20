@@ -45,8 +45,7 @@ public class MemoryClientRepository implements ClientRepository {
 
     private void requireUniquePhone(String phoneNumber, long exceptClientId) {
         Client.validatePhoneNumber(phoneNumber);
-        if (clients.stream().anyMatch(c -> c.getClientId() != exceptClientId
-                && c.getPhoneNumber().equals(phoneNumber))) {
+        if (clients.stream().anyMatch(c -> c.getClientId() != exceptClientId && c.getPhoneNumber().equals(phoneNumber))) {
             throw new IllegalArgumentException("Klient o podanym numerze telefonu już istnieje");
         }
     }

@@ -20,12 +20,7 @@ public class UserInterface {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    public UserInterface(
-            ClientManager clientManager,
-            DeviceManager deviceManager,
-            EmployeeManager employeeManager,
-            ServiceOfferingManager offeringManager,
-            ServiceManager serviceManager) {
+    public UserInterface(ClientManager clientManager, DeviceManager deviceManager, EmployeeManager employeeManager, ServiceOfferingManager offeringManager, ServiceManager serviceManager) {
 
         this.clientManager =
             Objects.requireNonNull(clientManager);
@@ -196,9 +191,7 @@ public class UserInterface {
         int type = readInt("Typ urządzenia: ");
 
         if (type < 1 || type > 3) {
-            throw new IllegalArgumentException(
-                "Nieprawidłowy typ urządzenia"
-            );
+            throw new IllegalArgumentException("Nieprawidłowy typ urządzenia");
         }
 
         Device saved = null;
@@ -209,9 +202,7 @@ public class UserInterface {
         switch (type) {
             case 1 -> {
                 String cpu = readText("Producent procesora: ");
-                boolean cooling = readBoolean(
-                    "Chłodzenie wodne? (tak/nie): "
-                );
+                boolean cooling = readBoolean("Chłodzenie wodne? (tak/nie): ");
 
                 saved = deviceManager.registerPC(model, brand, accessories, cpu, cooling);
             }
@@ -244,9 +235,7 @@ public class UserInterface {
             case 2 -> Console.ConsoleType.PlayStation;
             case 3 -> Console.ConsoleType.Xbox;
             case 4 -> Console.ConsoleType.Unknown;
-            default -> throw new IllegalArgumentException(
-                "Nieprawidłowy rodzaj konsoli"
-            );
+            default -> throw new IllegalArgumentException("Nieprawidłowy rodzaj konsoli");
         };
     }
 
@@ -332,10 +321,7 @@ public class UserInterface {
 
         for (Service service : services) {
             System.out.println(service.getInfo());
-            System.out.println(
-                "Status: "
-                + (service.isActive() ? "aktywna" : "zakończona")
-            );
+            System.out.println("Status: " + (service.isActive() ? "aktywna" : "zakończona"));
         }
     }
 
@@ -357,9 +343,7 @@ public class UserInterface {
 
                         ServiceOffering saved = offeringManager.registerOffering(price, name);
 
-                        System.out.println(
-                            "Rodzaj usługi został dodany do katalogu. ID: " + saved.getId()
-                        );
+                        System.out.println("Rodzaj usługi został dodany do katalogu. ID: " + saved.getId());
                     }
                     case 2 -> {
                         long id = readLong("ID pozycji katalogu: ");
@@ -473,10 +457,7 @@ public class UserInterface {
 
         for (Service service : services) {
             System.out.println(service.getInfo());
-            System.out.println(
-                "Status: "
-                + (service.isActive() ? "aktywna" : "zakończona")
-            );
+            System.out.println("Status: " + (service.isActive() ? "aktywna" : "zakończona"));
         }
     }
 
@@ -517,17 +498,13 @@ public class UserInterface {
                 double number = Double.parseDouble(value);
 
                 if (!Double.isFinite(number) || number < 0) {
-                    System.out.println(
-                        "Podaj skończoną, nieujemną cenę."
-                    );
+                    System.out.println("Podaj skończoną, nieujemną cenę.");
                     continue;
                 }
 
                 return number;
             } catch (NumberFormatException e) {
-                System.out.println(
-                    "Podaj liczbę"
-                );
+                System.out.println("Podaj liczbę");
             }
         }
     }

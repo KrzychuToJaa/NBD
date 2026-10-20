@@ -1,86 +1,96 @@
-// package pobi.managers;
+package pobi.managers;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import static org.junit.jupiter.api.Assertions.*;
+import memory.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import pobi.model.Client;
+import pobi.model.Device;
+import pobi.model.Employee;
+import pobi.model.Service;
+import pobi.model.ServiceOffering;
 
-// import pobi.model.Client;
-// import pobi.model.Device;
-// import pobi.model.Service;
+import static org.junit.jupiter.api.Assertions.*;
 
-// import pobi.repositories.LogicContainer;
+public class ServiceManagerTest {
+    private ServiceManager manager;
+    private Client client;
+    private Employee employee;
+    private Employee secondEmployee;
+    private ServiceOffering offering;
+    private Device device;
 
-// public class ServiceManagerTest {
-//     private LogicContainer container;
+    @BeforeEach
+    public void setUp() {
+        var clients = new MemoryClientRepository();
+        var devices = new MemoryDeviceRepository();
+        var employees = new MemoryEmployeeRepository();
+        var offerings = new MemoryServiceOfferingRepository();
+        var services = new MemoryServiceRepository();
+        client = new ClientManager(clients).registerClient("Świętosław", "Panikiewicz", "123456789", "Łęczno", "Łysa", "12");
+        employee = new EmployeeManager(employees).registerEmployee("Bonifacy", "Patulewicz");
+        secondEmployee = new EmployeeManager(employees).registerEmployee("Jaromir", "Kosssak");
+        offering = new ServiceOfferingManager(offerings).registerOffering(100, "Aktualizacja systemu");
+        device = new DeviceManager(devices).registerLaptop("jabko pro", "Apple", "dysk zewnętrzny, zasilacz, myszka", "Intel");
+        manager = new ServiceManager(services, clients, devices, employees, offerings);
+    }
 
-//     @BeforeEach
-//     public void setUp() {
-//         container = new LogicContainer();
-//         container.fillData();
-//     }
+    @Test
+    public void testRegisterServicesForTheSameDevice() {
+        Service first = manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Aktualizacja systemu");
+        Service second = manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Ponowna konfiguracja");
+        assertTrue(first.getId() > 0);
+        assertNotEquals(first.getId(), second.getId());
+        assertSame(first, manager.getService(first.getId()));
+        assertSame(client, first.getClient());
+        assertSame(employee, first.getEmployee());
+        assertSame(device, first.getDevice());
+        assertEquals(150, first.getFinalPrice());
+        assertEquals(2, manager.getClientServices(client.getClientId()).size());
+        assertEquals(2, client.getServices().size());
+        assertEquals(2, employee.getActiveServices());
+    }
 
-//     @Test
-//     public void testServiceManagerRegisterAndGet() {
-//         ClientManager clientManager = container.getClientManager();
-//         DeviceManager deviceManager = container.getDeviceManager();
-//         ServiceManager serviceManager = container.getServiceManager();
+    @Test
+    public void testArchivedClientCannotRegisterService() {
+        client.archive();
+        assertThrows(IllegalStateException.class, () -> manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Aktualizacja"));
+        assertTrue(manager.getAllServices().isEmpty());
+    }
 
-//         serviceManager.registerService("S1nowy", 300.0, clientManager.getClient("123456789"), deviceManager.getDevice("PC1"), "Wymiana plyty");
-//         Service service = serviceManager.getService("S1nowy");
-        
-//         assertEquals("Wymiana plyty", service.getFaultDescription());
-//         assertEquals(300.0, service.getBasePrice());
-//     }
+    @Test
+    public void testEmployeeLimitDoesNotLimitClient() {
+        for (int i = 0; i < 5; i++) {
+            manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Zlecenie " + i);
+        }
+        assertThrows(IllegalStateException.class, () -> manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Szóste zlecenie"));
+        assertEquals(5, manager.getAllServices().size());
+        manager.registerService(client.getClientId(), secondEmployee.getId(), offering.getId(), device.getId(), "Zlecenie drugiego pracownika");
+        assertEquals(6, manager.getClientServices(client.getClientId()).size());
+        assertEquals(5, employee.getActiveServices());
+        assertEquals(1, secondEmployee.getActiveServices());
+    }
 
-//     @Test
-//     public void testServiceManagerArchive() {
-//         ServiceManager serviceManager = container.getServiceManager();
-//         ClientManager clientManager = container.getClientManager();
-//         DeviceManager deviceManager = container.getDeviceManager();
+    @Test
+    public void testClosingServiceFreesEmployeeCapacity() {
+        for (int i = 0; i < 5; i++) {
+            manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Zlecenie " + i);
+        }
+        Service first = manager.getAllServices().getFirst();
+        manager.closeService(first.getId());
+        assertTrue(manager.getService(first.getId()).isArchive());
+        assertEquals(4, employee.getActiveServices());
+        manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Nowe zlecenie");
+        assertEquals(5, employee.getActiveServices());
+        assertEquals(6, manager.getAllServices().size());
+    }
 
-//         Client client = clientManager.getClient("123456789");
-//         Device device = deviceManager.getDevice("PC1");
-
-//         client.setArchive(true);
-//         assertThrows(IllegalStateException.class, () -> serviceManager.registerService("S2", 200.0, client, device, "Czyszczenie"));
-
-//         Service service = serviceManager.getService("Service1");
-//         assertNotNull(service);
-
-//         service.setArchive(true);
-//         Service archivedService = serviceManager.getService("Service1");
-//         assertNull(archivedService);
-//     }
-
-//     @Test
-//     public void testServiceManagerGetNonExisting() {
-//         ServiceManager serviceManager = container.getServiceManager();
-//         assertThrows(IllegalArgumentException.class, () -> serviceManager.getService("2137"));
-//     }
-
-//     @Test
-//     public void testServiceManagerUnregister() {
-//         ServiceManager serviceManager = container.getServiceManager();
-//         assertEquals(3, serviceManager.findAllServices().size());
-
-//         serviceManager.unregisterService("Service1");
-        
-//         assertEquals(2, serviceManager.findAllServices().size());
-//         assertThrows(IllegalArgumentException.class, () -> serviceManager.getService("Service1"));
-//     }
-
-//     @Test
-//     public void testMaxServicesLimit() {
-//         ClientManager clientManager = container.getClientManager();
-//         DeviceManager deviceManager = container.getDeviceManager();
-//         ServiceManager serviceManager = container.getServiceManager();
-
-//         Client client = clientManager.getClient("123456789");
-//         Device device = deviceManager.getDevice("PC1");
-
-//         serviceManager.registerService("S1", 300.0, client, device, "Wymiana płyty głównej");
-//         serviceManager.registerService("S2", 200.0, client, device, "Czyszczenie");
-
-//         assertThrows(IllegalStateException.class, () -> serviceManager.registerService("S3", 400.0, client, device, "Wymiana dysku"));
-//     }
-// }
+    @Test
+    public void testDescriptionAndMissingService() {
+        Service service = manager.registerService(client.getClientId(), employee.getId(), offering.getId(), device.getId(), "Pierwotny opis");
+        manager.changeServiceDescription(service.getId(), "Nowy opis");
+        assertEquals("Nowy opis", manager.getService(service.getId()).getFaultDescription());
+        manager.closeService(service.getId());
+        assertThrows(IllegalStateException.class, () -> manager.changeServiceDescription(service.getId(), "Zmiana po zakończeniu"));
+        assertThrows(IllegalArgumentException.class, () -> manager.getService(999));
+    }
+}

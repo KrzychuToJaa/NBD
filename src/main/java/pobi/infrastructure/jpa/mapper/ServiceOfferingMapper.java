@@ -13,11 +13,7 @@ public final class ServiceOfferingMapper {
             return null;
         }
 
-        return new ServiceOfferingEnt(
-            offering.getId(),
-            offering.getBasePrice(),
-            offering.getName()
-        );
+        return new ServiceOfferingEnt(offering.getId(), offering.getBasePrice(), offering.getName());
     }
 
     public static ServiceOffering toDomain(ServiceOfferingEnt entity) {
@@ -25,10 +21,6 @@ public final class ServiceOfferingMapper {
             return null;
         }
 
-        return new ServiceOffering(
-            entity.getId(),
-            entity.getBasePrice(),
-            entity.getName()
-        );
+        return new ServiceOffering(entity.getId(), entity.getBasePrice(), entity.getName());
     }
 }

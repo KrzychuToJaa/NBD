@@ -48,21 +48,16 @@ public class ServiceTest {
 
     @Test
     public void testServicePriceValidationExceptions() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new Service(1, client, employee, offering, device, "Opis", -10.0, 100.0, false));
-        assertThrows(IllegalArgumentException.class, () ->
-                new Service(1, client, employee, offering, device, "Opis", 100.0, -5.0, false));
-        assertThrows(IllegalArgumentException.class, () ->
-                new Service(1, client, employee, offering, device, "Opis", Double.NaN, 100.0, false));
-        assertThrows(IllegalArgumentException.class, () ->
-                new Service(1, client, employee, offering, device, "Opis", 100.0, Double.POSITIVE_INFINITY, false));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", -10.0, 100.0, false));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", 100.0, -5.0, false));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", Double.NaN, 100.0, false));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", 100.0, Double.POSITIVE_INFINITY, false));
     }
 
     @Test
     public void testCannotCreateServiceForArchivedClient() {
         client.archive();
-        assertThrows(IllegalStateException.class, () ->
-                new Service(1, client, employee, offering, device, "Opis"));
+        assertThrows(IllegalStateException.class, () -> new Service(1, client, employee, offering, device, "Opis"));
     }
 
     @Test

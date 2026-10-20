@@ -10,8 +10,7 @@ public class ClientManager {
     public ClientManager(ClientRepository clientRepository) {
         this.clientRepository = Objects.requireNonNull(clientRepository);
     }
-    public Client registerClient(String firstName, String lastName, String phoneNumber,
-                                 String city, String street, String number) {
+    public Client registerClient(String firstName, String lastName, String phoneNumber, String city, String street, String number) {
         return clientRepository.add(new Client(0, firstName, lastName, phoneNumber, city, street, number));
     }
     public Client getClient(long clientId) { return clientRepository.findById(clientId); }

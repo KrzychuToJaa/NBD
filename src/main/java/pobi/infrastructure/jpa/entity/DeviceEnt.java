@@ -19,12 +19,7 @@ public abstract class DeviceEnt {
 
     @Id
     @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
-    @Column(
-        name = "id",
-        nullable = false,
-        updatable = false,
-        unique = true
-    )
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     private long id;
 
     @Column(name = "brand", nullable = false)

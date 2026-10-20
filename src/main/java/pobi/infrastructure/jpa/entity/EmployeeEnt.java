@@ -12,11 +12,7 @@ public class EmployeeEnt {
 
     @Id
     @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
-    @Column(
-        name = "employee_id",
-        nullable = false,
-        updatable = false
-    )
+    @Column(name = "employee_id", nullable = false, updatable = false)
     private long id;
 
     @Column(name = "first_name", nullable = false)

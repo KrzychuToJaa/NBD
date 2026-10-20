@@ -39,23 +39,17 @@ implements ServiceRepository {
     @Override
     public synchronized Service add(Service service) {
         if (service == null) {
-            throw new IllegalArgumentException(
-                "Zlecenie nie może być null"
-            );
+            throw new IllegalArgumentException("Zlecenie nie może być null");
         }
 
         for (Service existing : services) {
             if (existing.getId() == service.getId()) {
-                throw new IllegalArgumentException(
-                    "Zlecenie o podanym ID już istnieje"
-                );
+                throw new IllegalArgumentException("Zlecenie o podanym ID już istnieje");
             }
         }
 
         if (service.isActive() && service.getClient().isArchive()) {
-            throw new IllegalStateException(
-                "Nie można przyjąć zlecenia dla zarchiwizowanego klienta"
-            );
+            throw new IllegalStateException("Nie można przyjąć zlecenia dla zarchiwizowanego klienta");
         }
 
         long id = service.getId() == 0 ? nextId : service.getId();

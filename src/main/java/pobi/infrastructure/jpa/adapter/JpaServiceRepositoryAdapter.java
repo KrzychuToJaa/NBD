@@ -22,9 +22,7 @@ public class JpaServiceRepositoryAdapter implements ServiceRepository {
             throw new IllegalArgumentException("Serwis nie może być null");
         }
         if (service.getId() != 0) {
-            throw new IllegalArgumentException(
-                    "Nowe zlecenie nie może mieć nadanego ID"
-            );
+            throw new IllegalArgumentException("Nowe zlecenie nie może mieć nadanego ID");
         }
         ServiceEnt serviceEnt = ServiceMapper.toEntity(service);
         ServiceEnt saved = repository.add(serviceEnt);

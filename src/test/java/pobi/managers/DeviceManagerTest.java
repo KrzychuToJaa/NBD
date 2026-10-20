@@ -1,52 +1,50 @@
-// package pobi.managers;
+package pobi.managers;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import static org.junit.jupiter.api.Assertions.*;
+import memory.MemoryDeviceRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import pobi.model.Console;
+import pobi.model.Device;
+import pobi.model.Laptop;
+import pobi.model.PC;
 
-// import pobi.model.Device;
-// import pobi.repositories.LogicContainer;
+import static org.junit.jupiter.api.Assertions.*;
 
-// public class DeviceManagerTest {
-//     private LogicContainer container;
+public class DeviceManagerTest {
+    private DeviceManager manager;
 
-//     @BeforeEach
-//     public void setUp() {
-//         container = new LogicContainer();
-//         container.fillData();
-//     }
+    @BeforeEach
+    public void setUp() {
+        manager = new DeviceManager(new MemoryDeviceRepository());
+    }
 
-//     @Test
-//     public void testGetExistingDevice() {
-//         DeviceManager manager = container.getDeviceManager();
-//         Device device = manager.getDevice("PC1");
-        
-//         assertNotNull(device);
-//         assertEquals("Dell", device.getBrand());
-//         assertEquals(800.0, device.getBasePrice());
-//     }
+    @Test
+    public void testRegisterDifferentDeviceTypes() {
+        Device pc = manager.registerPC("OptiPlex", "Dell", "myszka", "Intel", true);
+        Device laptop = manager.registerLaptop("jabko pro", "Apple", "dysk zewnętrzny, zasilacz, myszka", "Intel");
+        Device console = manager.registerConsole("Switch", "Nintendo", "JoyCon", Console.ConsoleType.Nintendo);
+        assertInstanceOf(PC.class, manager.getDevice(pc.getId()));
+        assertInstanceOf(Laptop.class, manager.getDevice(laptop.getId()));
+        assertInstanceOf(Console.class, manager.getDevice(console.getId()));
+        assertTrue(pc.getId() > 0);
+        assertNotEquals(pc.getId(), laptop.getId());
+        assertNotEquals(laptop.getId(), console.getId());
+        assertEquals("jabko pro", manager.getDevice(laptop.getId()).getModel());
+        assertEquals(3, manager.findAllDevices().size());
+    }
 
-//     @Test
-//     public void testGetNonExistingDevice() {
-//         DeviceManager manager = container.getDeviceManager();
-//         assertThrows(IllegalArgumentException.class, () -> manager.getDevice("2137"));
-//     }
+    @Test
+    public void testUnregisterDevice() {
+        Device laptop = manager.registerLaptop("jabko pro", "Apple", "dysk zewnętrzny, zasilacz, myszka", "Intel");
+        manager.unregisterDevice(laptop.getId());
+        assertTrue(manager.findAllDevices().isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> manager.getDevice(laptop.getId()));
+    }
 
-//     @Test
-//     public void testFindAllEmpty() {
-//         DeviceManager emptyManager = new DeviceManager();
-//         assertThrows(IllegalArgumentException.class, emptyManager::findAllDevices);
-//     }
-
-//     @Test
-//     public void testUnregisterDevice() {
-//         DeviceManager manager = container.getDeviceManager();
-//         assertEquals(3, manager.findAllDevices().size());
-        
-//         manager.unregisterDevice("Console1");
-//         assertEquals(2, manager.findAllDevices().size());
-        
-//         assertThrows(IllegalArgumentException.class, () -> manager.getDevice("Console1"));
-//     }
-
-// }
+    @Test
+    public void testInvalidAndMissingDevice() {
+        assertThrows(IllegalArgumentException.class, () -> manager.registerLaptop("", "Apple", "zasilacz", "Intel"));
+        assertTrue(manager.findAllDevices().isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> manager.getDevice(999));
+    }
+}

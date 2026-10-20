@@ -21,9 +21,7 @@ public class JpaClientRepository {
         }
 
         if (client.getClientId() != 0) {
-            throw new IllegalArgumentException(
-                    "Nowy klient nie może mieć nadanego ID"
-            );
+            throw new IllegalArgumentException("Nowy klient nie może mieć nadanego ID");
         }
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -43,9 +41,7 @@ public class JpaClientRepository {
         ClientEnt client = entityManager.find(ClientEnt.class, clientId);
 
         if (client == null) {
-            throw new IllegalArgumentException(
-                    "Klient o ID " + clientId + " nie istnieje"
-            );
+            throw new IllegalArgumentException("Klient o ID " + clientId + " nie istnieje");
         }
 
         return client;
@@ -60,18 +56,12 @@ public class JpaClientRepository {
     }
 
     public List<ClientEnt> findAll() {
-        return entityManager.createQuery(
-                        "select c from ClientEnt c order by c.clientId",
-                        ClientEnt.class
-                )
+        return entityManager.createQuery("select c from ClientEnt c order by c.clientId", ClientEnt.class)
                 .getResultList();
     }
 
     public long count() {
-        return entityManager.createQuery(
-                        "select count(c) from ClientEnt c",
-                        Long.class
-                )
+        return entityManager.createQuery("select count(c) from ClientEnt c", Long.class)
                 .getSingleResult();
     }
 

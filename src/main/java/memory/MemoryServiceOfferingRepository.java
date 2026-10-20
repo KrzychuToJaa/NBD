@@ -14,16 +14,12 @@ implements ServiceOfferingRepository {
     @Override
     public synchronized ServiceOffering add(ServiceOffering offering) {
         if (offering == null) {
-            throw new IllegalArgumentException(
-                "Pozycja katalogu nie może być null"
-            );
+            throw new IllegalArgumentException("Pozycja katalogu nie może być null");
         }
 
         for (ServiceOffering existing : offerings) {
             if (existing.getId() == offering.getId()) {
-                throw new IllegalArgumentException(
-                    "Pozycja katalogu o podanym ID już istnieje"
-                );
+                throw new IllegalArgumentException("Pozycja katalogu o podanym ID już istnieje");
             }
         }
 
@@ -42,9 +38,7 @@ implements ServiceOfferingRepository {
             }
         }
 
-        throw new IllegalArgumentException(
-            "Pozycja katalogu o podanym ID nie istnieje."
-        );
+        throw new IllegalArgumentException("Pozycja katalogu o podanym ID nie istnieje.");
     }
 
     @Override

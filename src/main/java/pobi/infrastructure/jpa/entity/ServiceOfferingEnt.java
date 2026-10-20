@@ -14,11 +14,7 @@ public class ServiceOfferingEnt {
 
     @Id
     @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
-    @Column(
-        name = "id",
-        nullable = false,
-        updatable = false
-    )
+    @Column(name = "id", nullable = false, updatable = false)
     private long id;
 
     @Column(name = "base_price", nullable = false)

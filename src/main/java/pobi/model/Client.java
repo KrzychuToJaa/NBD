@@ -14,14 +14,12 @@ public class Client {
     private boolean archive;
     private final List<Service> services = new ArrayList<>();
 
-    public Client(long clientId, String firstName, String lastName, String phoneNumber,
-                  String city, String street, String number) {
+    public Client(long clientId, String firstName, String lastName, String phoneNumber, String city, String street, String number) {
         this(clientId, firstName, lastName, phoneNumber, city, street, number, false);
     }
 
     /** ID 0 oznacza nowego klienta; dodatnie ID służy odtworzeniu zapisanego klienta. */
-    public Client(long clientId, String firstName, String lastName, String phoneNumber,
-                  String city, String street, String number, boolean archive) {
+    public Client(long clientId, String firstName, String lastName, String phoneNumber, String city, String street, String number, boolean archive) {
         if (clientId < 0 || firstName == null || firstName.isBlank()
                 || lastName == null || lastName.isBlank() || city == null || city.isBlank()
                 || street == null || street.isBlank() || number == null || number.isBlank()) {

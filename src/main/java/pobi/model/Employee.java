@@ -58,29 +58,21 @@ public class Employee {
 
     public void addService(Service service) {
         if (service == null) {
-            throw new IllegalArgumentException(
-                "Nie można dodać pustej usługi"
-            );
+            throw new IllegalArgumentException("Nie można dodać pustej usługi");
         }
 
         if (service.getEmployee() != this) {
-            throw new IllegalArgumentException(
-                "Usługa wskazuje innego pracownika"
-            );
+            throw new IllegalArgumentException("Usługa wskazuje innego pracownika");
         }
 
         for (Service existing : services) {
             if (existing.getId() == service.getId()) {
-                throw new IllegalArgumentException(
-                    "Usługa jest już przypisana do pracownika"
-                );
+                throw new IllegalArgumentException("Usługa jest już przypisana do pracownika");
             }
         }
 
         if (service.isActive() && !canTakeMoreServices()) {
-            throw new IllegalStateException(
-                "Pracownik osiągnął limit aktywnych usług"
-            );
+            throw new IllegalStateException("Pracownik osiągnął limit aktywnych usług");
         }
 
         services.add(service);
