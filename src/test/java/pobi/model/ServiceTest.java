@@ -4,75 +4,95 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import pobi.repositories.LogicContainer;
-
 public class ServiceTest {
-    private LogicContainer container;
+    private Client client;
+    private Employee employee;
+    private ServiceOffering offering;
+    private Device device;
 
     @BeforeEach
     public void setUp() {
-        container = new LogicContainer();
-        container.fillData();
+        client = new Client(1, "Maciej", "Mamrot", "123456789", "Łęczno", "Łysa", "12");
+        employee = new Employee(1, "Adam", "Nowak");
+        offering = new ServiceOffering(1, 200.0, "Wymiana dysku");
+        device = new Device(1, "OptiPlex", "Dell", "Mysz");
     }
 
     @Test
     public void testServiceConstructorPositive() {
-        Client client = new Client("Maciej", "Mamrot", "696969696", "Kalinkow", "Knurowa", "12");
-        Device device = new PC("PC1", "PC", "Boy", "Fat", "Mysz i kabel zasialający", 1000.0, "Intel", true);
-        
-        Service service = new Service("S1", 150.0, client, device, "Wymiana zasilacza");
+        Service service = new Service(1, client, employee, offering, device, "Wymiana uszkodzonego dysku");
 
-        assertEquals("S1", service.getID());
-        assertEquals(150.0, service.getBasePrice());
-        assertEquals("Wymiana zasilacza", service.getFaultDescription());
+        assertEquals(1, service.getId());
+        assertSame(client, service.getClient());
+        assertSame(employee, service.getEmployee());
+        assertSame(offering, service.getOffering());
+        assertSame(device, service.getDevice());
+        assertEquals(200.0, service.getBasePrice());
+        assertEquals(200.0, service.getFinalPrice());
+        assertEquals("Wymiana uszkodzonego dysku", service.getFaultDescription());
         assertFalse(service.isArchive());
-        assertNotNull(service.getClient());
-        assertNotNull(service.getDevice());
+        assertTrue(service.isActive());
     }
 
     @Test
     public void testServiceConstructorExceptions() {
-        Client client = new Client("Maciej", "Mamrot", "696969696", "Kalinkow", "Knurowa", "12");
-        Device device = new PC("PC1", "PC", "Boy", "Fat", "Mysz i kabel zasialający", 1000.0, "Intel", true);
-
-        assertThrows(IllegalArgumentException.class, () -> new Service("", 150.0, client, device, "Opis"));
-        assertThrows(IllegalArgumentException.class, () -> new Service("S1", -10.0, client, device, "Opis"));
-        assertThrows(IllegalArgumentException.class, () -> new Service("S1", 150.0, null, device, "Opis"));
-        assertThrows(IllegalArgumentException.class, () -> new Service("S1", 150.0, client, null, "Opis"));
-        assertThrows(IllegalArgumentException.class, () -> new Service("S1", 150.0, client, device, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Service(-1, client, employee, offering, device, "Opis"));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, null, employee, offering, device, "Opis"));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, null, offering, device, "Opis"));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, null, device, "Opis"));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, null, "Opis"));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "   "));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, null));
     }
 
     @Test
-    public void testServiceArchive() {
-        Client client = new Client("Maciej", "Mamrot", "696969696", "Kalinkow", "Knurowa", "12");
-        Device device = new PC("PC1", "PC", "Boy", "Fat", "Mysz i kabel zasialający", 1000.0, "Intel", true);
-        Service service = new Service("S1", 150.0, client, device, "Wymiana obudowy na większą");
+    public void testServicePriceValidationExceptions() {
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", -10.0, 100.0, false));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", 100.0, -5.0, false));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", Double.NaN, 100.0, false));
+        assertThrows(IllegalArgumentException.class, () -> new Service(1, client, employee, offering, device, "Opis", 100.0, Double.POSITIVE_INFINITY, false));
+    }
 
+    @Test
+    public void testCannotCreateServiceForArchivedClient() {
+        client.archive();
+        assertThrows(IllegalStateException.class, () -> new Service(1, client, employee, offering, device, "Opis"));
+    }
+
+    @Test
+    public void testFinishService() {
+        Service service = new Service(1, client, employee, offering, device, "Opis");
+        assertTrue(service.isActive());
         assertFalse(service.isArchive());
-        service.setArchive(true);
+
+        service.finishService();
         assertTrue(service.isArchive());
+        assertFalse(service.isActive());
+
+        assertThrows(IllegalStateException.class, service::finishService);
+        assertThrows(IllegalStateException.class, () -> service.setFaultDescription("Nowy opis"));
     }
 
     @Test
-    public void testServiceSetFaultDescription() {
-        Client client = new Client("Maciej", "Mamrot", "696969696", "Kalinkow", "Knurowa", "12");
-        Device device = new PC("PC1", "PC", "Boy", "Fat", "Mysz i kabel zasialający", 1000.0, "Intel", true);
-        Service service = new Service("S1", 150.0, client, device, "Wymiana obudowy na większą");
+    public void testSetFaultDescription() {
+        Service service = new Service(1, client, employee, offering, device, "Pierwotny opis");
+        service.setFaultDescription("Zaktualizowany opis");
+        assertEquals("Zaktualizowany opis", service.getFaultDescription());
 
-        assertEquals("Wymiana obudowy na większą", service.getFaultDescription());
-
-        service.setFaultDescription("Wymiana obudowy na większą i dodanie dodatkowego wentylatora");
-        assertEquals("Wymiana obudowy na większą i dodanie dodatkowego wentylatora", service.getFaultDescription());
+        assertThrows(IllegalArgumentException.class, () -> service.setFaultDescription(""));
+        assertThrows(IllegalArgumentException.class, () -> service.setFaultDescription("   "));
+        assertThrows(IllegalArgumentException.class, () -> service.setFaultDescription(null));
     }
 
     @Test
-    public void testServicePrice() {
-        Client client = new Client("Maciej", "Mamrot", "696969696", "Kalinkow", "Knurowa", "12");
-        Device device = new PC("PC1", "PC", "Boy", "Fat", "Mysz i kabel zasialający", 1000.0, "Intel", true);
-        
-        Service service = new Service("S1", 1000.0, client, device, "Diagnoza sprzetu");
-
-        assertEquals(1000.0, service.getBasePrice());
-        assertEquals(1700.0, service.getDevice().getActualPrice(service.getBasePrice()));
+    public void testGetInfo() {
+        Service service = new Service(1, client, employee, offering, device, "Diagnoza");
+        String info = service.getInfo();
+        assertTrue(info.contains("ID: 1"));
+        assertTrue(info.contains("Klient: Maciej Mamrot"));
+        assertTrue(info.contains("Pracownik: Adam Nowak"));
+        assertTrue(info.contains("Usługa: Wymiana dysku"));
+        assertTrue(info.contains("aktywna"));
     }
 }

@@ -1,2 +1,14 @@
-*.github
-*.vscode
+.idea/
+.vscode/
+.github/
+target/
+out/
+*.iml
+*.class
+*.log
+*.jar
+*.war
+*.zip
+.DS_Store
+hs_err_pid*
+replay_pid*

@@ -1,105 +1,89 @@
 package pobi.managers;
 
-import pobi.model.Service;
 import pobi.model.Client;
 import pobi.model.Device;
+import pobi.model.Employee;
+import pobi.model.ServiceOffering;
+import pobi.model.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 import pobi.repositories.ClientRepository;
 import pobi.repositories.DeviceRepository;
+import pobi.repositories.EmployeeRepository;
+import pobi.repositories.ServiceOfferingRepository;
 import pobi.repositories.ServiceRepository;
 
-import java.util.List;
-
 public class ServiceManager {
-    private ServiceRepository serviceRepository;
+    private final ServiceRepository serviceRepository;
+    private final ClientRepository clientRepository;
+    private final DeviceRepository deviceRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ServiceOfferingRepository offeringRepository;
 
-    public ServiceManager() {
-        this.serviceRepository = new ServiceRepository();
+    public ServiceManager(
+        ServiceRepository serviceRepository,
+        ClientRepository clientRepository,
+        DeviceRepository deviceRepository,
+        EmployeeRepository employeeRepository,
+        ServiceOfferingRepository offeringRepository
+    )
+    {
+        this.serviceRepository = Objects.requireNonNull(serviceRepository);
+        this.clientRepository = Objects.requireNonNull(clientRepository);
+        this.deviceRepository = Objects.requireNonNull(deviceRepository);
+        this.employeeRepository = Objects.requireNonNull(employeeRepository);
+        this.offeringRepository = Objects.requireNonNull(offeringRepository);
     }
 
-    /**
-     * Zapisuje nową usługę do repozytorium, wraz z podanymi przez użytkownika danymi
-     * @param id ID usługi
-     * @param basePrice Cena podstawowa usługi
-     * @param client Referencja do klienta, dla którego jest rejestrowana usługa
-     * @param device Referencja do urządzenia, dla którego jest rejestrowana usługa
-     * @param faultDescription Opis usterki urządzenia
-     */
-    public void registerService(String id, double basePrice, Client client, Device device, String faultDescription) {
-        if (client == null || device == null) {
-            throw new IllegalArgumentException("Klient lub urządzenie nie może być null");
+    public Service registerService (long clientId, long employeeId, long offeringId, long deviceId, String description) {
+        Client client = clientRepository.findById(clientId);
+        Employee employee = employeeRepository.findById(employeeId);
+        ServiceOffering offering = offeringRepository.findById(offeringId);
+        Device device = deviceRepository.findById(deviceId);
+
+        if  (client.isArchive()) {
+            throw new IllegalStateException("Nie można zarejestrować usługi dla klienta zarchiwizowanego");
         }
 
-        if (client.isArchive()) {
-            throw new IllegalStateException("Klient jest zarchiwizowany");
+        if (serviceRepository.countActiveByEmployeeId(employeeId) >= employee.getMaxServices()) {
+            throw new IllegalStateException("Nie można zarejestrować usługi dla pracownika ponad limit aktywnych usług");
         }
 
-        int activeServices = 0;
-        for (Service service : serviceRepository.findAll()) {
-            if (service.getClient().getPhoneNumber().equals(client.getPhoneNumber()) && !service.isArchive()) {
-                activeServices++;
-            }
-        }
-
-        if (activeServices >= client.getMaxServices()) {
-            throw new IllegalStateException("Klient osiagnął maksymalny limit aktywnych uslug");
-        }
-
-        Service service = new Service(id, basePrice, client, device, faultDescription);
-        serviceRepository.add(service);
-    }
-   
-    /**
-     * Zwraca referencję do usługi o podanym ID
-     * @param id ID usługi
-     * @return Usługa o podanym ID lub null, gdy nie istnieje lub jest zarchiwizowana
-     */
-    public Service getService(String id) {
-        Service service = serviceRepository.findByID(id);
-        if (service == null || service.isArchive()) {
-            return null;
-        }
-        return service;
+        Service service = new Service(0, client, employee, offering, device, description);
+        return serviceRepository.add(service);
     }
 
-    /**
-     * Usuwa usługę o podanym ID z repozytorium
-     * @param id ID usługi
-     */
-    public void unregisterService(String id) {
-        serviceRepository.remove(serviceRepository.findByID(id));
+    public List<Service> getClientServices(long clientId) {
+        clientRepository.findById(clientId);
+        return serviceRepository.findByClientId(clientId);
     }
 
-    /**
-     * Zwraca informacje o wszystkich usługach
-     * @return Lista usług
-     */
-    public List<Service> findAllServices() {
+    public Service getService(long id) {
+        return serviceRepository.findById(id);
+    }
+
+    public void closeService(long id) {
+        serviceRepository.closeService(id);
+    }
+
+    public void changeServiceDescription(long id, String description) {
+        serviceRepository.changeDescription(id, description);
+    }
+
+    public List<Service> getAllServices() {
         return serviceRepository.findAll();
     }
 
-    /**
-     * Zapisuje dane usług do pliku
-     * @param filename nazwa pliku
-     */
-    public void saveToFile(String filename) {
-        serviceRepository.saveToFile(filename);
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 
-    /**
-     * Wczytuje dane usług z pliku
-     * @param filename nazwa pliku
-     * @param clientRepo referencja do repozytorium klientów
-     * @param deviceRepo referencja do repozytorium urządzeń
-     */
-    public void loadFromFile(String filename, ClientRepository clientRepo, DeviceRepository deviceRepo) {
-        serviceRepository.loadFromFile(filename, clientRepo, deviceRepo);
+    public List<ServiceOffering> getAllServiceOfferings() {
+        return offeringRepository.findAll();
     }
 
-    /**
-     * Zwraca referencję do repozytorium usług
-     * @return Repozytorium usług
-     */
     public ServiceRepository getServiceRepository() {
         return serviceRepository;
     }

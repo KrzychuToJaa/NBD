@@ -1,85 +1,53 @@
 package pobi.managers;
 
+import memory.MemoryClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import pobi.repositories.LogicContainer;
 import pobi.model.Client;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientManagerTest {
-    private LogicContainer container;
+    private ClientManager manager;
 
     @BeforeEach
     public void setUp() {
-        container = new LogicContainer();
-        container.fillData();
+        manager = new ClientManager(new MemoryClientRepository());
     }
 
     @Test
-    public void testGetExistingClient() {
-        ClientManager manager = container.getClientManager();
-        Client client = manager.getClient("123456789");
-        
-        assertEquals("LeBron", client.getFirstName());
-        assertEquals("James", client.getLastName());
-    }
-
-    @Test
-    public void testGetArchivedClient() {
-        ClientManager manager = container.getClientManager();
-        Client client = manager.getClient("123456789");
-        client.setArchive(true);
-
-        Client archivedClient = manager.getClient("123456789");
-        assertNull(archivedClient);
-    }
-
-    @Test
-    public void testRegisterDuplicateClient() {
-        ClientManager manager = new ClientManager();
-        manager.registerClient("Tomasz", "Szkocki", "111222333", "Houston", "Hardena", "13");
-        
+    public void testRegisterAndFindClient() {
+        Client client = manager.registerClient("Pankracy", "Panikiewicz", "123456789", "Łęczno", "Łysa", "12");
+        assertTrue(client.getClientId() > 0);
+        assertSame(client, manager.getClient(client.getClientId()));
+        assertSame(client, manager.getClientByPhoneNumber("123456789"));
         assertEquals(1, manager.findAllClients().size());
-        
-        assertThrows(IllegalArgumentException.class, () -> {
-            manager.registerClient("Konrad", "Lemur", "111222333", "Los Angeles", "Beverly", "2");
-        });
     }
 
     @Test
-    public void testUnregisterClient() {
-        ClientManager manager = new ClientManager();
-        manager.registerClient("Michał", "Jordański", "111222333", "Chicago", "drugi najlepszy", "23");
-        
+    public void testDuplicatePhoneDoesNotAddClient() {
+        manager.registerClient("Pankracy", "Panikiewicz", "123456789", "Łęczno", "Łysa", "12");
+        assertThrows(IllegalArgumentException.class, () -> manager.registerClient("Stary Jaremba", "Kosssak", "123456789", "Ręczno", "Piotrkowska", "3"));
         assertEquals(1, manager.findAllClients().size());
-        manager.unregisterClient("111222333");
-        
-        assertThrows(IllegalArgumentException.class, manager::findAllClients);
-        assertEquals(0, manager.getClientRepository().size());
     }
 
     @Test
-    public void testSaveAndLoadFromFile() throws Exception {
-        ClientManager saveManager = new ClientManager();
-        saveManager.registerClient("Stefan", "Curry", "444555666", "San Francisco", "Crackheadow", "13");
-        
-        String testFileName = "test_clients_manager.csv";
-        saveManager.saveToFile(testFileName);
-        saveManager.registerClient("Onufry", "Curry", "111222333", "San Francisco", "Crackheadow", "13");
+    public void testChangePhoneNumber() {
+        Client first = manager.registerClient("Mateusz", "Patulewicz", "123456789", "Łęczno", "Łysa", "12");
+        manager.registerClient("Michał", "Świebodziński", "987654321", "Ręczno", "Piotrkowska", "3");
+        manager.changePhoneNumber(first.getClientId(), "111222333");
+        assertSame(first, manager.getClientByPhoneNumber("111222333"));
+        assertThrows(IllegalArgumentException.class, () -> manager.getClientByPhoneNumber("123456789"));
+        assertThrows(IllegalArgumentException.class, () -> manager.changePhoneNumber(first.getClientId(), "987654321"));
+        assertEquals("111222333", first.getPhoneNumber());
+    }
 
-        ClientManager loadManager = new ClientManager();
-        loadManager.loadFromFile(testFileName);
-        
-        Client loadedClient = loadManager.getClient("444555666");
-        assertThrows(IllegalArgumentException.class, () -> loadManager.getClient("111222333"));
-        assertEquals("Stefan", loadedClient.getFirstName());
-        assertEquals("San Francisco", loadedClient.getCity());
-        
-        Files.deleteIfExists(Paths.get(testFileName));
+    @Test
+    public void testArchiveAndMissingClient() {
+        Client client = manager.registerClient("Patryk", "Kosssak", "123456789", "Łęczno", "Łysa", "12");
+        manager.archiveClient(client.getClientId());
+        assertTrue(manager.getClient(client.getClientId()).isArchive());
+        assertThrows(IllegalStateException.class, () -> manager.changePhoneNumber(client.getClientId(), "111222333"));
+        assertThrows(IllegalArgumentException.class, () -> manager.getClient(999));
     }
 }

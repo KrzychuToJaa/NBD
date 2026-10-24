@@ -1,62 +1,65 @@
 package pobi.repositories;
 
+import memory.MemoryClientRepository;
+import memory.MemoryDeviceRepository;
+import memory.MemoryEmployeeRepository;
+import memory.MemoryServiceOfferingRepository;
+import memory.MemoryServiceRepository;
 import pobi.managers.ClientManager;
 import pobi.managers.DeviceManager;
+import pobi.managers.EmployeeManager;
+import pobi.managers.ServiceOfferingManager;
 import pobi.managers.ServiceManager;
-import pobi.model.Console;
+import pobi.model.Client;
+import pobi.model.Device;
+import pobi.model.Employee;
+import pobi.model.ServiceOffering;
 
 public class LogicContainer {
-    private ClientManager clientManager;
-    private DeviceManager deviceManager;
-    private ServiceManager serviceManager;
+    private final ClientManager clientManager;
+    private final DeviceManager deviceManager;
+    private final EmployeeManager employeeManager;
+    private final ServiceOfferingManager offeringManager;
+    private final ServiceManager serviceManager;
+    private final EmployeeRepository employeeRepository;
+    private final ServiceOfferingRepository offeringRepository;
 
-    /**
-     * Konstruktor klasy LogicContainer (ułatwia testowanie i wypełnianie danymi)
-     */
     public LogicContainer() {
-        this.clientManager = new ClientManager();
-        this.deviceManager = new DeviceManager();
-        this.serviceManager = new ServiceManager();
+        this(new MemoryClientRepository(), new MemoryDeviceRepository(), new MemoryEmployeeRepository(), new MemoryServiceOfferingRepository(), new MemoryServiceRepository());
     }
 
-    /**
-     * Wypełnia repozytoria przykładowymi danymi
-     */
+    public LogicContainer(ClientRepository clients, DeviceRepository devices, EmployeeRepository employees, ServiceOfferingRepository offerings, ServiceRepository services) {
+        clientManager = new ClientManager(clients);
+        deviceManager = new DeviceManager(devices);
+        employeeManager = new EmployeeManager(employees);
+        offeringManager = new ServiceOfferingManager(offerings);
+        serviceManager = new ServiceManager(services, clients, devices, employees, offerings);
+        employeeRepository = employees;
+        offeringRepository = offerings;
+    }
+
     public void fillData() {
-        clientManager.registerClient("LeBron", "James", "123456789", "Los Angeles", "Brentwood", "23");
-        clientManager.registerClient("Sebastian", "Alvarez", "987654321", "Berlin", "Fide Strase", "3");
-        clientManager.registerClient("Mateusz", "Kisielski", "555555555", "Ostrow", "Gruba", "10");
-
-        deviceManager.registerPC("PC1", "PC", "Genesis-2", "Dell", "Myszka i klawiatura", 800.0, "Intel", true);
-        deviceManager.registerLaptop("Laptop1", "Laptop", "MacBook Pro M1", "Apple", "Kabel zasilający", 1500.0, "Apple");
-        deviceManager.registerConsole("Console1", "Console", "Switch", "Nintendo", "JoyCon", 500.0, Console.ConsoleType.Nintendo);
-
-        serviceManager.registerService("Service1", 800.0, clientManager.getClient("123456789"), deviceManager.getDevice("PC1"), "Uszkodzony dysk");
-        serviceManager.registerService("Service2", 1500.0, clientManager.getClient("987654321"), deviceManager.getDevice("Laptop1"), "Problem z baterią");
-        serviceManager.registerService("Service3", 500.0, clientManager.getClient("555555555"), deviceManager.getDevice("Console1"), "Problem z ekranem");
+        if (!clientManager.findAllClients().isEmpty() || !deviceManager.findAllDevices().isEmpty() || !employeeManager.findAllEmployees().isEmpty() || !offeringManager.findAllOfferings().isEmpty() || !serviceManager.getAllServices().isEmpty()) {
+            return;
+        }
+        Client firstClient = clientManager.registerClient("Maciej", "Mamrot", "123456789", "Łęczno", "Łysa", "12");
+        Client secondClient = clientManager.registerClient("Michał", "Woźniak", "987654321", "Ręczno", "Piotrkowska", "3");
+        Employee firstEmployee = employeeManager.registerEmployee("Krzysztof", "Kata");
+        Employee secondEmployee = employeeManager.registerEmployee("Michał", "Woźniak");
+        Device firstDevice = deviceManager.registerDevice("ThinkPad", "Lenovo", "zasilacz, myszka");
+        Device secondDevice = deviceManager.registerDevice("jabko pro", "Apple", "dysk zewnętrzny, zasilacz");
+        ServiceOffering disk = offeringManager.registerOffering(200.0, "Wymiana dysku");
+        ServiceOffering system = offeringManager.registerOffering(100.0, "Aktualizacja systemu");
+        serviceManager.registerService(firstClient.getClientId(), firstEmployee.getId(), disk.getId(), firstDevice.getId(), "Wymiana uszkodzonego dysku");
+        serviceManager.registerService(firstClient.getClientId(), firstEmployee.getId(), system.getId(), firstDevice.getId(), "Aktualizacja systemu");
+        serviceManager.registerService(secondClient.getClientId(), secondEmployee.getId(), system.getId(), secondDevice.getId(), "Instalacja aktualizacji");
     }
 
-    /**
-     * Zwraca referencję do menedżera klientów
-     * @return Referencja do menedżera klientów
-     */
-    public ClientManager getClientManager() {
-        return clientManager;
-    }
-
-    /**
-     * Zwraca referencję do menedżera urządzeń
-     * @return Referencja do menedżera urządzeń
-     */
-    public DeviceManager getDeviceManager() {
-        return deviceManager;
-    }
-
-    /**
-     * Zwraca referencję do menedżera usług
-     * @return Referencja do menedżera usług
-     */
-    public ServiceManager getServiceManager() {
-        return serviceManager;
-    }
+    public ClientManager getClientManager() { return clientManager; }
+    public DeviceManager getDeviceManager() { return deviceManager; }
+    public EmployeeManager getEmployeeManager() { return employeeManager; }
+    public ServiceOfferingManager getOfferingManager() { return offeringManager; }
+    public ServiceManager getServiceManager() { return serviceManager; }
+    public EmployeeRepository getEmployeeRepository() { return employeeRepository; }
+    public ServiceOfferingRepository getOfferingRepository() { return offeringRepository; }
 }

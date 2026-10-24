@@ -1,17 +1,13 @@
 package pobi;
 
-import pobi.managers.ClientManager;
-import pobi.managers.DeviceManager;
-import pobi.managers.ServiceManager;
 import pobi.model.UserInterface;
+import pobi.repositories.LogicContainer;
 
 public class Main {
     public static void main(String[] args) {
-        ClientManager clientManager = new ClientManager();
-        ServiceManager serviceManager = new ServiceManager();
-        DeviceManager deviceManager = new DeviceManager();
-
-        UserInterface ui = new UserInterface(clientManager, serviceManager, deviceManager);
+        LogicContainer container = new LogicContainer();
+        container.fillData();
+        UserInterface ui = new UserInterface(container.getClientManager(), container.getDeviceManager(), container.getEmployeeManager(), container.getOfferingManager(), container.getServiceManager());
         ui.start();
     }
 }

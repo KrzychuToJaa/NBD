@@ -1,73 +1,41 @@
 package pobi.managers;
 
+import memory.MemoryDeviceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import pobi.model.Device;
 import static org.junit.jupiter.api.Assertions.*;
 
-import pobi.model.Device;
-import pobi.repositories.LogicContainer;
-
 public class DeviceManagerTest {
-    private LogicContainer container;
+    private DeviceManager manager;
 
     @BeforeEach
     public void setUp() {
-        container = new LogicContainer();
-        container.fillData();
+        manager = new DeviceManager(new MemoryDeviceRepository());
     }
 
     @Test
-    public void testGetExistingDevice() {
-        DeviceManager manager = container.getDeviceManager();
-        Device device = manager.getDevice("PC1");
-        
-        assertNotNull(device);
-        assertEquals("Dell", device.getBrand());
-        assertEquals(800.0, device.getBasePrice());
-    }
-
-    @Test
-    public void testGetNonExistingDevice() {
-        DeviceManager manager = container.getDeviceManager();
-        assertThrows(IllegalArgumentException.class, () -> manager.getDevice("2137"));
-    }
-
-    @Test
-    public void testFindAllEmpty() {
-        DeviceManager emptyManager = new DeviceManager();
-        assertThrows(IllegalArgumentException.class, emptyManager::findAllDevices);
+    public void testRegisterDevices() {
+        Device first = manager.registerDevice("ThinkPad", "Lenovo", "myszka");
+        Device second = manager.registerDevice("jabko pro", "Apple", "zasilacz");
+        assertTrue(first.getId() > 0);
+        assertNotEquals(first.getId(), second.getId());
+        assertEquals("ThinkPad", manager.getDevice(first.getId()).getModel());
+        assertEquals(2, manager.findAllDevices().size());
     }
 
     @Test
     public void testUnregisterDevice() {
-        DeviceManager manager = container.getDeviceManager();
-        assertEquals(3, manager.findAllDevices().size());
-        
-        manager.unregisterDevice("Console1");
-        assertEquals(2, manager.findAllDevices().size());
-        
-        assertThrows(IllegalArgumentException.class, () -> manager.getDevice("Console1"));
+        Device device = manager.registerDevice("jabko pro", "Apple", "zasilacz");
+        manager.unregisterDevice(device.getId());
+        assertTrue(manager.findAllDevices().isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> manager.getDevice(device.getId()));
     }
 
     @Test
-    public void testSaveAndLoadDevicesFromFile() throws Exception {
-        DeviceManager saveManager = container.getDeviceManager();
-        String testFileName = "test_devices_manager_container.csv";
-        
-        saveManager.saveToFile(testFileName);
-        saveManager.registerLaptop("L2", "Laptop", "Macbook", "Apple", "Mysz", 4000.0, "Apple");
-
-        DeviceManager loadManager = new DeviceManager();
-        loadManager.loadFromFile(testFileName);
-        
-        Device loadedDevice = loadManager.getDevice("PC1");
-        
-        assertThrows(IllegalArgumentException.class, () -> loadManager.getDevice("L2"));
-        assertEquals("Genesis-2", loadedDevice.getModel());
-        assertEquals("Dell", loadedDevice.getBrand());
-
-        Files.deleteIfExists(Paths.get(testFileName));
+    public void testInvalidAndMissingDevice() {
+        assertThrows(IllegalArgumentException.class, () -> manager.registerDevice("", "Apple", "zasilacz"));
+        assertTrue(manager.findAllDevices().isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> manager.getDevice(999));
     }
 }
